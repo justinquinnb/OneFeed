@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<addon
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="/resources/addon.xsd">
+    <addonInfo>
+        <meta>
+            <addonName>GitHub Grabber</addonName>
+            <addonAuthor>Justin Quinn</addonAuthor>
+            <addonUrl>https://github.com/justinquinnb/OneFeed</addonUrl>
+            <addonVersion>0.0.1</addonVersion>
+        </meta>
+        <developer>
+            <grabberFileName>GitHubApi.java</grabberFileName>
+            <processorFileName>GitHubProcessor.java</processorFileName>
+        </developer>
+    </addonInfo>
+    <sourceInfo>
+        <sourceName>GitHub</sourceName>
+        <sourceAuthor>Microsoft</sourceAuthor>
+        <sourceHomepageUrl>https://github.com/</sourceHomepageUrl>
+    </sourceInfo>
+</addon>
