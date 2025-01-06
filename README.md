@@ -1,2 +1,2 @@
-# Gator
-Social media feed aggregator for my portfolio site.
+# OneFeed
+Custom-built social media and activity feed aggregator for my portfolio website.
