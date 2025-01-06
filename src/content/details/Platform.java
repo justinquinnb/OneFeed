@@ -6,4 +6,5 @@ package content.details;
 public class Platform {
     private String homepageUrl;
     private String name;
+    private String usernamePrefix;
 }
