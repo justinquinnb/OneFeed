@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.data.sources.base.github;
+package com.justinquinnb.onefeed.data.sources.addons.github;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;

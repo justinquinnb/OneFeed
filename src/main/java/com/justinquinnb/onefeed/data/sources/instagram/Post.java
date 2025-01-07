@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.data.sources.base.instagram;
+package com.justinquinnb.onefeed.data.sources.addons.instagram;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
