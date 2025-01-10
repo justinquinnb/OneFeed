@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.data.model.content.details;
 
 /**
- * Information about a user, usually the one performing an action such as posting.
+ * Information about the entity producing the content.
  */
 public class Producer {
     private String profilePageUrl;

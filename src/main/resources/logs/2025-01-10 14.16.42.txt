@@ -1,0 +1,19 @@
+null[2025-01-10 14:16:32] %t %i - Starting OneFeed...
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+OneFeed v0.0.1 - The Free Feed Aggregator
+Developed by Justin Quinn - https://github.com/justinquinnb
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[2025-01-10 14:16:32] INFO - Initializing...
+		[2025-01-10 14:16:32] [32mSUCCESS[0m - Instagram service instantiated.
+		[2025-01-10 14:16:32] [32mSUCCESS[0m - Threads service instantiated.
+		[2025-01-10 14:16:32] [32mSUCCESS[0m - LinkedIn service instantiated.
+		[2025-01-10 14:16:32] [32mSUCCESS[0m - GitHub service instantiated.
+	[2025-01-10 14:16:32] [32mSUCCESS[0m - All content sources instantiated.
+	[2025-01-10 14:16:32] INFO - Testing content sources...
+	[2025-01-10 14:16:32] [33mWARN[0m - Content sources tested with 0available and 4 unavailable.
+[2025-01-10 14:16:32] [32mSUCCESS[0m - Initialization successful.
+[2025-01-10 14:16:32] INFO - Starting Spring Boot...
+[2025-01-10 14:16:35] [32mSUCCESS[0m - Spring Boot has started.
+[2025-01-10 14:16:42] [33mWARN[0m - Exiting application...
