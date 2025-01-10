@@ -1,39 +1,42 @@
 package com.justinquinnb.onefeed;
 
+import com.justinquinnb.onefeed.data.sources.github.GitHubService;
+import com.justinquinnb.onefeed.data.sources.instagram.InstaService;
+import com.justinquinnb.onefeed.data.sources.linkedin.LinkedInService;
+import com.justinquinnb.onefeed.data.model.source.ContentSource;
+import com.justinquinnb.onefeed.data.sources.threads.ThreadsService;
 import com.justinquinnb.onefeed.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.justinquinnb.onefeed.data.model.source.SourceAddon;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @SpringBootApplication
 public class OneFeedApplication {
-	/**
-	 * Contains instances of all the recognized data sources.
-	 */
-	private static SourceAddon[] sources;
+	public static ContentSource[] contentSources = new ContentSource[4];
 
 	public static void main(String[] args) {
+		// On shutdown script
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				Logger.logToBoth("Exiting application...");
+				Logger.logToBothF("%t %w - Exiting application...");
 				Logger.endLog();
 			}
 		});
 
 		// Console info
 		printOneFeedInfo();
-		try {
-			// Initialize sources
-			registerSources();
-			testSources();
 
+		// Initialize OneFeed
+		// Initialize content sources
+		getContentSources();
+		testContentSources();
+
+		// Start up Spring Boot
+		try {
 			Logger.logToBothF("%t %s - Initialization successful.");
-			Logger.logToBothF("%t Starting Spring Boot...");
+			Logger.logToBothF("%t %i - Starting Spring Boot...");
 
 			// Run application
 			SpringApplication.run(OneFeedApplication.class, args);
@@ -44,84 +47,69 @@ public class OneFeedApplication {
 					"%t %f - Something went wrong.\n\t" + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())
 					);
 		}
+
+		// Test OneFeed endpoints?
+		// TODO
+		// TODO implement logger for java
 	}
 
 	/**
 	 * Prints OneFeed info.
 	 */
 	private static void printOneFeedInfo() {
-		Logger.logToBoth("[Run] Starting OneFeed...");
+		Logger.logToBoth("%t %i - Starting OneFeed...");
 		Logger.logToBothF("""
 				\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				OneFeed v0.0.1 - The Free Feed Aggregator
 				Developed by Justin Quinn - https://github.com/justinquinnb
 				~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				""");
-		Logger.logToBoth("Initializing...");
+		Logger.logToBothF("%t %i - Initializing...");
 	}
 
 	/**
-	 * Register all data sources.
+	 * Gets and stores instance of each {@code ContentSource} provided in {@link com.justinquinnb.onefeed.data.sources}
+	 * directory.
 	 */
-	private static void registerSources() {
-		Logger.logToBothF("\t%t [1/2] Registering data sources...");
+	private static void getContentSources() {
+		contentSources[0] = new InstaService();
+		Logger.logToBothF("\t\t%t %s - Instagram service instantiated.");
 
-		// TODO init all sources by pushing info.xml files of each package in addon and base
-		// dirs into the OneFeedSource constructor. Print each, indicating success or failure.
-		// "
+		contentSources[1] = new ThreadsService();
+		Logger.logToBothF("\t\t%t %s - Threads service instantiated.");
 
-		// Grab all files from sources directory
-		File sourceDir = new File("src/main/java/com/justinquinnb/onefeed/data/sources");
-		File[] sourceFiles = sourceDir.listFiles();
+		contentSources[2] = new LinkedInService();
+		Logger.logToBothF("\t\t%t %s - LinkedIn service instantiated.");
 
-		if (sourceFiles != null) {
-			// Files exist in the sources directory, so check if they're valid addons and register them if so
-			ArrayList<SourceAddon> sourceAddons = new ArrayList<>();
-			File sourceAddonInfo;
-			SourceAddon sourceAddon;
+		contentSources[3] = new GitHubService();
+		Logger.logToBothF("\t\t%t %s - GitHub service instantiated.");
 
-			// For every file/dir in the sources dir, check if it's a valid addon and register it if so
-			for (File sourceFile : sourceFiles) {
-				sourceAddonInfo = new File(sourceFile.getPath() + "/info.xml");
-				if (sourceAddonInfo.exists()) {
-					sourceAddon = new SourceAddon(sourceFile.getPath());
-					sourceAddons.add(sourceAddon);
-
-					Logger.diffLogToBothF(
-							"\t\t%t Registered: " + sourceAddon.getAddonName() + "v" + sourceAddon.getAddonVersion() + " for " + sourceAddon.getSourceName(),
-							"\t\t%t Registered: " + sourceAddon.getAddonName() + "v" + sourceAddon.getAddonVersion() + " for " + sourceAddon.getSourceName() + " by " + sourceAddon.getAddonAuthor() +
-									"\n\t\t\tSource implementor: " + sourceAddon.getSource().getName() + "\n\t\t\tSee " + sourceAddon.getAddonUrl() + " for more info."
-					);
-				}
-			}
-
-			sources = sourceAddons.toArray(new SourceAddon[0]);
-		} else {
-			throw new IllegalStateException("No source addons found.");
-		}
-
-		// Update status
-		Logger.logToBothF("\t%t [1/2] %s - " + sources.length + " data sources registered.");
+		Logger.logToBothF("\t%t %s - All content sources instantiated.");
 	}
 
 	/**
-	 * Test all base and addon data sources.
+	 * Attempts to establish a connection to every content source.
 	 */
-	private static void testSources() {
-		Logger.logToBothF("\t%t [2/2] Testing data sources...");
-
-		// TODO run test on all sources, printing each one's success or failure.
+	private static void testContentSources() {
+		Logger.logToBothF("\t%t %i - Testing content sources...");
 
 		// Update status
 		int successCount = 0, failCount = 0;
 
-		// TODO WARN if there are some failures, otherwise precede with SUCCESS like above method
+		for(ContentSource source : contentSources) {
+			if(source.isAvailable()) {
+				successCount++;
+			} else {
+				failCount++;
+			}
+		}
+
 		if (failCount > 0) {
 			Logger.logToBothF(
-					"\t%t [2/2] %w - Data sources tested with " + successCount + "successes and " + failCount + " fails."
+					"\t%t %w - Content sources tested with " + successCount + "available and " + failCount + " unavailable."
 			);
 		} else {
-			Logger.logToBothF("\t%t [2/2] %s - All data sources are available.");
+			Logger.logToBothF("\t%t %s - All content sources are available.");
 		}
 	}
 }
