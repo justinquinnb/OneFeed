@@ -10,6 +10,8 @@ import java.util.Optional;
 public class ContentService {
     public static Optional<Content[]> getContent(int count) {
         Optional optional = Optional.empty();
+        int contentNeeded = count;
+
         return optional;
     }
 
