@@ -10,10 +10,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 @SpringBootApplication
 public class OneFeedApplication {
-	public static ContentSource[] contentSources = new ContentSource[4];
+	/**
+	 * Maps unique content source identifiers to their respective service file.
+	 */
+	private static final HashMap<String, ContentSource> contentSources = new HashMap<>();
 
 	public static void main(String[] args) {
 		// On shutdown script
@@ -52,7 +56,6 @@ public class OneFeedApplication {
 
 		// Test OneFeed endpoints?
 		// TODO
-		// TODO implement logger for java
 	}
 
 	/**
@@ -74,16 +77,16 @@ public class OneFeedApplication {
 	 * directory.
 	 */
 	private static void getContentSources() {
-		contentSources[0] = new InstaService();
+		contentSources.put("IG", new InstaService());
 		Logger.logToBothF("\t\t%t %s - Instagram service instantiated.");
 
-		contentSources[1] = new ThreadsService();
+		contentSources.put("TH", new  ThreadsService());
 		Logger.logToBothF("\t\t%t %s - Threads service instantiated.");
 
-		contentSources[2] = new LinkedInService();
+		contentSources.put("LI", new LinkedInService());
 		Logger.logToBothF("\t\t%t %s - LinkedIn service instantiated.");
 
-		contentSources[3] = new GitHubService();
+		contentSources.put("GH", new GitHubService());
 		Logger.logToBothF("\t\t%t %s - GitHub service instantiated.");
 
 		Logger.logToBothF("\t%t %s - All content sources instantiated.");
@@ -98,7 +101,7 @@ public class OneFeedApplication {
 		// Update status
 		int successCount = 0, failCount = 0;
 
-		for (ContentSource source : contentSources) {
+		for (ContentSource source : contentSources.values()) {
 			if (source.isAvailable()) {
 				Logger.logToBothF("\t\t%t %s - " + source.getSourceName() + " is available.");
 				successCount++;
@@ -108,7 +111,7 @@ public class OneFeedApplication {
 			}
 		}
 
-		if (failCount == contentSources.length) {
+		if (failCount == contentSources.size()) {
 			Logger.logToBothF(
 					"\t%t %f - Content sources tested with all " + failCount + " unavailable."
 			);
