@@ -1,6 +1,7 @@
 package com.justinquinnb.onefeed.api;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
@@ -40,7 +42,7 @@ public class ContentController {
         // If a source filter is present, parse and use it
         String[] sources = new String[]{""};
         if (fromSources.isPresent()) {
-            sources = fromSources.get().split("+");
+            sources = fromSources.get().split("\\+");
         }
 
         // If a time/date filter is present, parse and use it
@@ -51,12 +53,36 @@ public class ContentController {
 
         // Now grab the content with the correct method
         if (fromSources.isPresent() && betweenTimes.isPresent()) {
+            Logger.diffLogToBoth(
+                    "Content request received with sources and times specified.",
+                    "Content request received:\n\tDesired Amount: " + contentCount +
+                            "\n\tFrom: " + Arrays.toString(sources) +
+                            "\n\tBetween: " + timeRange[0].toString() + " and " + timeRange[1].toString()
+            );
+
             return ContentService.getContent(contentCount, sources, timeRange);
         } else if (fromSources.isPresent()) {
+            Logger.diffLogToBoth(
+                    "Content request received with sources specified.",
+                    "Content request received:\n\tDesired Amount: " + contentCount +
+                            "\n\tFrom: " + Arrays.toString(sources)
+                    );
+
             return ContentService.getContent(contentCount, sources);
         } else if (betweenTimes.isPresent()) {
+            Logger.diffLogToBoth(
+                    "Content request received with times specified.",
+                    "Content request received:\n\tDesired Amount: " + contentCount +
+                            "\n\tBetween " + timeRange[0].toString() + " and " + timeRange[1].toString()
+                    );
+
             return ContentService.getContent(contentCount, timeRange);
         } else {
+            Logger.diffLogToBoth(
+                    "Content request received with only count specified.",
+                    "Content request received:\n\tDesired Amount: " + contentCount
+                    );
+
             return ContentService.getContent(contentCount);
         }
     }
