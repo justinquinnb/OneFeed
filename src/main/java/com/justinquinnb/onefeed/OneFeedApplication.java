@@ -28,14 +28,16 @@ public class OneFeedApplication {
 		// Console info
 		printOneFeedInfo();
 
-		// Initialize OneFeed
-		// Initialize content sources
-		getContentSources();
-		testContentSources();
 
-		// Start up Spring Boot
 		try {
+			// Initialize OneFeed
+			// Initialize content sources
+			getContentSources();
+			testContentSources();
+			
 			Logger.logToBothF("%t %s - Initialization successful.");
+
+			// Start up Spring Boot
 			Logger.logToBothF("%t %i - Starting Spring Boot...");
 
 			// Run application
@@ -57,8 +59,8 @@ public class OneFeedApplication {
 	 * Prints OneFeed info.
 	 */
 	private static void printOneFeedInfo() {
-		Logger.logToBoth("%t %i - Starting OneFeed...");
-		Logger.logToBothF("""
+		Logger.logToBothF("%t %i - Starting OneFeed...");
+		Logger.logToBoth("""
 				\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				OneFeed v0.0.1 - The Free Feed Aggregator
 				Developed by Justin Quinn - https://github.com/justinquinnb
@@ -96,18 +98,25 @@ public class OneFeedApplication {
 		// Update status
 		int successCount = 0, failCount = 0;
 
-		for(ContentSource source : contentSources) {
-			if(source.isAvailable()) {
+		for (ContentSource source : contentSources) {
+			if (source.isAvailable()) {
+				Logger.logToBothF("\t\t%t %s - " + source.getSourceName() + " is available.");
 				successCount++;
 			} else {
+				Logger.logToBothF("\t\t%t %w - " + source.getSourceName() + " is unavailable.");
 				failCount++;
 			}
 		}
 
-		if (failCount > 0) {
+		if (failCount == contentSources.length) {
 			Logger.logToBothF(
-					"\t%t %w - Content sources tested with " + successCount + "available and " + failCount + " unavailable."
+					"\t%t %f - Content sources tested with all " + failCount + " unavailable."
 			);
+		} else if (failCount > 0) {
+			Logger.logToBothF(
+					"\t%t %f - Content sources tested with " + successCount + " available and " + failCount + " unavailable."
+			);
+			throw new RuntimeException("All content sources are unavailable.");
 		} else {
 			Logger.logToBothF("\t%t %s - All content sources are available.");
 		}

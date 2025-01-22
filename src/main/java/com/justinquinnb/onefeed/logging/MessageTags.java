@@ -6,7 +6,7 @@ public enum MessageTags {
     FAIL,
     SUCCESS;
 
-    public String toString() {
+    public String toConsoleString() {
         String asString = "";
 
         switch(this) {
@@ -21,6 +21,27 @@ public enum MessageTags {
                 break;
             case SUCCESS:
                 asString = "\u001B[32mSUCCESS\u001B[0m";
+                break;
+        }
+
+        return asString;
+    }
+
+    public String toFileString() {
+        String asString = "";
+
+        switch(this) {
+            case INFO:
+                asString = "INFO";
+                break;
+            case WARN:
+                asString = "WARN";
+                break;
+            case FAIL:
+                asString = "WARN";
+                break;
+            case SUCCESS:
+                asString = "SUCCESS";
                 break;
         }
 
