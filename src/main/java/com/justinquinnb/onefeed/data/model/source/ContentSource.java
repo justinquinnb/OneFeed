@@ -21,4 +21,11 @@ public interface ContentSource {
      * @return {@code count}-many units of content from the source.
      */
     Content[] getLatestContent(int count);
+
+    /**
+     * Gets the name of the source content is being pulled from.
+     *
+     * @returns the name of the source content is being pulled from.
+     */
+    String getSourceName();
 }

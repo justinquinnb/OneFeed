@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 /**
  * Handles error and event logging.
@@ -33,7 +34,7 @@ public class Logger {
      * @param message the message to log to the console.
      */
     public static void logToConsoleF(String message) {
-        System.out.println(format(message));
+        System.out.println(formatForConsole(message));
     }
 
     /**
@@ -51,7 +52,7 @@ public class Logger {
      * @param message the message to log in the log file
      */
     public static void logToFileF(String message) {
-        currentLog += format(message) + "\n";
+        currentLog += formatForFile(message) + "\n";
     }
 
     /**
@@ -174,7 +175,29 @@ public class Logger {
      * @param toFormat the message to format
      * @return the original message with the substitutions made.
      */
-    private static String format(String toFormat) {
+    private static String formatForConsole(String toFormat) {
+        HashMap<Character, String> encodingMap = new HashMap<>();;
+        encodingMap.put('t', "[" + getTimestamp() + "]");
+        encodingMap.put('i', MessageTags.INFO.toConsoleString());
+        encodingMap.put('w', MessageTags.WARN.toConsoleString());
+        encodingMap.put('f', MessageTags.FAIL.toConsoleString());
+        encodingMap.put('s', MessageTags.SUCCESS.toConsoleString());
+
+        return format(toFormat, encodingMap);
+    }
+
+    private static String formatForFile(String toFormat) {
+        HashMap<Character, String> encodingMap = new HashMap<>();;
+        encodingMap.put('t', "[" + getTimestamp() + "]");
+        encodingMap.put('i', MessageTags.INFO.toFileString());
+        encodingMap.put('w', MessageTags.WARN.toFileString());
+        encodingMap.put('f', MessageTags.FAIL.toFileString());
+        encodingMap.put('s', MessageTags.SUCCESS.toFileString());
+
+        return format(toFormat, encodingMap);
+    }
+
+    private static String format(String toFormat, HashMap<Character, String> encodingMap) {
         String formatted = toFormat;
         String substitution = "";
         String firstPart, lastPart;
@@ -186,14 +209,7 @@ public class Logger {
             lookFromIndex = formatted.indexOf("%", lookFromIndex);
 
             // Determine the correct substitution
-            substitution = switch (formatted.charAt(lookFromIndex + 1)) {
-                case 't' -> "[" + getTimestamp() + "]";
-                case 'i' -> MessageTags.INFO.toString();
-                case 'w' -> MessageTags.WARN.toString();
-                case 'f' -> MessageTags.FAIL.toString();
-                case 's' -> MessageTags.SUCCESS.toString();
-                default -> "";
-            };
+            substitution = encodingMap.get(formatted.charAt(lookFromIndex + 1));
 
             if (!substitution.isEmpty()) {
                 firstPart = formatted.substring(0, lookFromIndex);

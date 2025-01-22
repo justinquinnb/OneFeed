@@ -5,6 +5,7 @@ import com.justinquinnb.onefeed.data.model.source.APIEndpoint;
 
 public class GitHubService extends APIEndpoint {
     private static final String baseUrl = "";
+    private static final String sourceName = "GitHub";
 
     @Override
     protected String getBaseUrl() {
@@ -20,4 +21,7 @@ public class GitHubService extends APIEndpoint {
     public Content[] getLatestContent(int count) {
         return new Content[0];
     }
+
+    @Override
+    public String getSourceName() {return sourceName;};
 }
