@@ -1,5 +1,6 @@
 package com.justinquinnb.onefeed.api;
 
+import com.justinquinnb.onefeed.data.sources.sample.SampleService;
 import org.springframework.stereotype.Service;
 import com.justinquinnb.onefeed.data.model.content.Content;
 
@@ -12,7 +13,9 @@ public class ContentService {
         Optional optional = Optional.empty();
         int contentNeeded = count;
 
-        return optional;
+        SampleService sampleService = new SampleService();
+
+        return Optional.ofNullable(sampleService.getLatestContent(1));
     }
 
     public static Optional<Content[]> getContent(int count, String[] fromSources) {

@@ -1,9 +1,10 @@
-package com.justinquinnb.onefeed.data.sources.addons.github;
+package com.justinquinnb.onefeed.data.sources.github;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -16,7 +17,7 @@ public class Activity extends Content {
     private String summary;
 
     public Activity(
-            LocalDateTime timestamp,
+            Instant timestamp,
             Producer actor,
             Platform source,
             String[] actionUrls,
@@ -33,5 +34,9 @@ public class Activity extends Content {
 
     public String getText() {
         return summary;
+    }
+
+    public String[] getAttachments() {
+        return null;
     }
 }
