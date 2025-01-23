@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.data.model.content.details;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Information about the platform the {@link com.justinquinnb.onefeed.data.model.content.Content} is derived from.
  */
@@ -8,7 +10,11 @@ public class Platform {
     private final String name;
     private final String usernamePrefix;
 
-    public Platform(String homepageUrl, String name, String usernamePrefix) {
+    public Platform(
+            @JsonProperty("homepageUrl") String homepageUrl,
+            @JsonProperty("name") String name,
+            @JsonProperty("usernamePrefix") String usernamePrefix
+    ) {
         this.homepageUrl = homepageUrl;
         this.name = name;
         this.usernamePrefix = usernamePrefix;

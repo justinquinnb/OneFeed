@@ -1,5 +1,6 @@
 package com.justinquinnb.onefeed.data.model.content.details;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.Content;
 
 /**
@@ -12,7 +13,12 @@ public class Producer {
     private final String lastName;
     private final String username;
 
-    public Producer(String profilePageUrl, String profilePicUrl, String firstName, String lastName, String username) {
+    public Producer(
+            @JsonProperty("profilePageUrl") String profilePageUrl,
+            @JsonProperty("profilePicUrl") String profilePicUrl,
+            @JsonProperty("firstName") String firstName,
+            @JsonProperty("lastName") String lastName,
+            @JsonProperty("username") String username) {
         this.profilePageUrl = profilePageUrl;
         this.profilePicUrl = profilePicUrl;
         this.firstName = firstName;
