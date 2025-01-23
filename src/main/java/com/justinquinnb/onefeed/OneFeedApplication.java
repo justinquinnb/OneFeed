@@ -4,6 +4,7 @@ import com.justinquinnb.onefeed.data.sources.github.GitHubService;
 import com.justinquinnb.onefeed.data.sources.instagram.InstaService;
 import com.justinquinnb.onefeed.data.sources.linkedin.LinkedInService;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
+import com.justinquinnb.onefeed.data.sources.sample.SampleService;
 import com.justinquinnb.onefeed.data.sources.threads.ThreadsService;
 import com.justinquinnb.onefeed.logging.Logger;
 import org.springframework.boot.SpringApplication;
@@ -89,6 +90,9 @@ public class OneFeedApplication {
 		contentSources.put("GH", new GitHubService());
 		Logger.logToBothF("\t\t%t %s - GitHub service instantiated.");
 
+		contentSources.put("SP", new SampleService());
+		Logger.logToBothF("\t\t%t %s - Sample service instantiated.");
+
 		Logger.logToBothF("\t%t %s - All content sources instantiated.");
 	}
 
@@ -119,9 +123,9 @@ public class OneFeedApplication {
 			Logger.logToBothF(
 					"\t%t %f - Content sources tested with " + successCount + " available and " + failCount + " unavailable."
 			);
-			throw new RuntimeException("All content sources are unavailable.");
 		} else {
 			Logger.logToBothF("\t%t %s - All content sources are available.");
+			throw new RuntimeException("All content sources are unavailable.");
 		}
 	}
 }

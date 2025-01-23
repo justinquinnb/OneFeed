@@ -1,8 +1,5 @@
 package com.justinquinnb.onefeed.data.model.source;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -20,10 +17,6 @@ public abstract class APIEndpoint implements ContentSource {
             .version(HttpClient.Version.HTTP_2)
             .followRedirects(HttpClient.Redirect.NORMAL)
             .build();
-
-    private static final Gson JSON_PARSER = new GsonBuilder()
-            .setPrettyPrinting()
-            .create();
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
