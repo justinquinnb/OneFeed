@@ -15,7 +15,7 @@ public class ContentService {
 
         SampleService sampleService = new SampleService();
 
-        return Optional.ofNullable(sampleService.getLatestContent(1));
+        return Optional.ofNullable(sampleService.getLatestContent(count));
     }
 
     public static Optional<Content[]> getContent(int count, String[] fromSources) {
