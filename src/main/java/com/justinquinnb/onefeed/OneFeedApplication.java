@@ -1,11 +1,11 @@
 package com.justinquinnb.onefeed;
 
+import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.data.sources.github.GitHubService;
 import com.justinquinnb.onefeed.data.sources.instagram.InstaService;
 import com.justinquinnb.onefeed.data.sources.linkedin.LinkedInService;
-import com.justinquinnb.onefeed.data.model.source.ContentSource;
-import com.justinquinnb.onefeed.data.sources.sample.SampleService;
 import com.justinquinnb.onefeed.data.sources.threads.ThreadsService;
+import com.justinquinnb.onefeed.data.sources.sample.SampleService;
 import com.justinquinnb.onefeed.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,9 +16,9 @@ import java.util.HashMap;
 @SpringBootApplication
 public class OneFeedApplication {
 	/**
-	 * Maps unique content source identifiers to their respective service file.
+	 * Maps unique {@link ContentSource} identifiers to their respective service file.
 	 */
-	private static final HashMap<String, ContentSource> contentSources = new HashMap<>();
+	public static final HashMap<String, ContentSource> contentSources = new HashMap<>();
 
 	public static void main(String[] args) {
 		// On shutdown script
@@ -74,7 +74,7 @@ public class OneFeedApplication {
 	}
 
 	/**
-	 * Gets and stores instance of each {@code ContentSource} provided in {@link com.justinquinnb.onefeed.data.sources}
+	 * Gets and stores instance of each {@link ContentSource} provided in {@link com.justinquinnb.onefeed.data.sources}
 	 * directory.
 	 */
 	private static void getContentSources() {
@@ -97,7 +97,7 @@ public class OneFeedApplication {
 	}
 
 	/**
-	 * Attempts to establish a connection to every content source.
+	 * Attempts to establish a connection to every {@link ContentSource}.
 	 */
 	private static void testContentSources() {
 		Logger.logToBothF("\t%t %i - Testing content sources...");

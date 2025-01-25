@@ -3,6 +3,8 @@ package com.justinquinnb.onefeed.data.sources.threads;
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.source.APIEndpoint;
 
+import java.time.Instant;
+
 public class ThreadsService extends APIEndpoint {
     private static final String baseUrl = "";
     private static final String sourceName = "Threads";
@@ -19,6 +21,11 @@ public class ThreadsService extends APIEndpoint {
 
     @Override
     public Content[] getLatestContent(int count) {
+        return new Content[0];
+    }
+
+    @Override
+    public Content[] getLatestContent(int count, Instant[] betweenTimes) {
         return new Content[0];
     }
 
