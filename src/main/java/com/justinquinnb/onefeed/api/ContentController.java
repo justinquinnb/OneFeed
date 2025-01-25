@@ -3,13 +3,13 @@ package com.justinquinnb.onefeed.api;
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class ContentController {
      * @return {@code count}-many pieces of content that meets all the provided requirements.
      */
     @GetMapping("/content")
-    public Optional<Content[]> getContent(
+    public Content[] getContent(
             @RequestParam(name = "count") Integer contentCount,
             @RequestParam(name = "from") Optional<String> fromSources,
             @RequestParam(name = "between") Optional<String> betweenTimes
@@ -46,7 +46,7 @@ public class ContentController {
         }
 
         // If a time/date filter is present, parse and use it
-        LocalDateTime[] timeRange = new LocalDateTime[]{LocalDateTime.now(), LocalDateTime.MIN};
+        Instant[] timeRange = new Instant[]{Instant.now(), Instant.MIN};
         if (betweenTimes.isPresent()) {
             timeRange = parseTimeRange(betweenTimes.get());
         }
@@ -88,7 +88,7 @@ public class ContentController {
     }
 
     /**
-     * Instantiates an array of {@code LocalDateTime} objects representing the time range encoded
+     * Instantiates an array of {@link Instant} objects representing the time range encoded
      * in {@code encodedRange}. This range is inclusive.
      *
      * @param encodedRange a string encoding an inclusive time range as follows:
@@ -101,22 +101,22 @@ public class ContentController {
      *                     As this method is strictly used for filtering feed content, everything beyond minutes has
      *                     been omitted, defaulting to {@code 0}.
      *
-     * @return an array of {@code 2} {@code LocalDateTime} objects representing the time and dates encoded by
-     * {@code encodedRange}. The {@code LocalDateTime} object at index {@code 0} is always the start date of the range.
-     * The {@code LocalDateTime} object at index {@code 0} is always the end date of the range.
+     * @return an array of {@code 2} {@code Instant} objects representing the time and dates encoded by
+     * {@code encodedRange}. The {@code Instant} object at index {@code 0} is always the start date of the range.
+     * The {@code Instant} object at index {@code 0} is always the end date of the range.
      *
      * @throws IllegalArgumentException if the time range is either malformed or invalid.
      */
-    private static LocalDateTime[] parseTimeRange(String encodedRange) throws IllegalArgumentException {
+    private static Instant[] parseTimeRange(String encodedRange) throws IllegalArgumentException {
         try {
-            LocalDateTime from = parseTime(encodedRange.substring(0,12));
-            LocalDateTime to = parseTime(encodedRange.substring(13));
+            Instant from = parseTime(encodedRange.substring(0,12));
+            Instant to = parseTime(encodedRange.substring(13));
 
             if (!from.isBefore(to)) {
                 throw new IllegalArgumentException("To time must be before from time");
             }
 
-            return new LocalDateTime[]{from, to};
+            return new Instant[]{from, to};
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid time range: " + encodedRange);
         }
@@ -136,7 +136,7 @@ public class ContentController {
      * @return a {@code LocalDateTime} representing the time and date encoded in {@code encodedDateTime}.
      * @throws IllegalArgumentException if the {@code encodedDateTime} is malformed.
      */
-    private static LocalDateTime parseTime(String encodedDateTime) throws IllegalArgumentException {
+    private static Instant parseTime(String encodedDateTime) throws IllegalArgumentException {
         try {
             int year = Integer.parseInt(encodedDateTime.substring(0, 4));
             int month = Integer.parseInt(encodedDateTime.substring(4, 6));
@@ -144,7 +144,8 @@ public class ContentController {
             int hour = Integer.parseInt(encodedDateTime.substring(8, 10));
             int minute = Integer.parseInt(encodedDateTime.substring(10, 12));
 
-            return LocalDateTime.of(year, month, day, hour, minute);
+            return Instant.from(LocalDateTime.of(year, month, day, hour, minute).atZone(ZoneId.of("UTC")));
+
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Malformed time: " + encodedDateTime);
         }

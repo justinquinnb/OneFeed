@@ -1,18 +1,17 @@
 package com.justinquinnb.onefeed.data.model.content;
 
-import com.justinquinnb.onefeed.data.model.content.details.Producer;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
+import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 /**
  * User-generated content that exists within a feed.
  */
 public abstract class Content {
-    private Instant timestamp;
-    private Producer producer;
-    private Platform source;
+    private final Instant timestamp;
+    private final Producer producer;
+    private final Platform source;
 
     public Content(Instant timestamp, Producer producer, Platform source) {
         this.timestamp = timestamp;

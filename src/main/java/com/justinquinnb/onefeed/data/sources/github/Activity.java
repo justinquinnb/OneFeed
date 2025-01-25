@@ -5,7 +5,6 @@ import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
