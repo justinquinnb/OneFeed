@@ -1,11 +1,11 @@
 package com.justinquinnb.onefeed.api;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.exceptions.InvalidTimeException;
+import com.justinquinnb.onefeed.exceptions.InvalidTimeRangeException;
 import com.justinquinnb.onefeed.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -105,20 +105,20 @@ public class ContentController {
      * {@code encodedRange}. The {@code Instant} object at index {@code 0} is always the start date of the range.
      * The {@code Instant} object at index {@code 0} is always the end date of the range.
      *
-     * @throws IllegalArgumentException if the time range is either malformed or invalid.
+     * @throws InvalidTimeRangeException if the time range is invalid or malformed.
      */
-    private static Instant[] parseTimeRange(String encodedRange) throws IllegalArgumentException {
+    private static Instant[] parseTimeRange(String encodedRange) throws InvalidTimeRangeException {
         try {
             Instant from = parseTime(encodedRange.substring(0,12));
             Instant to = parseTime(encodedRange.substring(13));
 
             if (!from.isBefore(to)) {
-                throw new IllegalArgumentException("To time must be before from time");
+                throw new InvalidTimeRangeException("To time must be before from time: " + encodedRange);
             }
 
             return new Instant[]{from, to};
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid time range: " + encodedRange);
+            throw new InvalidTimeRangeException("Invalid or malformed time range: " + encodedRange);
         }
     }
 
@@ -134,9 +134,9 @@ public class ContentController {
      *                          <li>{@code mm} two-digit minute</li>
      *                         </ul>
      * @return a {@code LocalDateTime} representing the time and date encoded in {@code encodedDateTime}.
-     * @throws IllegalArgumentException if the {@code encodedDateTime} is malformed.
+     * @throws InvalidTimeException if the {@code encodedDateTime} is invalid or malformed.
      */
-    private static Instant parseTime(String encodedDateTime) throws IllegalArgumentException {
+    private static Instant parseTime(String encodedDateTime) throws InvalidTimeException {
         try {
             int year = Integer.parseInt(encodedDateTime.substring(0, 4));
             int month = Integer.parseInt(encodedDateTime.substring(4, 6));
@@ -147,7 +147,7 @@ public class ContentController {
             return Instant.from(LocalDateTime.of(year, month, day, hour, minute).atZone(ZoneId.of("UTC")));
 
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Malformed time: " + encodedDateTime);
+            throw new InvalidTimeException("Invalid or malformed time: " + encodedDateTime);
         }
     }
 }

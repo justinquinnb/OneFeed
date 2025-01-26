@@ -4,6 +4,7 @@ import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.content.ContentComparator;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
+import com.justinquinnb.onefeed.exceptions.InvalidSourceIdException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -47,14 +48,20 @@ public class ContentService {
      * @return at most {@code count}-many units of {@code Content} from the {@code ContentSource}s specified in
      * {@code fromSources}. If less than {@code count}-many units of {@code Content} can be retrieved, then all that
      * could be retrieved is returned.
+     * @throws InvalidSourceIdException if {@code fromSources} contains a Content Source ID that OneFeed is not aware of.
      */
-    public static Content[] getContent(int count, String[] fromSources) {
+    public static Content[] getContent(int count, String[] fromSources) throws InvalidSourceIdException {
         // Get all the Content that could possibly be needed to make a count-sized aggregate
         Collection<Content> allContent = new ArrayList<>();
         Collection<Content> newContent;
+        ContentSource source = null;
 
         for (String sourceName : fromSources) {
-            ContentSource source = OneFeedApplication.contentSources.get(sourceName);
+            source = OneFeedApplication.contentSources.get(sourceName);
+
+            if (source == null) {
+                throw new InvalidSourceIdException("Invalid Content Source ID: " + sourceName);
+            }
 
             newContent = Arrays.stream(source.getLatestContent(count)).toList();
             allContent.addAll(newContent);
@@ -101,14 +108,20 @@ public class ContentService {
      * @return at most {@code count}-many units of {@code Content} between the specified {@code betweenTimes} from the
      * {@code ContentSource}s specified in {@code fromSources}. If less than {@code count}-many units of {@code Content}
      * can be retrieved, then all that could be retrieved is returned.
+     * @throws InvalidSourceIdException if {@code fromSources} contains a Content Source ID that OneFeed is not aware of.
      */
-    public static Content[] getContent(int count, String[] fromSources, Instant[] betweenTimes) {
+    public static Content[] getContent(int count, String[] fromSources, Instant[] betweenTimes) throws InvalidSourceIdException {
         // Get all the Content that could possibly be needed to make a count-sized aggregate
         Collection<Content> allContent = new ArrayList<>();
         Collection<Content> newContent;
+        ContentSource source = null;
 
         for (String sourceName : fromSources) {
-            ContentSource source = OneFeedApplication.contentSources.get(sourceName);
+            source = OneFeedApplication.contentSources.get(sourceName);
+
+            if (source == null) {
+                throw new InvalidSourceIdException("Invalid Content Source ID: " + sourceName);
+            }
 
             newContent = Arrays.stream(source.getLatestContent(count, betweenTimes)).toList();
             allContent.addAll(newContent);
