@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 
 # Protect publishing of sensitive info
-*.env
+#*.env
 /src/main/resources/logs/
 
 ### STS ###
