@@ -6,6 +6,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,13 @@ import java.io.PrintWriter;
  */
 @Component
 public class ApiKeyAuthenticationFilter extends GenericFilterBean {
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    public ApiKeyAuthenticationFilter(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
     /**
      * Extracts the API Key header from the request, validates it against the configured secret,
      * and sets the resulting Authentication object into the SecurityContext.
@@ -39,7 +47,7 @@ public class ApiKeyAuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         try {
-            Authentication authentication = AuthenticationService.getAuthentication((HttpServletRequest) request);
+            Authentication authentication = authenticationService.getAuthentication((HttpServletRequest) request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception exp) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;

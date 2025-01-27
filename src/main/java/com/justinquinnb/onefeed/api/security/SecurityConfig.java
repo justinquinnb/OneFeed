@@ -1,5 +1,6 @@
 package com.justinquinnb.onefeed.api.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,12 +22,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
+
+    @Autowired
+    public SecurityConfig(ApiKeyAuthenticationFilter apiKeyAuthenticationFilter) {
+        this.apiKeyAuthenticationFilter = apiKeyAuthenticationFilter;
+    }
 
     @Bean
     public SecurityFilterChain filterChainServers(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/**")
-                .addFilterBefore(new ApiKeyAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

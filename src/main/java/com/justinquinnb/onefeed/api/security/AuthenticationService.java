@@ -1,9 +1,8 @@
 package com.justinquinnb.onefeed.api.security;
 
+import com.justinquinnb.onefeed.api.OneFeedApiConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -20,7 +19,12 @@ public class AuthenticationService {
      */
     public static final String AUTH_TOKEN_HEADER_NAME = "API-KEY";
 
-    private static final String ONEFEED_API_KEY = "test";
+    private final OneFeedApiConfig oneFeedApiConfig;
+
+    @Autowired
+    public AuthenticationService(OneFeedApiConfig apiConfig) {
+        this.oneFeedApiConfig = apiConfig;
+    }
 
     /**
      * Attempts to retrieve and validate the API Key from the request header.
@@ -30,11 +34,9 @@ public class AuthenticationService {
      * @return an Authentication object containing the validated API Key, or throws an exception if invalid
      * @throws BadCredentialsException if the API Key is missing or invalid
      */
-    public static Authentication getAuthentication(HttpServletRequest request) {
+    public Authentication getAuthentication(HttpServletRequest request) {
         String requestApiKey = request.getHeader(AUTH_TOKEN_HEADER_NAME);
-        System.out.println("Provided key: " + requestApiKey);
-        System.out.println("Desired key: " + ONEFEED_API_KEY);
-        if (requestApiKey == null || !requestApiKey.equals(ONEFEED_API_KEY)) {
+        if (requestApiKey == null || !requestApiKey.equals(oneFeedApiConfig.getKey())) {
             throw new BadCredentialsException("Invalid OneFeed API Key");
         }
 
