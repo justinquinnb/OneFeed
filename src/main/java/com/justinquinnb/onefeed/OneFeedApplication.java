@@ -4,16 +4,18 @@ import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.data.sources.github.GitHubService;
 import com.justinquinnb.onefeed.data.sources.instagram.InstaService;
 import com.justinquinnb.onefeed.data.sources.linkedin.LinkedInService;
-import com.justinquinnb.onefeed.data.sources.threads.ThreadsService;
 import com.justinquinnb.onefeed.data.sources.sample.SampleService;
+import com.justinquinnb.onefeed.data.sources.threads.ThreadsService;
 import com.justinquinnb.onefeed.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class OneFeedApplication {
 	/**
 	 * Maps unique {@link ContentSource} identifiers to their respective service file.
@@ -54,9 +56,6 @@ public class OneFeedApplication {
 					"%t %f - Something went wrong.\n\t" + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())
 					);
 		}
-
-		// Test OneFeed endpoints?
-		// TODO
 	}
 
 	/**
