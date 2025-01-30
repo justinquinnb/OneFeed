@@ -1,0 +1,40 @@
+<configuration>
+    <!-- Block Logback's own init messages at start -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <!-- /TODO Consider adding context tag for dev and prod contexts -->
+    <!-- Root Logger -->
+    <root level="DEBUG">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="File"/>
+    </root>
+
+    <!-- Appenders -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- Uses the Default PatternLayoutEncoder -->
+        <encoder>
+            <pattern>[%date] %highlight(%level) -%kvp- %msg%n</pattern>
+        </encoder>
+
+        <!-- Only print INFO-level messages and above to the console -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+    <appender name="File" class="ch.qos.logback.core.FileAppender">
+        <!-- Appends to the below file -->
+        <file>./logs/latest.log</file>
+
+        <!-- Rollover/Archive policy -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>%d{yyyy-MM-dd} (%i).log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+
+        <!-- Uses the Default PatternLayoutEncoder -->
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+</configuration>

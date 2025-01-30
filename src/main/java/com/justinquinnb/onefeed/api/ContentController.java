@@ -1,23 +1,25 @@
 package com.justinquinnb.onefeed.api;
 
+import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.exceptions.InvalidTimeException;
 import com.justinquinnb.onefeed.exceptions.InvalidTimeRangeException;
-import com.justinquinnb.onefeed.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
 public class ContentController {
-
     private ContentService contentService;
+    private static final Logger logger = LoggerFactory.getLogger(ContentController.class);
 
     @Autowired
     public ContentController(ContentService contentService) {
@@ -54,35 +56,35 @@ public class ContentController {
 
         // Now grab the content with the correct method
         if (fromSources.isPresent() && betweenTimes.isPresent()) {
-            Logger.diffLogToBoth(
-                    "Content request received with sources and times specified.",
-                    "Content request received:\n\tDesired Amount: " + contentCount +
-                            "\n\tFrom: " + Arrays.toString(sources) +
-                            "\n\tBetween: " + timeRange[0].toString() + " and " + timeRange[1].toString()
-            );
+//            Logger.diffLogToBoth(
+//                    "Content request received with sources and times specified.",
+//                    "Content request received:\n\tDesired Amount: " + contentCount +
+//                            "\n\tFrom: " + Arrays.toString(sources) +
+//                            "\n\tBetween: " + timeRange[0].toString() + " and " + timeRange[1].toString()
+//            );
 
             return ContentService.getContent(contentCount, sources, timeRange);
         } else if (fromSources.isPresent()) {
-            Logger.diffLogToBoth(
-                    "Content request received with sources specified.",
-                    "Content request received:\n\tDesired Amount: " + contentCount +
-                            "\n\tFrom: " + Arrays.toString(sources)
-                    );
+//            Logger.diffLogToBoth(
+//                    "Content request received with sources specified.",
+//                    "Content request received:\n\tDesired Amount: " + contentCount +
+//                            "\n\tFrom: " + Arrays.toString(sources)
+//                    );
 
             return ContentService.getContent(contentCount, sources);
         } else if (betweenTimes.isPresent()) {
-            Logger.diffLogToBoth(
-                    "Content request received with times specified.",
-                    "Content request received:\n\tDesired Amount: " + contentCount +
-                            "\n\tBetween " + timeRange[0].toString() + " and " + timeRange[1].toString()
-                    );
+//            Logger.diffLogToBoth(
+//                    "Content request received with times specified.",
+//                    "Content request received:\n\tDesired Amount: " + contentCount +
+//                            "\n\tBetween " + timeRange[0].toString() + " and " + timeRange[1].toString()
+//                    );
 
             return ContentService.getContent(contentCount, timeRange);
         } else {
-            Logger.diffLogToBoth(
-                    "Content request received with only count specified.",
-                    "Content request received:\n\tDesired Amount: " + contentCount
-                    );
+//            Logger.diffLogToBoth(
+//                    "Content request received with only count specified.",
+//                    "Content request received:\n\tDesired Amount: " + contentCount
+//                    );
 
             return ContentService.getContent(contentCount);
         }
