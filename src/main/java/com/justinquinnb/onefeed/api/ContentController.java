@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
@@ -42,50 +43,37 @@ public class ContentController {
             @RequestParam(name = "from") Optional<String> fromSources,
             @RequestParam(name = "between") Optional<String> betweenTimes
     ) {
+        logger.info("Content request received with arguments: contentCount={} fromSources={} betweenTimes={}",
+                contentCount.toString(), fromSources.toString(), betweenTimes.toString());
+
         // If a source filter is present, parse and use it
         String[] sources = new String[]{""};
         if (fromSources.isPresent()) {
             sources = fromSources.get().split("\\+");
+            logger.debug("Content Source IDs identified in request: {}", Arrays.toString(sources));
         }
 
         // If a time/date filter is present, parse and use it
         Instant[] timeRange = new Instant[]{Instant.now(), Instant.MIN};
         if (betweenTimes.isPresent()) {
             timeRange = parseTimeRange(betweenTimes.get());
+            logger.debug("timeRange identified in request: {}", Arrays.toString(timeRange));
         }
 
         // Now grab the content with the correct method
         if (fromSources.isPresent() && betweenTimes.isPresent()) {
-//            Logger.diffLogToBoth(
-//                    "Content request received with sources and times specified.",
-//                    "Content request received:\n\tDesired Amount: " + contentCount +
-//                            "\n\tFrom: " + Arrays.toString(sources) +
-//                            "\n\tBetween: " + timeRange[0].toString() + " and " + timeRange[1].toString()
-//            );
-
+            logger.debug("Processing request for: {} pieces from {} between {} and {}",
+                    contentCount, Arrays.toString(sources), timeRange[0].toString(), timeRange[1].toString());
             return ContentService.getContent(contentCount, sources, timeRange);
         } else if (fromSources.isPresent()) {
-//            Logger.diffLogToBoth(
-//                    "Content request received with sources specified.",
-//                    "Content request received:\n\tDesired Amount: " + contentCount +
-//                            "\n\tFrom: " + Arrays.toString(sources)
-//                    );
-
+            logger.debug("Processing request for: {} pieces from {}", contentCount, Arrays.toString(sources));
             return ContentService.getContent(contentCount, sources);
         } else if (betweenTimes.isPresent()) {
-//            Logger.diffLogToBoth(
-//                    "Content request received with times specified.",
-//                    "Content request received:\n\tDesired Amount: " + contentCount +
-//                            "\n\tBetween " + timeRange[0].toString() + " and " + timeRange[1].toString()
-//                    );
-
+            logger.debug("Processing request for: {} pieces between {} and {}",
+                    contentCount, timeRange[0].toString(), timeRange[1].toString());
             return ContentService.getContent(contentCount, timeRange);
         } else {
-//            Logger.diffLogToBoth(
-//                    "Content request received with only count specified.",
-//                    "Content request received:\n\tDesired Amount: " + contentCount
-//                    );
-
+            logger.debug("Processing request for: {} pieces", contentCount);
             return ContentService.getContent(contentCount);
         }
     }
@@ -111,24 +99,34 @@ public class ContentController {
      * @throws InvalidTimeRangeException if the time range is invalid or malformed.
      */
     private static Instant[] parseTimeRange(String encodedRange) throws InvalidTimeRangeException {
+        logger.debug("Parsing encodedRange \"{}\"", encodedRange);
         try {
+            // Parse from/to instants out from range
             Instant from = parseTime(encodedRange.substring(0,12));
+            logger.trace("Parsed from from encodedRange into \"{}\"", from.toString());
             Instant to = parseTime(encodedRange.substring(13));
+            logger.trace("Parsed to from encodedRange into \"{}\"", to.toString());
 
+            // Ensure the range is valid (i.e. the instants are chronological)
             if (!from.isBefore(to)) {
+                logger.warn("{} is an invalid time range: to time must be before from", encodedRange);
                 throw new InvalidTimeRangeException("To time must be before from time: " + encodedRange);
             }
 
+            logger.debug("Parsed encodedRange \"{}\" into Instants {} and {}",
+                    encodedRange, from.toString(), to.toString());
             return new Instant[]{from, to};
         } catch (Exception e) {
+            logger.warn("Could not parse time range \"{}\": range is invalid or malformed", encodedRange);
+            logger.debug("L {}", e.getLocalizedMessage());
             throw new InvalidTimeRangeException("Invalid or malformed time range: " + encodedRange);
         }
     }
 
     /**
-     * Parses an {@code encodedDateTime} into a {@code LocalDateTime} object.
+     * Parses an {@code encodedInstant} into an {@link Instant}.
      *
-     * @param encodedDateTime a date time encoded in the following format:
+     * @param encodedInstant an {@code Instant} encoded in the following format:
      *                         <ul>
      *                          <li>{@code yyyy} four-digit year</li>
      *                          <li>{@code MM} two-digit month</li>
@@ -136,21 +134,32 @@ public class ContentController {
      *                          <li>{@code HH} two-digit hour</li>
      *                          <li>{@code mm} two-digit minute</li>
      *                         </ul>
-     * @return a {@code LocalDateTime} representing the time and date encoded in {@code encodedDateTime}.
-     * @throws InvalidTimeException if the {@code encodedDateTime} is invalid or malformed.
+     * @return an {@code Instant} representing the time and date encoded in {@code encodedInstant}.
+     * @throws InvalidTimeException if the {@code encodedInstant} is invalid or malformed.
      */
-    private static Instant parseTime(String encodedDateTime) throws InvalidTimeException {
+    private static Instant parseTime(String encodedInstant) throws InvalidTimeException {
+        logger.debug("Parsing encodedInstant \"{}\"", encodedInstant);
         try {
-            int year = Integer.parseInt(encodedDateTime.substring(0, 4));
-            int month = Integer.parseInt(encodedDateTime.substring(4, 6));
-            int day = Integer.parseInt(encodedDateTime.substring(6, 8));
-            int hour = Integer.parseInt(encodedDateTime.substring(8, 10));
-            int minute = Integer.parseInt(encodedDateTime.substring(10, 12));
+            // Separate the encodedInstant into its component time denomination integers
+            int year = Integer.parseInt(encodedInstant.substring(0, 4));
+            logger.trace("Parsed year into int \"{}\"", year);
+            int month = Integer.parseInt(encodedInstant.substring(4, 6));
+            logger.trace("Parsed month into int \"{}\"", month);
+            int day = Integer.parseInt(encodedInstant.substring(6, 8));
+            logger.trace("Parsed day into int \"{}\"", day);
+            int hour = Integer.parseInt(encodedInstant.substring(8, 10));
+            logger.trace("Parsed hour into int \"{}\"", hour);
+            int minute = Integer.parseInt(encodedInstant.substring(10, 12));
+            logger.trace("Parsed minute into int \"{}\"", minute);
 
-            return Instant.from(LocalDateTime.of(year, month, day, hour, minute).atZone(ZoneId.of("UTC")));
-
+            // Instantiate an Instant using the values parsed above
+            Instant asInstant = Instant.from(LocalDateTime.of(year, month, day, hour, minute).atZone(ZoneId.of("UTC")));
+            logger.debug("Parsed encodedInstant \"{}\" into {}", encodedInstant, asInstant.toString());
+            return asInstant;
         } catch (NumberFormatException e) {
-            throw new InvalidTimeException("Invalid or malformed time: " + encodedDateTime);
+            logger.warn("Could not parse instant \"{}\": instant is invalid or malformed", encodedInstant);
+            logger.debug("L {}", e.getLocalizedMessage());
+            throw new InvalidTimeException("Invalid or malformed time: " + encodedInstant);
         }
     }
 }
