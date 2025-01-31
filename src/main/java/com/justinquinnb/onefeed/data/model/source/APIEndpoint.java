@@ -57,4 +57,13 @@ public abstract class APIEndpoint implements ContentSource {
         String encodedArgs = URLEncoder.encode(args, CHARSET);
         return getBaseUrl() + "?" + encodedArgs;
     }
+
+    /**
+     * Returns {@code this} {@code APIEndpoint}'s Content Source name.
+     *
+     * @return the name of {@code this} {@code APIEndpoint}'s Content Source.
+     */
+    public String toString() {
+        return getSourceName();
+    }
 }

@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.api;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.exceptions.IllegalContentCountException;
 import com.justinquinnb.onefeed.exceptions.InvalidTimeException;
 import com.justinquinnb.onefeed.exceptions.InvalidTimeRangeException;
 import org.slf4j.Logger;
@@ -45,6 +46,12 @@ public class ContentController {
     ) {
         logger.info("Content request received with arguments: contentCount={} fromSources={} betweenTimes={}",
                 contentCount.toString(), fromSources.toString(), betweenTimes.toString());
+
+        // Require a valid content count
+        if (contentCount <= 0) {
+            logger.warn("{} is an illegal content Count: contentCount must be greater than 0", contentCount);
+            throw new IllegalContentCountException("Content count is invalid: " + contentCount);
+        }
 
         // If a source filter is present, parse and use it
         String[] sources = new String[]{""};
