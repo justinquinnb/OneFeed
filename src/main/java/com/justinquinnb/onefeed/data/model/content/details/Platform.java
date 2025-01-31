@@ -48,4 +48,11 @@ public class Platform {
     public String getUsernamePrefix() {
         return usernamePrefix;
     }
+
+    public String toString() {
+        return "Platform:" + this.hashCode() +
+                "{name=" + this.name +
+                ", homepageUrl=" + this.homepageUrl +
+                ", usernamePrefix=" + this.usernamePrefix + "}";
+    }
 }

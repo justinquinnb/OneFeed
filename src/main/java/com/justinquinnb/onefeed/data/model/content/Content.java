@@ -59,4 +59,11 @@ public abstract class Content {
      * @return the attachment URLs of {@code this} {@code Content}.
      */
     public abstract String[] getAttachments();
+
+    public String toString() {
+        return "Content:" + this.hashCode() +
+                "{timestamp=" + this.timestamp +
+                ", producer=" + this.producer +
+                ", source=" + this.source + "}";
+    }
 }

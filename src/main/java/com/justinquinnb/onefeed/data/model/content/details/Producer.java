@@ -74,4 +74,13 @@ public class Producer {
     public String getUsername() {
         return username;
     }
+
+    public String toString() {
+        return "Producer:" + this.hashCode() +
+                "{firstName=" + this.firstName +
+                ", lastName=" + this.lastName +
+                ", username=" + this.username +
+                ", profilePageUrl=" + this.profilePageUrl +
+                ", profilePicUrl=" + this.profilePicUrl + "}";
+    }
 }
