@@ -1,7 +1,6 @@
 package com.justinquinnb.onefeed.data.model.source;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 

@@ -7,6 +7,7 @@ import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.exceptions.InvalidSourceIdException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.PriorityQueue;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ContentService {
@@ -28,28 +30,37 @@ public class ContentService {
      * @return at most {@code count}-many units of {@code Content}. If less than {@code count}-many units of
      * {@code Content} can be retrieved, then all that could be retrieved is returned.
      */
-    public static Content[] getContent(int count) {
-        logger.debug("Attempting to retrieve Content: {} pieces", count);
+    @Async
+    public CompletableFuture<Content[]> getContent(int count) {
+        try {
+            logger.debug("Attempting to retrieve Content: {} pieces", count);
 
-        // Get all the Content that could possibly be needed to make a count-sized aggregate
-        Collection<Content> allContent = new ArrayList<>();
-        Collection<Content> newContent;
+            // Get all the Content that could possibly be needed to make a count-sized aggregate
+            CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
 
-        // For every Content Source identified at OneFeed startup, try to get `count`-many pieces of Content
-        // because any given source might hold the top `count` most recent pieces
-        for (String sourceId : OneFeedApplication.contentSources.keySet()) {
-            logger.debug("Attempting to retrieve {} pieces of Content from {}", count, sourceId);
-            newContent = Arrays.stream(OneFeedApplication.contentSources.get(sourceId).getLatestContent(count)).toList();
+            Collection<Content> allContent = new ArrayList<>();
+            Collection<Content> newContent;
 
-            logger.trace("Retrieved {} pieces of Content from {}: {}", newContent.size(), sourceId, newContent.toString());
-            allContent.addAll(newContent);
+            // For every Content Source identified at OneFeed startup, try to get `count`-many pieces of Content
+            // because any given source might hold the top `count` most recent pieces
+            for (String sourceId : OneFeedApplication.contentSources.keySet()) {
+                logger.debug("Attempting to retrieve {} pieces of Content from {}", count, sourceId);
+                newContent = Arrays.stream(OneFeedApplication.contentSources.get(sourceId).getLatestContent(count)).toList();
+
+                logger.trace("Retrieved {} pieces of Content from {}: {}", newContent.size(), sourceId, newContent.toString());
+                allContent.addAll(newContent);
+            }
+
+            // Aggregate the Content into an array of at most `count` most recent pieces of Content because the amount of
+            // Content posted across all Content Sources may total less than the desired count
+            Content[] aggregation = aggregateContent(allContent, count);
+            logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
+
+            completableFuture.complete(aggregation);
+            return completableFuture;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        // Aggregate the Content into an array of at most `count` most recent pieces of Content because the amount of
-        // Content posted across all Content Sources may total less than the desired count
-        Content[] aggregation = aggregateContent(allContent, count);
-        logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
-        return aggregation;
     }
 
     /**
@@ -65,10 +76,12 @@ public class ContentService {
      * could be retrieved is returned.
      * @throws InvalidSourceIdException if {@code fromSources} contains a Content Source ID that OneFeed is not aware of.
      */
-    public static Content[] getContent(int count, String[] fromSources) throws InvalidSourceIdException {
+    @Async
+    public CompletableFuture<Content[]> getContent(int count, String[] fromSources) throws InvalidSourceIdException {
         logger.debug("Attempting to retrieve Content: {} pieces from sources {}", count, Arrays.toString(fromSources));
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
+        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
         Collection<Content> allContent = new ArrayList<>();
         Collection<Content> newContent;
         ContentSource source = null;
@@ -97,7 +110,9 @@ public class ContentService {
         // Content posted across the desired Content Sources may total less than the desired count
         Content[] aggregation = aggregateContent(allContent, count);
         logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
-        return aggregation;
+
+        completableFuture.complete(aggregation);
+        return completableFuture;
     }
 
     /**
@@ -112,11 +127,13 @@ public class ContentService {
      * available {@link ContentSource}s. If less than {@code count}-many units of {@code Content} can be retrieved, then
      * all that could be retrieved is returned.
      */
-    public static Content[] getContent(int count, Instant[] betweenTimes) {
+    @Async
+    public CompletableFuture<Content[]> getContent(int count, Instant[] betweenTimes) {
         logger.debug("Attempting to retrieve Content: {} pieces between instants {} and {}",
                 count, betweenTimes[0], betweenTimes[1]);
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
+        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
         Collection<Content> allContent = new ArrayList<>();
         Collection<Content> newContent;
 
@@ -133,7 +150,9 @@ public class ContentService {
         // Content posted across all Content Sources may total less than the desired count
         Content[] aggregation = aggregateContent(allContent, count);
         logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
-        return aggregation;
+
+        completableFuture.complete(aggregation);
+        return completableFuture;
     }
 
     /**
@@ -151,11 +170,13 @@ public class ContentService {
      * can be retrieved, then all that could be retrieved is returned.
      * @throws InvalidSourceIdException if {@code fromSources} contains a Content Source ID that OneFeed is not aware of.
      */
-    public static Content[] getContent(int count, String[] fromSources, Instant[] betweenTimes) throws InvalidSourceIdException {
+    @Async
+    public CompletableFuture<Content[]> getContent(int count, String[] fromSources, Instant[] betweenTimes) throws InvalidSourceIdException {
         logger.debug("Attempting to retrieve Content: {} pieces from sources {} between instants {} and {}",
                 count, Arrays.toString(fromSources), betweenTimes[0], betweenTimes[1]);
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
+        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
         Collection<Content> allContent = new ArrayList<>();
         Collection<Content> newContent;
         ContentSource source = null;
@@ -184,7 +205,9 @@ public class ContentService {
            count */
         Content[] aggregation = aggregateContent(allContent, count);
         logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
-        return aggregation;
+
+        completableFuture.complete(aggregation);
+        return completableFuture;
     }
 
     /**
