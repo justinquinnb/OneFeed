@@ -1,6 +1,5 @@
 package com.justinquinnb.onefeed.api.security;
 
-import com.justinquinnb.onefeed.api.ContentService;
 import com.justinquinnb.onefeed.api.OneFeedApiConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;

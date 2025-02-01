@@ -6,16 +6,17 @@ import com.justinquinnb.onefeed.data.sources.instagram.InstaService;
 import com.justinquinnb.onefeed.data.sources.linkedin.LinkedInService;
 import com.justinquinnb.onefeed.data.sources.sample.SampleService;
 import com.justinquinnb.onefeed.data.sources.threads.ThreadsService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.HashMap;
 
+@EnableAsync
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class OneFeedApplication {
 	/**

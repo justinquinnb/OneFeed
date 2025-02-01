@@ -1,6 +1,5 @@
 package com.justinquinnb.onefeed.api;
 
-import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.exceptions.IllegalContentCountException;
 import com.justinquinnb.onefeed.exceptions.InvalidTimeException;
@@ -17,6 +16,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class ContentController {
@@ -38,12 +39,13 @@ public class ContentController {
      *
      * @return {@code count}-many pieces of content that meets all the provided requirements.
      */
+    // TODO make this return a ResponseEntity type instead, implementing an exception handler (controller advice) to intercept
     @GetMapping("/content")
     public Content[] getContent(
             @RequestParam(name = "count") Integer contentCount,
             @RequestParam(name = "from") Optional<String> fromSources,
             @RequestParam(name = "between") Optional<String> betweenTimes
-    ) {
+    ) throws ExecutionException, InterruptedException {
         logger.info("Content request received with arguments: contentCount={} fromSources={} betweenTimes={}",
                 contentCount.toString(), fromSources.toString(), betweenTimes.toString());
 
@@ -68,21 +70,29 @@ public class ContentController {
         }
 
         // Now grab the content with the correct method
+        CompletableFuture<Content[]> possibleResponse;
+
         if (fromSources.isPresent() && betweenTimes.isPresent()) {
             logger.debug("Processing request for: {} pieces from {} between {} and {}",
                     contentCount, Arrays.toString(sources), timeRange[0].toString(), timeRange[1].toString());
-            return ContentService.getContent(contentCount, sources, timeRange);
+
+            possibleResponse = contentService.getContent(contentCount, sources, timeRange);
         } else if (fromSources.isPresent()) {
             logger.debug("Processing request for: {} pieces from {}", contentCount, Arrays.toString(sources));
-            return ContentService.getContent(contentCount, sources);
+
+            possibleResponse = contentService.getContent(contentCount, sources);
         } else if (betweenTimes.isPresent()) {
             logger.debug("Processing request for: {} pieces between {} and {}",
                     contentCount, timeRange[0].toString(), timeRange[1].toString());
-            return ContentService.getContent(contentCount, timeRange);
+
+            possibleResponse = contentService.getContent(contentCount, timeRange);
         } else {
             logger.debug("Processing request for: {} pieces", contentCount);
-            return ContentService.getContent(contentCount);
+
+            possibleResponse = contentService.getContent(contentCount);
         }
+
+        return possibleResponse.get();
     }
 
     /**
