@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception ex) {
         return buildExceptionResponse(
-                ex, HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 "OneFeed could not process the request",
                 "An internal server error occurred");
     }
@@ -32,7 +32,6 @@ public class GlobalExceptionHandler {
     /**
      * Builds a {@link ResponseEntity} object containing relevant exception details.
      *
-     * @param exception the thrown {@link Exception}
      * @param status the {@link HttpStatus} value to respond with
      * @param message a message to the end user
      * @param detail a message to the developer
@@ -40,7 +39,7 @@ public class GlobalExceptionHandler {
      * @return a {@link ResponseEntity} object containing relevant exception details.
      */
     private static ResponseEntity<Object> buildExceptionResponse(
-            Exception exception, HttpStatus status, String message, String detail
+            HttpStatus status, String message, String detail
     ) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", Instant.ofEpochMilli(System.currentTimeMillis()));
@@ -61,7 +60,8 @@ public class GlobalExceptionHandler {
      *
      * @return a {@link ResponseEntity} object containing relevant exception details.
      */
-    private static ResponseEntity<Object> buildExceptionResponse(Exception exception, HttpStatus status, String message) {
-        return buildExceptionResponse(exception, status, message, exception.getMessage());
+    private static ResponseEntity<Object> buildExceptionResponse(
+        Exception exception, HttpStatus status, String message) {
+        return buildExceptionResponse(status, message, exception.getMessage());
     }
 }

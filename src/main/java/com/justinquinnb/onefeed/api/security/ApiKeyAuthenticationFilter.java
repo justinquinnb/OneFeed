@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * A custom Spring Security filter responsible for retrieving the HTTP API Key header from the request
- * and validating it against the configured secret.
+ * A custom Spring Security filter responsible for retrieving the HTTP API Key header from the
+ * request and validating it against the configured secret.
  *
  * @author Lynne Munini
  * @see <a href="https://medium.com/@LynneMunini/securing-your-spring-boot-3-app-multi-factor-authentication-with-api-key-and-basic-auth-e6835a3687d1"></a></a>

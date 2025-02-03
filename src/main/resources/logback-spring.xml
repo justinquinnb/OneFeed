@@ -28,7 +28,7 @@
         <!-- Rollover/Archive policy -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>%d{yyyy-MM-dd} (%i).log</fileNamePattern>
-            <maxHistory>7</maxHistory>
+            <maxHistory>1</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
 
