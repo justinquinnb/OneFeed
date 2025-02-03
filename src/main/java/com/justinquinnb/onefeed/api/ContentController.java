@@ -1,12 +1,17 @@
 package com.justinquinnb.onefeed.api;
 
+import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.exceptions.IllegalContentCountException;
+import com.justinquinnb.onefeed.exceptions.InvalidSourceIdException;
 import com.justinquinnb.onefeed.exceptions.InvalidTimeException;
 import com.justinquinnb.onefeed.exceptions.InvalidTimeRangeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,9 +44,8 @@ public class ContentController {
      *
      * @return {@code count}-many pieces of content that meets all the provided requirements.
      */
-    // TODO make this return a ResponseEntity type instead, implementing an exception handler (controller advice) to intercept
     @GetMapping("/content")
-    public Content[] getContent(
+    public ResponseEntity<Content[]> getContent(
             @RequestParam(name = "count") Integer contentCount,
             @RequestParam(name = "from") Optional<String> fromSources,
             @RequestParam(name = "between") Optional<String> betweenTimes
@@ -52,13 +56,13 @@ public class ContentController {
         // Require a valid content count
         if (contentCount <= 0) {
             logger.warn("{} is an illegal content Count: contentCount must be greater than 0", contentCount);
-            throw new IllegalContentCountException("Content count is invalid: " + contentCount);
+            throw new IllegalContentCountException("Content count must be greater than 0: " + contentCount);
         }
 
         // If a source filter is present, parse and use it
-        String[] sources = new String[]{""};
+        ContentSource[] sources = new ContentSource[contentCount];
         if (fromSources.isPresent()) {
-            sources = fromSources.get().split("\\+");
+            sources = parseSourceIds(fromSources.get());
             logger.debug("Content Source IDs identified in request: {}", Arrays.toString(sources));
         }
 
@@ -92,7 +96,40 @@ public class ContentController {
             possibleResponse = contentService.getContent(contentCount);
         }
 
-        return possibleResponse.get();
+        return new ResponseEntity<>(possibleResponse.get(), HttpStatus.OK);
+    }
+
+    /**
+     * Instantiates an array of {@link ContentSource}s to attempt content retrieval from by the {@link ContentService}.
+     *
+     * @param idString a {@code String} of {@code +}-delimited {@code ContentSource} IDs
+     *
+     * @return an array of the {@code ContentSource}s bound to the {@code ContentSource} IDs held statically in
+     * {@link OneFeedApplication}
+     * @throws InvalidSourceIdException if any of the encoded {@code ContentSource} IDs in the {@code idString} are not
+     * bound to a {@code ContentSource}
+     */
+    private static ContentSource[] parseSourceIds(String idString) throws InvalidSourceIdException {
+        logger.debug("Parsing Content Source idString \"{}\"", idString);
+        String[] fromSources = idString.split("\\+");
+        ContentSource[] sources = new ContentSource[fromSources.length];
+        String contentSourceId;
+
+        for (int i = 0; i < fromSources.length; i++) {
+            contentSourceId = fromSources[i];
+            logger.debug("Attempting to retrieve Content Source with ID \"{}\"", contentSourceId);
+
+            if (OneFeedApplication.contentSources.containsKey(contentSourceId)) {
+                logger.debug("Content Source \"{}\" found and retrieved", contentSourceId);
+                sources[i] = OneFeedApplication.contentSources.get(contentSourceId);
+            } else {
+                logger.warn("Could not retrieve Content: invalid Content Source ID \"{}\"", contentSourceId);
+                throw new InvalidSourceIdException("Invalid Content Source ID: " + contentSourceId);
+            }
+        }
+
+        logger.debug("Parsed Content Source idString \"{}\" into ContentSources {}", idString, Arrays.toString(sources));
+        return sources;
     }
 
     /**

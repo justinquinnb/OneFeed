@@ -31,7 +31,7 @@ public class SampleService extends APIEndpoint {
 
     @Override
     public Content[] getLatestContent(int count) {
-        int numToGet = (!(count <= 0) || count > 10) ? 10 : count;
+        int numToGet = (count > 10) ? 10 : count;
         Content[] sampleContent = new Content[0];
         try {
             sampleContent = mapper.readValue(
@@ -46,7 +46,7 @@ public class SampleService extends APIEndpoint {
 
     @Override
     public Content[] getLatestContent(int count, Instant[] betweenTimes) {
-        int numToGet = (!(count <= 0) || count > 10) ? 10 : count;
+        int numToGet = (count > 10) ? 10 : count;
         Content[] sampleContent = new Content[0];
         try {
             sampleContent = mapper.readValue(
