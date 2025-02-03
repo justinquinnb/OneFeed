@@ -32,35 +32,31 @@ public class ContentService {
      */
     @Async
     public CompletableFuture<Content[]> getContent(int count) {
-        try {
-            logger.debug("Attempting to retrieve Content: {} pieces", count);
+        logger.debug("Attempting to retrieve Content: {} pieces", count);
 
-            // Get all the Content that could possibly be needed to make a count-sized aggregate
-            CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
+        // Get all the Content that could possibly be needed to make a count-sized aggregate
+        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
 
-            Collection<Content> allContent = new ArrayList<>();
-            Collection<Content> newContent;
+        Collection<Content> allContent = new ArrayList<>();
+        Collection<Content> newContent;
 
-            // For every Content Source identified at OneFeed startup, try to get `count`-many pieces of Content
-            // because any given source might hold the top `count` most recent pieces
-            for (String sourceId : OneFeedApplication.contentSources.keySet()) {
-                logger.debug("Attempting to retrieve {} pieces of Content from {}", count, sourceId);
-                newContent = Arrays.stream(OneFeedApplication.contentSources.get(sourceId).getLatestContent(count)).toList();
+        // For every Content Source identified at OneFeed startup, try to get `count`-many pieces of Content
+        // because any given source might hold the top `count` most recent pieces
+        for (String sourceId : OneFeedApplication.contentSources.keySet()) {
+            logger.debug("Attempting to retrieve {} pieces of Content from {}", count, sourceId);
+            newContent = Arrays.stream(OneFeedApplication.contentSources.get(sourceId).getLatestContent(count)).toList();
 
-                logger.trace("Retrieved {} pieces of Content from {}: {}", newContent.size(), sourceId, newContent.toString());
-                allContent.addAll(newContent);
-            }
-
-            // Aggregate the Content into an array of at most `count` most recent pieces of Content because the amount of
-            // Content posted across all Content Sources may total less than the desired count
-            Content[] aggregation = aggregateContent(allContent, count);
-            logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
-
-            completableFuture.complete(aggregation);
-            return completableFuture;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.trace("Retrieved {} pieces of Content from {}: {}", newContent.size(), sourceId, newContent.toString());
+            allContent.addAll(newContent);
         }
+
+        // Aggregate the Content into an array of at most `count` most recent pieces of Content because the amount of
+        // Content posted across all Content Sources may total less than the desired count
+        Content[] aggregation = aggregateContent(allContent, count);
+        logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
+
+        completableFuture.complete(aggregation);
+        return completableFuture;
     }
 
     /**
@@ -77,32 +73,24 @@ public class ContentService {
      * @throws InvalidSourceIdException if {@code fromSources} contains a Content Source ID that OneFeed is not aware of.
      */
     @Async
-    public CompletableFuture<Content[]> getContent(int count, String[] fromSources) throws InvalidSourceIdException {
+    public CompletableFuture<Content[]> getContent(int count, ContentSource[] fromSources)
+            throws InvalidSourceIdException {
         logger.debug("Attempting to retrieve Content: {} pieces from sources {}", count, Arrays.toString(fromSources));
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
         CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
         Collection<Content> allContent = new ArrayList<>();
         Collection<Content> newContent;
-        ContentSource source = null;
 
         // For every Content Source ID specified, try to get `count`-many pieces of Content
         // because any given source might hold the top `count` most recent pieces
-        for (String sourceId : fromSources) {
-            // First ensure the Content Source ID was actually identified by OneFeed at startup
-            source = OneFeedApplication.contentSources.get(sourceId);
-            logger.trace("Parsed Content Source ID \"{}\"", sourceId);
-
-            if (source == null) {
-                logger.warn("Could not retrieve Content: invalid Content Source ID \"{}\"", sourceId);
-                throw new InvalidSourceIdException("Invalid Content Source ID: " + sourceId);
-            }
-
-            // Then retrieve the actual Content
-            logger.debug("Attempting to retrieve {} pieces of Content from {}", count, sourceId);
+        for (ContentSource source : fromSources) {
+            // Retrieve the actual Content
+            logger.debug("Attempting to retrieve {} pieces of Content from {}", count, source.getSourceName());
             newContent = Arrays.stream(source.getLatestContent(count)).toList();
 
-            logger.trace("Retrieved {} pieces of Content from {}: {}", newContent.size(), sourceId, newContent.toString());
+            logger.trace("Retrieved {} pieces of Content from {}: {}",
+                    newContent.size(), source.getSourceName(), newContent.toString());
             allContent.addAll(newContent);
         }
 
@@ -138,11 +126,14 @@ public class ContentService {
         Collection<Content> newContent;
 
         for (String sourceId : OneFeedApplication.contentSources.keySet()) {
+            // Retrieve the actual content
             logger.debug("Attempting to retrieve {} pieces of Content from {} between instants {} and {}",
                     count, sourceId, betweenTimes[0].toString(), betweenTimes[1].toString());
-            newContent = Arrays.stream(OneFeedApplication.contentSources.get(sourceId).getLatestContent(count, betweenTimes)).toList();
+            newContent = Arrays.stream(OneFeedApplication.contentSources.get(sourceId)
+                    .getLatestContent(count, betweenTimes)).toList();
 
-            logger.trace("Retrieved {} pieces of Content from {}: {}", newContent.size(), sourceId, newContent.toString());
+            logger.trace("Retrieved {} pieces of Content from {}: {}",
+                    newContent.size(), sourceId, newContent.toString());
             allContent.addAll(newContent);
         }
 
@@ -171,7 +162,9 @@ public class ContentService {
      * @throws InvalidSourceIdException if {@code fromSources} contains a Content Source ID that OneFeed is not aware of.
      */
     @Async
-    public CompletableFuture<Content[]> getContent(int count, String[] fromSources, Instant[] betweenTimes) throws InvalidSourceIdException {
+    public CompletableFuture<Content[]> getContent(int count, ContentSource[] fromSources, Instant[] betweenTimes)
+            throws InvalidSourceIdException
+    {
         logger.debug("Attempting to retrieve Content: {} pieces from sources {} between instants {} and {}",
                 count, Arrays.toString(fromSources), betweenTimes[0], betweenTimes[1]);
 
@@ -179,24 +172,15 @@ public class ContentService {
         CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
         Collection<Content> allContent = new ArrayList<>();
         Collection<Content> newContent;
-        ContentSource source = null;
 
-        for (String sourceId : fromSources) {
-            // First ensure the Content Source ID was actually identified by OneFeed at startup
-            source = OneFeedApplication.contentSources.get(sourceId);
-            logger.trace("Parsed Content Source ID \"{}\"", sourceId);
-
-            if (source == null) {
-                logger.warn("Could not retrieve Content: invalid Content Source ID \"{}\"", sourceId);
-                throw new InvalidSourceIdException("Invalid Content Source ID: " + sourceId);
-            }
-
+        for (ContentSource source : fromSources) {
             // Then retrieve the actual Content
-            logger.debug("Attempting to retrieve {} pieces of Content from sources {} between instants {} and {}",
-                    count, sourceId, betweenTimes[0].toString(), betweenTimes[1].toString());
+            logger.debug("Attempting to retrieve {} pieces of Content from source {} between instants {} and {}",
+                    count, source.getSourceName(), betweenTimes[0].toString(), betweenTimes[1].toString());
             newContent = Arrays.stream(source.getLatestContent(count, betweenTimes)).toList();
 
-            logger.trace("Retrieved {} pieces of Content from {}: {}", newContent.size(), sourceId, newContent.toString());
+            logger.trace("Retrieved {} pieces of Content from {}: {}",
+                    newContent.size(), source.getSourceName(), newContent.toString());
             allContent.addAll(newContent);
         }
 
@@ -222,27 +206,30 @@ public class ContentService {
      * instead.
      */
     private static Content[] aggregateContent(Collection<Content> content, int count) {
-        logger.debug("Attempting to aggregate the following Content into an array of {} pieces: {}", count, Arrays.toString(content.toArray()));
+        logger.debug("Attempting to aggregate the following Content into an array of {} pieces: {}",
+                count, Arrays.toString(content.toArray()));
 
         Content[] aggregateFeed = new Content[0];
 
         // If no Content was sent through, then don't waste resources trying to aggregate nothing
         if (!content.isEmpty()) {
-            logger.debug("Content found in content array, aggregation commencing");
-            aggregateFeed = new Content[count];
+            logger.debug("{} pieces of Content found in collection, aggregation commencing", content.size());
 
             // Employ a PriorityQueue to do the sorting for us
             PriorityQueue<Content> sortedContent = new PriorityQueue<>(content.size(), new ContentComparator());
 
-            // Take the `count-most recent bits of content and return it
+            // Take the count-most recent bits of content and return it
             sortedContent.addAll(content);
+            int finalCount = Math.min(count, sortedContent.size());
+            aggregateFeed = new Content[finalCount];
 
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < finalCount; i++) {
                 aggregateFeed[i] = sortedContent.poll();
-                logger.trace("Added the following piece of Content into the final aggregation: {}", aggregateFeed[i].toString());
+                logger.trace("Added the following piece of Content into the final aggregation: {}",
+                        aggregateFeed[i].toString());
             }
         } else {
-            logger.debug("No Content in content array, aggregation skipped");
+            logger.debug("No Content in collection, aggregation skipped");
         }
 
         logger.debug("Aggregated {} pieces of Content into: {}", aggregateFeed.length, Arrays.toString(aggregateFeed));
