@@ -41,7 +41,7 @@ public interface ContentSource {
     /**
      * Gets the name of the source {@link Content} is being pulled from.
      *
-     * @returns the name of the source {@link Content} is being pulled from.
+     * @return the name of the source {@link Content} is being pulled from.
      */
     String getSourceName();
 

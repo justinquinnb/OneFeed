@@ -35,7 +35,8 @@ public class AuthenticationService {
      * If valid, it creates an Authentication object representing the API Key.
      *
      * @param request the HttpServletRequest object
-     * @return an Authentication object containing the validated API Key, or throws an exception if invalid
+     * @return an Authentication object containing the validated API Key, or throws an exception if
+     * invalid
      * @throws BadCredentialsException if the API Key is missing or invalid
      */
     public Authentication getAuthentication(HttpServletRequest request) {

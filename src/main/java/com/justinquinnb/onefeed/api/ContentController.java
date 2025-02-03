@@ -35,12 +35,13 @@ public class ContentController {
     }
 
     /**
-     * Aggregates {@code count}-many pieces of content from the provided {@code fromSources} between the instants specified
-     * by {@code betweenTimes}.
+     * Aggregates {@code count}-many pieces of content from the provided {@code fromSources} between
+     * the instants specified by {@code betweenTimes}.
      *
      * @param contentCount the amount of content to attempt aggregating, if that many exists.
      * @param fromSources OPTIONAL - a {@code +}-delimited series of content source identifiers
-     * @param betweenTimes OPTIONAL - an encoded time/date range string, using the format specified in {@link #parseTime}
+     * @param betweenTimes OPTIONAL - an encoded time/date range string, using the format specified
+     *                     in {@link #parseTime}
      *
      * @return {@code count}-many pieces of content that meets all the provided requirements.
      */
@@ -100,14 +101,15 @@ public class ContentController {
     }
 
     /**
-     * Instantiates an array of {@link ContentSource}s to attempt content retrieval from by the {@link ContentService}.
+     * Instantiates an array of {@link ContentSource}s to attempt content retrieval from by the
+     * {@link ContentService}.
      *
      * @param idString a {@code String} of {@code +}-delimited {@code ContentSource} IDs
      *
-     * @return an array of the {@code ContentSource}s bound to the {@code ContentSource} IDs held statically in
-     * {@link OneFeedApplication}
-     * @throws InvalidSourceIdException if any of the encoded {@code ContentSource} IDs in the {@code idString} are not
-     * bound to a {@code ContentSource}
+     * @return an array of the {@code ContentSource}s bound to the {@code ContentSource} IDs held
+     * statically in {@link OneFeedApplication}
+     * @throws InvalidSourceIdException if any of the encoded {@code ContentSource} IDs in the
+     * {@code idString} are not bound to a {@code ContentSource}
      */
     private static ContentSource[] parseSourceIds(String idString) throws InvalidSourceIdException {
         logger.debug("Parsing Content Source idString \"{}\"", idString);
@@ -119,16 +121,18 @@ public class ContentController {
             contentSourceId = fromSources[i];
             logger.debug("Attempting to retrieve Content Source with ID \"{}\"", contentSourceId);
 
-            if (OneFeedApplication.contentSources.containsKey(contentSourceId)) {
+            if (OneFeedApplication.CONTENT_SOURCES.containsKey(contentSourceId)) {
                 logger.debug("Content Source \"{}\" found and retrieved", contentSourceId);
-                sources[i] = OneFeedApplication.contentSources.get(contentSourceId);
+                sources[i] = OneFeedApplication.CONTENT_SOURCES.get(contentSourceId);
             } else {
-                logger.warn("Could not retrieve Content: invalid Content Source ID \"{}\"", contentSourceId);
+                logger.warn("Could not retrieve Content: invalid Content Source ID \"{}\"",
+                    contentSourceId);
                 throw new InvalidSourceIdException("Invalid Content Source ID: " + contentSourceId);
             }
         }
 
-        logger.debug("Parsed Content Source idString \"{}\" into ContentSources {}", idString, Arrays.toString(sources));
+        logger.debug("Parsed Content Source idString \"{}\" into ContentSources {}",
+            idString, Arrays.toString(sources));
         return sources;
     }
 
@@ -139,16 +143,17 @@ public class ContentController {
      * @param encodedRange a string encoding an inclusive time range as follows:
      *                     {@code yyyyMMddHHmm-yyyyMMddHHmm} <br><br>
      *
-     *                     Everything left of the "-" contains the start date and time and everything to the right
-     *                     contains the end date and time. The symbols can be interpreted using the key in
-     *                     {@link #parseTime(String)}.<br><br>
+     *                     Everything left of the "-" contains the start date and time and
+     *                     everything to the right contains the end date and time. The symbols can
+     *                     be interpreted using the key in {@link #parseTime(String)}.<br><br>
      *
-     *                     As this method is strictly used for filtering feed content, everything beyond minutes has
-     *                     been omitted, defaulting to {@code 0}.
+     *                     As this method is strictly used for filtering feed content, everything
+     *                     beyond minutes has been omitted, defaulting to {@code 0}.
      *
-     * @return an array of {@code 2} {@code Instant} objects representing the time and dates encoded by
-     * {@code encodedRange}. The {@code Instant} object at index {@code 0} is always the start date of the range.
-     * The {@code Instant} object at index {@code 0} is always the end date of the range.
+     * @return an array of {@code 2} {@code Instant} objects representing the time and dates encoded
+     * by {@code encodedRange}. The {@code Instant} object at index {@code 0} is always the start
+     * date of the range. The {@code Instant} object at index {@code 0} is always the end date of
+     * the range.
      *
      * @throws InvalidTimeRangeException if the time range is invalid or malformed.
      */

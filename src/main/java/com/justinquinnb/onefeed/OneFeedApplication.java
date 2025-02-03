@@ -22,17 +22,12 @@ public class OneFeedApplication {
 	/**
 	 * Maps unique {@link ContentSource} identifiers to their respective service file.
 	 */
-	public static final HashMap<String, ContentSource> contentSources = new HashMap<>();
+	public static final HashMap<String, ContentSource> CONTENT_SOURCES = new HashMap<>();
 	private static final Logger logger = LoggerFactory.getLogger(OneFeedApplication.class);
 
 	public static void main(String[] args) {
 		// On shutdown script
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				logger.info("Shutting down...");
-			}
-		});
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> logger.info("Shutting down...")));
 
 		// Console info
 		printOneFeedInfo();
@@ -70,19 +65,19 @@ public class OneFeedApplication {
 		logger.info("Instantiating Content Sources...");
 
 		// TODO replace this with the plugin system... register them here and automatically grab info
-		contentSources.put("IG", new InstaService());
+		CONTENT_SOURCES.put("IG", new InstaService());
 		logger.info("Instagram service \"{}\" instantiated.", "IG");
 
-		contentSources.put("TH", new  ThreadsService());
+		CONTENT_SOURCES.put("TH", new  ThreadsService());
 		logger.info("Threads service \"{}\" instantiated.", "TH");
 
-		contentSources.put("LI", new LinkedInService());
+		CONTENT_SOURCES.put("LI", new LinkedInService());
 		logger.info("LinkedIn service \"{}\" instantiated.", "LI");
 
-		contentSources.put("GH", new GitHubService());
+		CONTENT_SOURCES.put("GH", new GitHubService());
 		logger.info("GitHub service \"{}\" instantiated.", "GH");
 
-		contentSources.put("SP", new SampleService());
+		CONTENT_SOURCES.put("SP", new SampleService());
 		logger.info("Sample service \"{}\" instantiated.", "SP");
 
 		logger.info("Content Sources successfully instantiated.");
@@ -97,7 +92,7 @@ public class OneFeedApplication {
 		// Update status
 		int successCount = 0, failCount = 0;
 
-		for (ContentSource source : contentSources.values()) {
+		for (ContentSource source : CONTENT_SOURCES.values()) {
 			if (source.isAvailable()) {
 				logger.info("Content Source \"{}\" is available.", source.getSourceName());
 				successCount++;
@@ -107,7 +102,7 @@ public class OneFeedApplication {
 			}
 		}
 
-		if (failCount == contentSources.size()) {
+		if (failCount == CONTENT_SOURCES.size()) {
 			logger.warn("Content Sources tested with all {} unavailable.", failCount);
 		} else if (failCount > 0) {
 			logger.warn("Content Sources tested with {} available and {} unavailable.", successCount, failCount);

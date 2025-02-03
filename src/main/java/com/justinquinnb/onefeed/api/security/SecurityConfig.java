@@ -11,7 +11,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Spring Security configuration class that defines security filters and other security related settings.
+ * Spring Security configuration class that defines security filters and other security related
+ * settings.
  *
  * @EnableWebSecurity enables Spring Security features
  * @Configuration indicates this class provides Spring bean definitions
@@ -35,7 +36,8 @@ public class SecurityConfig {
                 .securityMatcher("/**")
                 .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
