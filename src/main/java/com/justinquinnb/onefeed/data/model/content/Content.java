@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.data.model.content;
 
-import com.justinquinnb.onefeed.data.model.content.details.Platform;
+import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
 import java.time.Instant;
@@ -11,9 +11,9 @@ import java.time.Instant;
 public abstract class Content {
     private final Instant timestamp;
     private final Producer producer;
-    private final Platform source;
+    private final SourceInfo source;
 
-    public Content(Instant timestamp, Producer producer, Platform source) {
+    public Content(Instant timestamp, Producer producer, SourceInfo source) {
         this.timestamp = timestamp;
         this.producer = producer;
         this.source = source;
@@ -42,7 +42,7 @@ public abstract class Content {
      *
      * @return the details of the platform where {@code this} {@code Content} was published.
      */
-    public Platform getPlatform() {
+    public SourceInfo getPlatform() {
         return this.source;
     }
 

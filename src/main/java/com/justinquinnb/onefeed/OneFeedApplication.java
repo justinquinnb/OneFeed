@@ -1,5 +1,6 @@
 package com.justinquinnb.onefeed;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.data.sources.github.GitHubService;
 import com.justinquinnb.onefeed.data.sources.instagram.InstaService;
@@ -65,19 +66,19 @@ public class OneFeedApplication {
 		logger.info("Instantiating Content Sources...");
 
 		// TODO replace this with the plugin system... register them here and automatically grab info
-		CONTENT_SOURCES.put("IG", new InstaService());
+		CONTENT_SOURCES.put("IG", new InstaService("IG"));
 		logger.info("Instagram service \"{}\" instantiated.", "IG");
 
-		CONTENT_SOURCES.put("TH", new  ThreadsService());
+		CONTENT_SOURCES.put("TH", new  ThreadsService("TH"));
 		logger.info("Threads service \"{}\" instantiated.", "TH");
 
-		CONTENT_SOURCES.put("LI", new LinkedInService());
+		CONTENT_SOURCES.put("LI", new LinkedInService("LI"));
 		logger.info("LinkedIn service \"{}\" instantiated.", "LI");
 
-		CONTENT_SOURCES.put("GH", new GitHubService());
+		CONTENT_SOURCES.put("GH", new GitHubService("GH"));
 		logger.info("GitHub service \"{}\" instantiated.", "GH");
 
-		CONTENT_SOURCES.put("SP", new SampleService());
+		CONTENT_SOURCES.put("SP", new SampleService("SP"));
 		logger.info("Sample service \"{}\" instantiated.", "SP");
 
 		logger.info("Content Sources successfully instantiated.");
@@ -94,10 +95,10 @@ public class OneFeedApplication {
 
 		for (ContentSource source : CONTENT_SOURCES.values()) {
 			if (source.isAvailable()) {
-				logger.info("Content Source \"{}\" is available.", source.getSourceName());
+				logger.info("Content Source \"{}\" is available.", source.getId());
 				successCount++;
 			} else {
-				logger.warn("Content Source \"{}\" is unavailable.", source.getSourceName());
+				logger.warn("Content Source \"{}\" is unavailable.", source.getId());
 				failCount++;
 			}
 		}

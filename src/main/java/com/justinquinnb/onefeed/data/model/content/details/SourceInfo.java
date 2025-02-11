@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Information about the platform the {@link com.justinquinnb.onefeed.data.model.content.Content} is derived from.
  */
-public class Platform {
+public class SourceInfo {
     private final String homepageUrl;
     private final String name;
     private final String usernamePrefix;
 
-    public Platform(
+    public SourceInfo(
             @JsonProperty("homepageUrl") String homepageUrl,
             @JsonProperty("name") String name,
             @JsonProperty("usernamePrefix") String usernamePrefix

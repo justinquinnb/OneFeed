@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.data.sources.instagram;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.Platform;
+import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
 import java.time.Instant;
@@ -19,7 +19,7 @@ public class Post extends Content {
     public Post(
         Instant timestamp,
         Producer actor,
-        Platform source,
+        SourceInfo source,
         String postUrl,
         String caption,
         String[] attachmentUrls

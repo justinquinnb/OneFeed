@@ -1,6 +1,7 @@
 package com.justinquinnb.onefeed.data.model.source;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 
 import java.time.Instant;
 
@@ -8,6 +9,8 @@ import java.time.Instant;
  * Outlines the functionalities of a valid data source.
  */
 public interface ContentSource {
+    String getId();
+
     /**
      * Checks if content can be retrieved from the desired source.
      *
@@ -39,11 +42,11 @@ public interface ContentSource {
     Content[] getLatestContent(int count, Instant[] betweenTimes);
 
     /**
-     * Gets the name of the source {@link Content} is being pulled from.
+     * Gets relevant source information as {@link com.justinquinnb.onefeed.data.model.content.details.SourceInfo}.
      *
-     * @return the name of the source {@link Content} is being pulled from.
+     * @return information about {@code this} {@code ContentSource}.
      */
-    String getSourceName();
+    SourceInfo getSourceInfo();
 
     /**
      * Checks if the {@code toCheck} {@link Instant} falls between {@code after} and {@code before}, inclusive.
