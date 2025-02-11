@@ -4,24 +4,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.source.APIEndpoint;
-
+import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
+import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SampleService extends APIEndpoint {
+public class SampleService implements ContentSource {
+    private static final SourceInfo INFO = new SourceInfo("N/A", "Sample Service", "@");
+    private final String ID;
+
     private static final String baseUrl = "sampleurl";
-    private static final String sourceName = "Sample";
     private static final ObjectMapper mapper = JsonMapper.builder()
             .addModule(new JavaTimeModule())
             .build();
 
-    @Override
-    protected String getBaseUrl() {
-        return baseUrl;
+    public SampleService(String id) {
+        ID = id;
     }
 
     @Override
@@ -69,7 +70,12 @@ public class SampleService extends APIEndpoint {
     }
 
     @Override
-    public String getSourceName() {
-        return sourceName;
+    public SourceInfo getSourceInfo() {
+        return INFO;
+    }
+
+    @Override
+    public String getId() {
+        return ID;
     }
 }

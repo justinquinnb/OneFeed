@@ -1,17 +1,16 @@
 package com.justinquinnb.onefeed.data.sources.instagram;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.source.APIEndpoint;
-
+import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
+import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import java.time.Instant;
 
-public class InstaService extends APIEndpoint {
-    private static final String baseUrl = "";
-    private static final String sourceName = "Instagram";
+public class InstaService implements ContentSource {
+    private static final SourceInfo INFO = new SourceInfo("https://instagram.com", "Instagram", "@");
+    private final String ID;
 
-    @Override
-    protected String getBaseUrl() {
-        return baseUrl;
+    public InstaService(String id) {
+        ID = id;
     }
 
     @Override
@@ -30,7 +29,12 @@ public class InstaService extends APIEndpoint {
     }
 
     @Override
-    public String getSourceName() {
-        return sourceName;
+    public SourceInfo getSourceInfo() {
+        return INFO;
+    }
+
+    @Override
+    public String getId() {
+        return ID;
     }
 }

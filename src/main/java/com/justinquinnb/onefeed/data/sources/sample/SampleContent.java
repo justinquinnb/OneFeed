@@ -2,7 +2,7 @@ package com.justinquinnb.onefeed.data.sources.sample;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.Platform;
+import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
 import java.time.Instant;
@@ -20,7 +20,7 @@ public class SampleContent extends Content {
     public SampleContent(
             @JsonProperty("timestamp") Instant timestamp,
             @JsonProperty("producer") Producer producer,
-            @JsonProperty("platform") Platform source,
+            @JsonProperty("platform") SourceInfo source,
             @JsonProperty("postUrl") String postUrl,
             @JsonProperty("text") String caption,
             @JsonProperty("attachments") String[] attachmentUrls

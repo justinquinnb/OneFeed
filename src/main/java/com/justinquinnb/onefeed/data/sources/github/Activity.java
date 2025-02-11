@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.data.sources.github;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.Platform;
+import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
 import java.time.Instant;
@@ -18,7 +18,7 @@ public class Activity extends Content {
     public Activity(
             Instant timestamp,
             Producer actor,
-            Platform source,
+            SourceInfo source,
             String[] actionUrls,
             String description
     ) {

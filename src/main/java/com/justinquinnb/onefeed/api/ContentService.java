@@ -90,11 +90,11 @@ public class ContentService {
         for (ContentSource source : fromSources) {
             // Retrieve the actual Content
             logger.debug("Attempting to retrieve {} pieces of Content from {}",
-                count, source.getSourceName());
+                count, source.getId());
             newContent = Arrays.stream(source.getLatestContent(count)).toList();
 
             logger.trace("Retrieved {} pieces of Content from {}: {}",
-                    newContent.size(), source.getSourceName(), newContent);
+                    newContent.size(), source.getId(), newContent);
             allContent.addAll(newContent);
         }
 
@@ -186,11 +186,11 @@ public class ContentService {
         for (ContentSource source : fromSources) {
             // Then retrieve the actual Content
             logger.debug("Attempting to retrieve {} pieces of Content from source {} between instants {} and {}",
-                    count, source.getSourceName(), betweenTimes[0].toString(), betweenTimes[1].toString());
+                    count, source.getId(), betweenTimes[0].toString(), betweenTimes[1].toString());
             newContent = Arrays.stream(source.getLatestContent(count, betweenTimes)).toList();
 
             logger.trace("Retrieved {} pieces of Content from {}: {}",
-                    newContent.size(), source.getSourceName(), newContent.toString());
+                    newContent.size(), source.getId(), newContent.toString());
             allContent.addAll(newContent);
         }
 
