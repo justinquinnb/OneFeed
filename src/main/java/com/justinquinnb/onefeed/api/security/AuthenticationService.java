@@ -11,6 +11,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
 /**
+ * Provides OneFeed API request authentication functionality.
+ *
  * @author Lynne Munini
  * @see <a href="https://medium.com/@LynneMunini/securing-your-spring-boot-3-app-multi-factor-authentication-with-api-key-and-basic-auth-e6835a3687d1"></a></a>
  */
@@ -21,7 +23,7 @@ public class AuthenticationService {
     /**
      * The name of the HTTP header containing the API Key.
      */
-    public static final String AUTH_TOKEN_HEADER_NAME = "API-KEY";
+    public static final String AUTH_TOKEN_HEADER_NAME = "x-api-key";
 
     private OneFeedApiConfig oneFeedApiConfig;
 

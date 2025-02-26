@@ -1,11 +1,11 @@
 package com.justinquinnb.onefeed;
 
+import com.justinquinnb.onefeed.contentsources.github.GitHubGraphQlService;
+import com.justinquinnb.onefeed.contentsources.instagram.InstagramService;
+import com.justinquinnb.onefeed.contentsources.linkedin.LinkedInService;
+import com.justinquinnb.onefeed.contentsources.sample.SampleService;
+import com.justinquinnb.onefeed.contentsources.threads.ThreadsService;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
-import com.justinquinnb.onefeed.data.contentsources.github.GitHubService;
-import com.justinquinnb.onefeed.data.contentsources.instagram.InstaService;
-import com.justinquinnb.onefeed.data.contentsources.linkedin.LinkedInService;
-import com.justinquinnb.onefeed.data.contentsources.sample.SampleService;
-import com.justinquinnb.onefeed.data.contentsources.threads.ThreadsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -65,7 +65,7 @@ public class OneFeedApplication {
 		logger.info("Instantiating Content Sources...");
 
 		// TODO replace this with the plugin system... register them here and automatically grab info
-		CONTENT_SOURCES.put("IG", new InstaService("IG"));
+		CONTENT_SOURCES.put("IG", new InstagramService("IG"));
 		logger.info("Instagram service \"{}\" instantiated.", "IG");
 
 		CONTENT_SOURCES.put("TH", new  ThreadsService("TH"));
@@ -74,7 +74,7 @@ public class OneFeedApplication {
 		CONTENT_SOURCES.put("LI", new LinkedInService("LI"));
 		logger.info("LinkedIn service \"{}\" instantiated.", "LI");
 
-		CONTENT_SOURCES.put("GH", new GitHubService("GH"));
+		CONTENT_SOURCES.put("GH", new GitHubGraphQlService("GH"));
 		logger.info("GitHub service \"{}\" instantiated.", "GH");
 
 		CONTENT_SOURCES.put("SP", new SampleService("SP"));
@@ -94,10 +94,10 @@ public class OneFeedApplication {
 
 		for (ContentSource source : CONTENT_SOURCES.values()) {
 			if (source.isAvailable()) {
-				logger.info("Content Source \"{}\" is available.", source.getId());
+				logger.info("Content Source \"{}\" is available.", source.SOURCE_ID);
 				successCount++;
 			} else {
-				logger.warn("Content Source \"{}\" is unavailable.", source.getId());
+				logger.warn("Content Source \"{}\" is unavailable.", source.SOURCE_ID);
 				failCount++;
 			}
 		}

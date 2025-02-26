@@ -3,6 +3,9 @@ package com.justinquinnb.onefeed.data.model.content;
 import java.time.Instant;
 import java.util.Comparator;
 
+/**
+ * Specifies the comparison of {@link Content} via their {@code timestamp} fields.
+ */
 public class ContentComparator implements Comparator<Content> {
     @Override
     public int compare(Content o1, Content o2) {

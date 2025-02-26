@@ -1,9 +1,6 @@
 package com.justinquinnb.onefeed.api;
 
-import com.justinquinnb.onefeed.exceptions.IllegalContentCountException;
-import com.justinquinnb.onefeed.exceptions.InvalidSourceIdException;
-import com.justinquinnb.onefeed.exceptions.InvalidTimeException;
-import com.justinquinnb.onefeed.exceptions.InvalidTimeRangeException;
+import com.justinquinnb.onefeed.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,13 +10,18 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages global exception handling.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler({
             IllegalContentCountException.class,
             InvalidSourceIdException.class,
+            InvalidSourceTypeException.class,
             InvalidTimeException.class,
-            InvalidTimeRangeException.class
+            InvalidTimeRangeException.class,
+            TokenEntryNotFound.class
     })
     public ResponseEntity<Object> handleOneFeedException(IllegalArgumentException ex) {
         return buildExceptionResponse(ex, HttpStatus.BAD_REQUEST, "Invalid content request");

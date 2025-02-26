@@ -1,32 +1,24 @@
 package com.justinquinnb.onefeed.data.model.source;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
+import com.justinquinnb.onefeed.data.model.content.details.Platform;
 
 import java.time.Instant;
 
 /**
- * Outlines the functionalities of a valid data source.
+ * Outlines the functionalities of a valid source of content.
  */
 public abstract class ContentSource {
     /**
-     * The unique {@code String} used to identify a specific {@code ContentSource} when interacting with the OneFeed
-     * API.
+     * The unique {@code String} used to identify a specific {@code ContentSource} instance when interacting with the
+     * OneFeed API. Facilitates the tracking of multiple {@code ContentSource} instances, a situation possible when
+     * content is desired from multiple profiles on the same platform, for example.
      */
-    private final String SOURCE_ID;
+    public final String SOURCE_ID;
 
     public ContentSource(String sourceId) {
         SOURCE_ID = sourceId;
     }
-
-    /**
-     * Gets {@code this} {@code ContentSource}'s {@link #SOURCE_ID}.
-     *
-     * @return {@code this} {@code ContentSource}'s {@link #SOURCE_ID}.
-     */
-    public String getId() {
-        return SOURCE_ID;
-    };
 
     /**
      * Checks if content can be retrieved from the desired source.
@@ -59,11 +51,11 @@ public abstract class ContentSource {
     public abstract Content[] getLatestContent(int count, Instant[] betweenTimes);
 
     /**
-     * Gets relevant source information as {@link com.justinquinnb.onefeed.data.model.content.details.SourceInfo}.
+     * Gets relevant source information as {@link Platform}.
      *
      * @return information about {@code this} {@code ContentSource}.
      */
-    public abstract SourceInfo getSourceInfo();
+    public abstract Platform getSourceInfo();
 
     /**
      * Checks if the {@code toCheck} {@link Instant} falls between {@code after} and {@code before}, inclusive.

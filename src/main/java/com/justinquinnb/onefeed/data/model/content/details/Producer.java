@@ -7,10 +7,30 @@ import com.justinquinnb.onefeed.data.model.content.Content;
  * Information about the entity producing the {@link Content}.
  */
 public class Producer {
+    /**
+     * A direct link to the {@code Producer}'s profile page on the {@link Platform} their {@link Content} is being
+     * hosted on.
+     */
     private final String profilePageUrl;
+
+    /**
+     * The URL of the {@code Producer}'s profile picture, avatar, or platform equivalent.
+     */
     private final String profilePicUrl;
+
+    /**
+     * The {@code Producer}'s first (pen)name (or platform equivalent).
+     */
     private final String firstName;
+
+    /**
+     * The {@code Producer}'s last (pen)name / sur-(pen)name (or platform equivalent).
+     */
     private final String lastName;
+
+    /**
+     * The {@code Producer}'s unique identifier on the platform.
+     */
     private final String username;
 
     public Producer(

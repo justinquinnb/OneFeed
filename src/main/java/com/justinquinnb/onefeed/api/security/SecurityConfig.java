@@ -11,8 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Spring Security configuration class that defines security filters and other security related
- * settings.
+ * Specifies the security configuration of OneFeed's API endpoints.
  *
  * @EnableWebSecurity enables Spring Security features
  * @Configuration indicates this class provides Spring bean definitions
