@@ -8,15 +8,32 @@ import java.time.Instant;
 /**
  * Outlines the functionalities of a valid data source.
  */
-public interface ContentSource {
-    String getId();
+public abstract class ContentSource {
+    /**
+     * The unique {@code String} used to identify a specific {@code ContentSource} when interacting with the OneFeed
+     * API.
+     */
+    private final String SOURCE_ID;
+
+    public ContentSource(String sourceId) {
+        SOURCE_ID = sourceId;
+    }
+
+    /**
+     * Gets {@code this} {@code ContentSource}'s {@link #SOURCE_ID}.
+     *
+     * @return {@code this} {@code ContentSource}'s {@link #SOURCE_ID}.
+     */
+    public String getId() {
+        return SOURCE_ID;
+    };
 
     /**
      * Checks if content can be retrieved from the desired source.
      *
      * @return {@code true} if the content is accessible, else {@code false}.
      */
-    boolean isAvailable();
+    public abstract boolean isAvailable();
 
     /**
      * Gets the {@code count} latest units of {@link Content} from the source.
@@ -26,7 +43,7 @@ public interface ContentSource {
      * @return at most {@code count}-many units of {@code Content} from the source. If less than {@code count}-many
      * units of {@code Content} can be retrieved, then all that could be retrieved is returned.
      */
-    Content[] getLatestContent(int count);
+    public abstract Content[] getLatestContent(int count);
 
     /**
      * Gets the {@code count} latest units of {@link Content} from the source between the specified {@code betweenTimes}.
@@ -39,14 +56,14 @@ public interface ContentSource {
      * source. If less than {@code count}-many units of {@code Content} can be retrieved, then all that could be retrieved
      * is returned.
      */
-    Content[] getLatestContent(int count, Instant[] betweenTimes);
+    public abstract Content[] getLatestContent(int count, Instant[] betweenTimes);
 
     /**
      * Gets relevant source information as {@link com.justinquinnb.onefeed.data.model.content.details.SourceInfo}.
      *
      * @return information about {@code this} {@code ContentSource}.
      */
-    SourceInfo getSourceInfo();
+    public abstract SourceInfo getSourceInfo();
 
     /**
      * Checks if the {@code toCheck} {@link Instant} falls between {@code after} and {@code before}, inclusive.
@@ -57,7 +74,7 @@ public interface ContentSource {
      *
      * @return {@code true} if {@code toCheck} exists in the range ({@code after}, {@code before}), else {@code false}.
      */
-    default boolean isInclusiveBetween(Instant toCheck, Instant after, Instant before) {
+    public boolean isInclusiveBetween(Instant toCheck, Instant after, Instant before) {
         boolean isBefore = toCheck.isBefore(before) || toCheck.equals(before);
         boolean isAfter = toCheck.isAfter(after) || toCheck.equals(after);
         return isBefore && isAfter;

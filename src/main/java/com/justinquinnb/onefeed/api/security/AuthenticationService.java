@@ -23,7 +23,7 @@ public class AuthenticationService {
      */
     public static final String AUTH_TOKEN_HEADER_NAME = "API-KEY";
 
-    private final OneFeedApiConfig oneFeedApiConfig;
+    private OneFeedApiConfig oneFeedApiConfig;
 
     @Autowired
     public AuthenticationService(OneFeedApiConfig apiConfig) {

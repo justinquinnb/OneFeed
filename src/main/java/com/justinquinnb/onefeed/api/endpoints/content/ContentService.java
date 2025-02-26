@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.api;
+package com.justinquinnb.onefeed.api.endpoints.content;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.data.model.content.Content;
@@ -17,6 +17,10 @@ import java.util.Collection;
 import java.util.PriorityQueue;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Provides the data for OneFeed's {@code /content} API endpoints.
+ * @see ContentController
+ */
 @Service
 public class ContentService {
     private static final Logger logger = LoggerFactory.getLogger(ContentService.class);
@@ -28,8 +32,7 @@ public class ContentService {
      * @param count the amount of {@code Content} to retrieve
      *
      * @return at most {@code count}-many units of {@code Content}. If less than {@code count}-many
-     * units of
-     * {@code Content} can be retrieved, then all that could be retrieved is returned.
+     * units of {@code Content} can be retrieved, then all that could be retrieved is returned.
      */
     @Async
     public CompletableFuture<Content[]> getContent(int count) {

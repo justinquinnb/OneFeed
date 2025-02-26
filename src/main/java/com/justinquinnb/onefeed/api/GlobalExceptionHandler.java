@@ -1,5 +1,9 @@
-package com.justinquinnb.onefeed.exceptions;
+package com.justinquinnb.onefeed.api;
 
+import com.justinquinnb.onefeed.exceptions.IllegalContentCountException;
+import com.justinquinnb.onefeed.exceptions.InvalidSourceIdException;
+import com.justinquinnb.onefeed.exceptions.InvalidTimeException;
+import com.justinquinnb.onefeed.exceptions.InvalidTimeRangeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

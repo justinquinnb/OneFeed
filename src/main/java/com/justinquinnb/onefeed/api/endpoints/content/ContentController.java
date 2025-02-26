@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.api;
+package com.justinquinnb.onefeed.api.endpoints.content;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.data.model.content.Content;
@@ -24,6 +24,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Manages hits to OneFeed's {@code /content} API endpoints. OneFeed's {@code /content} endpoints expose OneFeed's
+ * content aggregation feature. Served by {@link ContentService}.
+ */
 @RestController
 public class ContentController {
     private ContentService contentService;
@@ -51,7 +55,7 @@ public class ContentController {
             @RequestParam(name = "from") Optional<String> fromSources,
             @RequestParam(name = "between") Optional<String> betweenTimes
     ) throws ExecutionException, InterruptedException {
-        logger.info("Content request received with arguments: contentCount={} fromSources={} betweenTimes={}",
+        logger.info("GET Content request received with arguments: contentCount={} fromSources={} betweenTimes={}",
                 contentCount.toString(), fromSources.toString(), betweenTimes.toString());
 
         // Require a valid content count
@@ -97,6 +101,8 @@ public class ContentController {
             possibleResponse = contentService.getContent(contentCount);
         }
 
+        // https://stackoverflow.com/questions/18823241/assign-a-unique-id-to-every-request-in-a-spring-based-web-application
+        // TODO logger.info("Fulfilled Content request");
         return new ResponseEntity<>(possibleResponse.get(), HttpStatus.OK);
     }
 
@@ -127,7 +133,7 @@ public class ContentController {
             } else {
                 logger.warn("Could not retrieve Content: invalid Content Source ID \"{}\"",
                     contentSourceId);
-                throw new InvalidSourceIdException("Invalid Content Source ID: " + contentSourceId);
+                throw new InvalidSourceIdException("Content Source with ID " + contentSourceId + " does not exist");
             }
         }
 

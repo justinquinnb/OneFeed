@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.data.sources.sample;
+package com.justinquinnb.onefeed.data.contentsources.sample;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.Content;

@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.data.sources.sample;
+package com.justinquinnb.onefeed.data.contentsources.sample;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -12,9 +12,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SampleService implements ContentSource {
+public class SampleService extends ContentSource {
     private static final SourceInfo INFO = new SourceInfo("N/A", "Sample Service", "@");
-    private final String ID;
 
     private static final String baseUrl = "sampleurl";
     private static final ObjectMapper mapper = JsonMapper.builder()
@@ -22,7 +21,7 @@ public class SampleService implements ContentSource {
             .build();
 
     public SampleService(String id) {
-        ID = id;
+        super(id);
     }
 
     @Override
@@ -72,10 +71,5 @@ public class SampleService implements ContentSource {
     @Override
     public SourceInfo getSourceInfo() {
         return INFO;
-    }
-
-    @Override
-    public String getId() {
-        return ID;
     }
 }
