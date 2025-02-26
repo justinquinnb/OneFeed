@@ -1,16 +1,15 @@
-package com.justinquinnb.onefeed.data.sources.instagram;
+package com.justinquinnb.onefeed.data.contentsources.linkedin;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import java.time.Instant;
 
-public class InstaService implements ContentSource {
-    private static final SourceInfo INFO = new SourceInfo("https://instagram.com", "Instagram", "@");
-    private final String ID;
+public class LinkedInService extends ContentSource {
+    private static final SourceInfo INFO = new SourceInfo("https://linkedin.com", "LinkedIn", "@");
 
-    public InstaService(String id) {
-        ID = id;
+    public LinkedInService(String id) {
+        super(id);
     }
 
     @Override
@@ -31,10 +30,5 @@ public class InstaService implements ContentSource {
     @Override
     public SourceInfo getSourceInfo() {
         return INFO;
-    }
-
-    @Override
-    public String getId() {
-        return ID;
     }
 }

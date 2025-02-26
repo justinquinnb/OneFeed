@@ -1,12 +1,11 @@
 package com.justinquinnb.onefeed;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
-import com.justinquinnb.onefeed.data.sources.github.GitHubService;
-import com.justinquinnb.onefeed.data.sources.instagram.InstaService;
-import com.justinquinnb.onefeed.data.sources.linkedin.LinkedInService;
-import com.justinquinnb.onefeed.data.sources.sample.SampleService;
-import com.justinquinnb.onefeed.data.sources.threads.ThreadsService;
+import com.justinquinnb.onefeed.data.contentsources.github.GitHubService;
+import com.justinquinnb.onefeed.data.contentsources.instagram.InstaService;
+import com.justinquinnb.onefeed.data.contentsources.linkedin.LinkedInService;
+import com.justinquinnb.onefeed.data.contentsources.sample.SampleService;
+import com.justinquinnb.onefeed.data.contentsources.threads.ThreadsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -59,7 +58,7 @@ public class OneFeedApplication {
 	}
 
 	/**
-	 * Gets and stores instance of each {@link ContentSource} provided in {@link com.justinquinnb.onefeed.data.sources}
+	 * Gets and stores instance of each {@link ContentSource} provided in {@link com.justinquinnb.onefeed.data.contentsources}
 	 * directory.
 	 */
 	private static void getContentSources() {

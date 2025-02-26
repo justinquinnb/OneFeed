@@ -1,16 +1,15 @@
-package com.justinquinnb.onefeed.data.sources.github;
+package com.justinquinnb.onefeed.data.contentsources.github;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import java.time.Instant;
 
-public class GitHubService implements ContentSource {
+public class GitHubService extends ContentSource {
     private static final SourceInfo INFO = new SourceInfo("https://github.com", "GitHub", "@");
-    private final String ID;
 
     public GitHubService(String id) {
-        ID = id;
+        super(id);
     }
 
     @Override
@@ -31,10 +30,5 @@ public class GitHubService implements ContentSource {
     @Override
     public SourceInfo getSourceInfo() {
         return INFO;
-    }
-
-    @Override
-    public String getId() {
-        return ID;
     }
 }

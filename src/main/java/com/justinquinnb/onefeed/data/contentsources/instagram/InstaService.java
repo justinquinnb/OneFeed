@@ -1,16 +1,15 @@
-package com.justinquinnb.onefeed.data.sources.threads;
+package com.justinquinnb.onefeed.data.contentsources.instagram;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import java.time.Instant;
 
-public class ThreadsService implements ContentSource {
-    private static final SourceInfo INFO = new SourceInfo("https://threads.com", "Threads", "@");
-    private final String ID;
+public class InstaService extends ContentSource {
+    private static final SourceInfo INFO = new SourceInfo("https://instagram.com", "Instagram", "@");
 
-    public ThreadsService(String id) {
-        ID = id;
+    public InstaService(String id) {
+        super(id);
     }
 
     @Override
@@ -31,10 +30,5 @@ public class ThreadsService implements ContentSource {
     @Override
     public SourceInfo getSourceInfo() {
         return INFO;
-    }
-
-    @Override
-    public String getId() {
-        return ID;
     }
 }
