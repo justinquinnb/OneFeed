@@ -1,22 +1,33 @@
 package com.justinquinnb.onefeed.data.model.content;
 
-import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
+import com.justinquinnb.onefeed.data.model.content.details.Platform;
 
 import java.time.Instant;
 
 /**
- * User-generated content that exists within a feed.
+ * A single piece of content from some user-generated feed.
  */
 public abstract class Content {
+    /**
+     * The {@link Instant} the content was posted to or generated on the {@link #platform}.
+     */
     private final Instant timestamp;
-    private final Producer producer;
-    private final SourceInfo source;
 
-    public Content(Instant timestamp, Producer producer, SourceInfo source) {
+    /**
+     * The user or entity that produced {@code this} {@code Content}.
+     */
+    private final Producer producer;
+
+    /**
+     * The site or platform hosting {@code this} {@code Content}.
+     */
+    private final Platform platform;
+
+    public Content(Instant timestamp, Producer producer, Platform platform) {
         this.timestamp = timestamp;
         this.producer = producer;
-        this.source = source;
+        this.platform = platform;
     }
 
     /**
@@ -42,8 +53,8 @@ public abstract class Content {
      *
      * @return the details of the platform where {@code this} {@code Content} was published.
      */
-    public SourceInfo getPlatform() {
-        return this.source;
+    public Platform getPlatform() {
+        return this.platform;
     }
 
     /**
@@ -64,6 +75,6 @@ public abstract class Content {
         return "Content:" + this.hashCode() +
                 "{timestamp=" + this.timestamp +
                 ", producer=" + this.producer +
-                ", source=" + this.source + "}";
+                ", platform=" + this.platform + "}";
     }
 }

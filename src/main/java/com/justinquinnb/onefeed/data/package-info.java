@@ -1,4 +1,4 @@
 /**
- * Contains the structures for and means of acquiring content.
+ * Specifies data structures and means of storage.
  */
 package com.justinquinnb.onefeed.data;

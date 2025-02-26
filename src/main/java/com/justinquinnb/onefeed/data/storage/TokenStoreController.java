@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 /**
@@ -36,45 +34,46 @@ public class TokenStoreController {
     }
 
     /**
-     * Adds a {@link TokenEntry} to the {@link #tokenStore}.
+     * Adds a {@link TokenEntry} to the active token storage medium, {@link #tokenStore}.
      *
-     * @param contentSourceId the ID of the {@link AuthorizationCodeOAuth}-enabled {@link ContentSource} whose access
-     *                        token is being stored
-     * @param accessToken the access token affiliated with the ID of the {@link AuthorizationCodeOAuth}-enabled
-     * {@code ContentSource}
+     * @param tokenEntry the {@code TokenEntry} to add to the {@code tokenStore}
      */
-    public void addTokenEntryFor(String contentSourceId, String accessToken) {
-        tokenStore.addTokenEntryFor(new TokenEntry(contentSourceId, accessToken));
+    public void add(TokenEntry tokenEntry) {
+        tokenStore.addTokenEntryFor(tokenEntry);
     }
 
+
     /**
-     * Adds a {@link TokenEntry} with expiration time to the {@link #tokenStore}.
+     * Saves an {@link AuthorizationCodeOAuth}-enabled {@link ContentSource}'s {@link TokenEntry} to the active token
+     * storage medium, {@link #tokenStore}. If an entry already exists, it is updated to reflect the fields of
+     * {@code tokenEntry}. Else, the entirety of {@code tokenEntry} is added whole.
      *
-     * @param contentSourceId the ID of the {@link AuthorizationCodeOAuth}-enabled {@link ContentSource} whose access
-     *                        token is being stored
-     * @param accessToken the access token affiliated with the ID of the {@link AuthorizationCodeOAuth}-enabled
-     *                    {@code ContentSource}
-     * @param validFor the amount of time until the provided {@code accessToken} is valid for (i.e. time until expiration)
+     * @param tokenEntry the {@link TokenEntry} to add to or update in the {@code tokenStore}
      *
-     * @throws IllegalArgumentException if {@code validFor}'s duration is negative
+     * @return {@code true} if an existing entry was found and updated with the {@code tokenEntry}'s Content Source ID,
+     * else {@code false}
      */
-    public void addTokenEntryFor(
-            String contentSourceId, String accessToken, Duration validFor
-    ) throws IllegalArgumentException {
-        if (validFor.isNegative()) {
-            throw new IllegalArgumentException("validFor duration cannot be negative: " + validFor.get(ChronoUnit.DAYS));
+    public boolean save(TokenEntry tokenEntry) {
+        String contentSourceId = tokenEntry.getContentSourceId();
+
+        if (tokenStore.tokenEntryExistsFor(contentSourceId)) {
+            tokenStore.updateTokenEntryFor(contentSourceId, tokenEntry.getAccessToken());
+            return true;
+        } else {
+            tokenStore.addTokenEntryFor(tokenEntry);
+            return false;
         }
-
-        tokenStore.addTokenEntryFor(new TokenEntry(contentSourceId, accessToken, validFor));
     }
 
     /**
-     * Removes the {@link TokenEntry} with Content Source ID {@code contentSourceId} from the {@link #tokenStore}.
+     * Removes the {@link TokenEntry} with Content Source ID {@code contentSourceId} from the the active token
+     * storage medium, {@link #tokenStore}.
      *
      * @param contentSourceId the ID of the {@link AuthorizationCodeOAuth}-enabled {@link ContentSource} whose access
      *                        token is being stored
      *
      * @throws TokenEntryNotFound if a {@code TokenEntry} does not exist with Content Source ID {@code contentSourceId}
+     * in the {@link #tokenStore}
      */
     public void removeTokenEntryFor(String contentSourceId) throws TokenEntryNotFound {
         if (!tokenStore.tokenEntryExistsFor(contentSourceId)) {
@@ -86,13 +85,15 @@ public class TokenStoreController {
     }
 
     /**
-     * Updates the access token associated with Content Source ID {@code contentSourceId}.
+     * Updates the access token associated with Content Source ID {@code contentSourceId} in the active token storage
+     * medium, {@link #tokenStore}.
      *
      * @param contentSourceId the ID of the {@link AuthorizationCodeOAuth}-enabled {@link ContentSource} whose access
-     *                        token is being stored
+     *                        token is to be stored in the {@code tokenStore}
      * @param newAccessToken the new access token to associate with the Content Source with ID {@code contentSourceId}
      *
      * @throws TokenEntryNotFound if a {@link TokenEntry} does not exist with Content Source ID {@code contentSourceId}
+     * in the {@code #tokenStore}
      */
     public void updateTokenEntryFor(String contentSourceId, String newAccessToken) throws TokenEntryNotFound {
         if (!tokenStore.tokenEntryExistsFor(contentSourceId)) {
@@ -104,8 +105,8 @@ public class TokenStoreController {
     }
 
     /**
-     * Gets the entire {@link TokenEntry} for the desired {@link =AuthorizationCodeOAuth}-enabled {@code ContentSource}
-     * instance with ID {@code contentSourceId}.
+     * Gets the entire {@link TokenEntry} for the desired {@link AuthorizationCodeOAuth}-enabled {@code ContentSource}
+     * instance with ID {@code contentSourceId} from the active token storage medium, {@link #tokenStore}.
      *
      * @param contentSourceId the ID of the {@code ContentSource} instance whose {@code TokenEntry} to retrieve
      *

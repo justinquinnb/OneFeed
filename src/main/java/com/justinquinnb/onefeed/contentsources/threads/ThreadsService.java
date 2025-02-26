@@ -1,13 +1,18 @@
-package com.justinquinnb.onefeed.data.contentsources.threads;
+package com.justinquinnb.onefeed.contentsources.threads;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
+import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 
 import java.time.Instant;
 
+/**
+ * Provides a means of accessing Threads posts through Meta's Threads API.
+ *
+ * @see <a href="https://developers.facebook.com/docs/threads">Meta's Threads API Documentation</a>
+ */
 public class ThreadsService extends ContentSource {
-    private static final SourceInfo INFO = new SourceInfo("https://threads.com", "Threads", "@");
+    private static final Platform INFO = new Platform("https://threads.com", "Threads", "@");
 
     public ThreadsService(String id) {
         super(id);
@@ -29,7 +34,7 @@ public class ThreadsService extends ContentSource {
     }
 
     @Override
-    public SourceInfo getSourceInfo() {
+    public Platform getSourceInfo() {
         return INFO;
     }
 }

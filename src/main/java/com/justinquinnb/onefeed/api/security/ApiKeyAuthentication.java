@@ -6,14 +6,16 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
- * An Authentication object representing an API Key for Spring Security.
- * Extends the AbstractAuthenticationToken class to provide a custom implementation
- * for API Key based authentication.
+ * A structure indicating the authentication status of an inbound OneFeed API request after it's been caught and checked
+ * by the {@link ApiKeyAuthenticationFilter} and {@link AuthenticationService}.
  *
  * @author Lynne Munini
  * @see <a href="https://medium.com/@LynneMunini/securing-your-spring-boot-3-app-multi-factor-authentication-with-api-key-and-basic-auth-e6835a3687d1"></a></a>
  */
 public class ApiKeyAuthentication extends AbstractAuthenticationToken {
+    /**
+     * The API obtained from the request header.
+     */
     private final String apiKey;
 
     /**

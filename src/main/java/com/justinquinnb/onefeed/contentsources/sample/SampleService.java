@@ -1,19 +1,24 @@
-package com.justinquinnb.onefeed.data.contentsources.sample;
+package com.justinquinnb.onefeed.contentsources.sample;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
+import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Provides an offline, tinker-able source of content to pull from, emulating a full-fledged Content Source.
+ */
 public class SampleService extends ContentSource {
-    private static final SourceInfo INFO = new SourceInfo("N/A", "Sample Service", "@");
+    private static final Platform INFO = new Platform("N/A", "Sample Service", "@");
+    private static final String SAMPLE_CONTENT_LOCATION = "src/main/java/com/justinquinnb/onefeed/contentsources/sample/sample-content.json";
 
     private static final String baseUrl = "sampleurl";
     private static final ObjectMapper mapper = JsonMapper.builder()
@@ -31,11 +36,11 @@ public class SampleService extends ContentSource {
 
     @Override
     public Content[] getLatestContent(int count) {
-        int numToGet = (count > 10) ? 10 : count;
+        int numToGet = Math.min(count, 10);
         Content[] sampleContent = new Content[0];
         try {
             sampleContent = mapper.readValue(
-                    new File("src/main/java/com/justinquinnb/onefeed/data/sources/sample/sample-content.json"),
+                    new File(SAMPLE_CONTENT_LOCATION),
                     SampleContent[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -46,11 +51,11 @@ public class SampleService extends ContentSource {
 
     @Override
     public Content[] getLatestContent(int count, Instant[] betweenTimes) {
-        int numToGet = (count > 10) ? 10 : count;
+        int numToGet = Math.min(count, 10);
         Content[] sampleContent = new Content[0];
         try {
             sampleContent = mapper.readValue(
-                    new File("src/main/java/com/justinquinnb/onefeed/data/sources/sample/sample-content.json"),
+                    new File(SAMPLE_CONTENT_LOCATION),
                     SampleContent[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -69,7 +74,7 @@ public class SampleService extends ContentSource {
     }
 
     @Override
-    public SourceInfo getSourceInfo() {
+    public Platform getSourceInfo() {
         return INFO;
     }
 }

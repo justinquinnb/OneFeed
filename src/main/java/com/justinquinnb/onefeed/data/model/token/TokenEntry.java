@@ -1,17 +1,35 @@
 package com.justinquinnb.onefeed.data.model.token;
 
+import com.justinquinnb.onefeed.data.model.source.ContentSource;
+
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 /**
  * Specifies a Token entry on a database or other storage structure.
  */
 public class TokenEntry {
+    /**
+     * The {@link ContentSource#SOURCE_ID} of the {@link ContentSource} using {@code this} {@code TokenEntry}'s
+     * {@link #accessToken}.
+     */
     private final String contentSourceId;
+
+    /**
+     * The access token that the {@link ContentSource} with ID {@link #contentSourceId} uses to retrieve its content.
+     */
     private final String accessToken;
+
+    /**
+     * The {@link Instant} that {@code this} {@code TokenEntry}'s {@link #accessToken} was last updated.
+     */
     private final Instant lastUpdated;
+
+    /**
+     * The {@link Instant} that {@code this} {@code TokenEntry}'s {@link #accessToken} expires, if it does. If it
+     * doesn't, this will be an empty {@link Optional}.
+     */
     private final Optional<Instant> expires;
 
     /**
@@ -99,5 +117,18 @@ public class TokenEntry {
      */
     public boolean isExpired() {
         return expires.isPresent() && Instant.now().isAfter(expires.get());
+    }
+
+    /**
+     * Returns a string representation of {@code this} {@code TokenEntry}, excluding its {@link #accessToken}.
+     *
+     * @return a string representation of {@code this} {@code TokenEntry}, excluding its {@link #accessToken}
+     */
+    public String toString() {
+        return "TokenEntry:" + this.hashCode() +
+                "{contentSourceId=" + this.contentSourceId +
+                ", accessToken=HIDDEN" +
+                ", lastUpdated=" + this.lastUpdated +
+                ", expires=" + this.expires +"}";
     }
 }

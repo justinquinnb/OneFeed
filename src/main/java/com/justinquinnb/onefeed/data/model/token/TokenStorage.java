@@ -6,13 +6,11 @@ import com.justinquinnb.onefeed.exceptions.TokenEntryNotFound;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 /**
  * Specifies a means of storing API access tokens, whether that be through a database, local file, or any other approach.
- * Specifically required by {@link com.justinquinnb.onefeed.data.model.source.AuthorizationCodeOAuth}-enabled {@link
- * com.justinquinnb.onefeed.data.model.source.ContentSource}s.
+ * Specifically required by {@link AuthorizationCodeOAuth}-enabled {@link ContentSource}s.
  */
 @Component
 public interface TokenStorage {

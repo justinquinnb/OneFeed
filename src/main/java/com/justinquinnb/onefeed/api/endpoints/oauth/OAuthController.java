@@ -58,7 +58,7 @@ public class OAuthController {
             logger.warn("Could not get Consent URL: invalid Content Source ID \"{}\"", contentSourceId);
             throw new InvalidSourceIdException("Content Source with ID " + contentSourceId + " does not exist");
         }
-        logger.debug("Content Source \"{}\" found and retrieved", contentSourceId);
+        logger.trace("Content Source \"{}\" found and retrieved", contentSourceId);
 
         return new ResponseEntity<>(oAuthService.getConsentUrlFor(contentSourceId), HttpStatus.OK);
 
@@ -98,9 +98,9 @@ public class OAuthController {
             logger.warn("Could not post Authorization Code: invalid Content Source ID \"{}\"", contentSourceId);
             throw new InvalidSourceIdException("Content Source with ID " + contentSourceId + " does not exist");
         }
-        logger.debug("Content Source \"{}\" found and retrieved", contentSourceId);
+        logger.trace("Content Source \"{}\" found and retrieved", contentSourceId);
 
-        TokenEntry createdAccessTokenEntry = oAuthService.exchangeAccessToken(contentSourceId, authorizationCode);
+        TokenEntry createdAccessTokenEntry = oAuthService.exchangeAuthCode(contentSourceId, authorizationCode);
         return new ResponseEntity<>(createdAccessTokenEntry, HttpStatus.CREATED);
     }
 }

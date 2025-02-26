@@ -1,5 +1,4 @@
 /**
- * Contains structures to normalize the content aggregated from feeds
- * and the sources themselves.
+ * Provides structures for OneFeed's data.
  */
 package com.justinquinnb.onefeed.data.model;

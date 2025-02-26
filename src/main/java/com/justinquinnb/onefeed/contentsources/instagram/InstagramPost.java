@@ -1,25 +1,24 @@
-package com.justinquinnb.onefeed.data.contentsources.instagram;
+package com.justinquinnb.onefeed.contentsources.instagram;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
+import com.justinquinnb.onefeed.data.model.content.details.Platform;
 
 import java.time.Instant;
 import java.util.Arrays;
 
 /**
- * A type of content that contains text and optional attachments,
- * posted by a user on some feed.
+ * An Instagram post containing a caption, post URL, and attachments.
  */
-public class Post extends Content {
+public class InstagramPost extends Content {
     private String postUrl;
     private String caption;
     private String[] attachmentUrls;
 
-    public Post(
+    public InstagramPost(
         Instant timestamp,
         Producer actor,
-        SourceInfo source,
+        Platform source,
         String postUrl,
         String caption,
         String[] attachmentUrls

@@ -1,26 +1,26 @@
-package com.justinquinnb.onefeed.data.contentsources.github;
+package com.justinquinnb.onefeed.contentsources.github;
 
 import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.content.details.SourceInfo;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
+import com.justinquinnb.onefeed.data.model.content.details.Platform;
 
 import java.time.Instant;
 import java.util.Arrays;
 
 /**
- * A type of content that describes something an actor has done.
- * Effectively, a collection of activity would look like an event log.
+ * A type of content that describes something(s) the producer has done on GitHub. In cases with multiple recent actions,
+ * this effectively becomes a summary of them.
  */
-public class Activity extends Content {
+public class ActivitySummary extends Content {
     private String[] actionUrls;
     private String summary;
 
-    public Activity(
+    public ActivitySummary(
             Instant timestamp,
             Producer actor,
-            SourceInfo source,
+            Platform source,
             String[] actionUrls,
-            String description
+            String summary
     ) {
         super(timestamp, actor, source);
         this.actionUrls = actionUrls;
