@@ -13,33 +13,14 @@ import java.util.Arrays;
  * posted by a user on some feed.
  */
 public class SampleContent extends Content {
-    private String postUrl;
-    private String caption;
-    private String[] attachmentUrls;
-
     public SampleContent(
             @JsonProperty("timestamp") Instant timestamp,
+            @JsonProperty("contentUrl") String contentUrl,
             @JsonProperty("producer") Producer producer,
             @JsonProperty("platform") Platform source,
-            @JsonProperty("postUrl") String postUrl,
-            @JsonProperty("text") String caption,
-            @JsonProperty("attachments") String[] attachmentUrls
+            @JsonProperty("text") String text,
+            @JsonProperty("attachmentUrls") String[] attachmentUrls
     ) {
-        super(timestamp, producer, source);
-        this.postUrl = postUrl;
-        this.caption = caption;
-        this.attachmentUrls = attachmentUrls;
-    }
-
-    public String getPostUrl() {
-        return this.postUrl;
-    }
-
-    public String getText() {
-        return caption;
-    }
-
-    public String[] getAttachments() {
-        return Arrays.copyOf(attachmentUrls, attachmentUrls.length);
+        super(timestamp, contentUrl, producer, source, text, attachmentUrls);
     }
 }

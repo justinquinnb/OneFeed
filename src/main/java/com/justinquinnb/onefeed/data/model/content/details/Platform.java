@@ -62,7 +62,7 @@ public class Platform {
     }
 
     public String toString() {
-        return "Platform:" + this.hashCode() +
+        return "Platform@" + this.hashCode() +
                 "{name=" + this.name +
                 ", homepageUrl=" + this.homepageUrl +
                 ", usernamePrefix=" + this.usernamePrefix + "}";
