@@ -125,7 +125,7 @@ public class TokenEntry {
      * @return a string representation of {@code this} {@code TokenEntry}, excluding its {@link #accessToken}
      */
     public String toString() {
-        return "TokenEntry:" + this.hashCode() +
+        return "TokenEntry@" + this.hashCode() +
                 "{contentSourceId=" + this.contentSourceId +
                 ", accessToken=HIDDEN" +
                 ", lastUpdated=" + this.lastUpdated +

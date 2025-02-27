@@ -96,7 +96,7 @@ public class Producer {
     }
 
     public String toString() {
-        return "Producer:" + this.hashCode() +
+        return "Producer@" + this.hashCode() +
                 "{firstName=" + this.firstName +
                 ", lastName=" + this.lastName +
                 ", username=" + this.username +

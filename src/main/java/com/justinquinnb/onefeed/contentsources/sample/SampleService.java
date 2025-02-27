@@ -36,7 +36,7 @@ public class SampleService extends ContentSource {
 
     @Override
     public Content[] getLatestContent(int count) {
-        int numToGet = Math.min(count, 10);
+        int numToGet = Math.min(count, 6);
         Content[] sampleContent = new Content[0];
         try {
             sampleContent = mapper.readValue(
@@ -51,7 +51,7 @@ public class SampleService extends ContentSource {
 
     @Override
     public Content[] getLatestContent(int count, Instant[] betweenTimes) {
-        int numToGet = Math.min(count, 10);
+        int numToGet = Math.min(count, 6);
         Content[] sampleContent = new Content[0];
         try {
             sampleContent = mapper.readValue(
