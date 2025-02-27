@@ -7,7 +7,7 @@ target/
 # Protect publishing of sensitive info
 *.env
 logs/
-docs/
+apidocs/
 
 ### STS ###
 .apt_generated
