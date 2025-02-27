@@ -13,11 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 /**
  * Specifies the security configuration of OneFeed's API endpoints.
  *
- * @EnableWebSecurity enables Spring Security features
- * @Configuration indicates this class provides Spring bean definitions
- *
  * @author Lynne Munini
- * @see <a href="https://medium.com/@LynneMunini/securing-your-spring-boot-3-app-multi-factor-authentication-with-api-key-and-basic-auth-e6835a3687d1"></a></a>
+ * @see <a href="https://medium.com/@LynneMunini/securing-your-spring-boot-3-app-multi-factor-authentication-with-api-key-and-basic-auth-e6835a3687d1"></a>
  */
 @Configuration
 @EnableWebSecurity

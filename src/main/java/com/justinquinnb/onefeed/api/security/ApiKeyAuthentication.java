@@ -10,7 +10,7 @@ import java.util.Collection;
  * by the {@link ApiKeyAuthenticationFilter} and {@link AuthenticationService}.
  *
  * @author Lynne Munini
- * @see <a href="https://medium.com/@LynneMunini/securing-your-spring-boot-3-app-multi-factor-authentication-with-api-key-and-basic-auth-e6835a3687d1"></a></a>
+ * @see <a href="https://medium.com/@LynneMunini/securing-your-spring-boot-3-app-multi-factor-authentication-with-api-key-and-basic-auth-e6835a3687d1"></a>
  */
 public class ApiKeyAuthentication extends AbstractAuthenticationToken {
     /**
