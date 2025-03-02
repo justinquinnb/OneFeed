@@ -1,5 +1,6 @@
 package com.justinquinnb.onefeed.data.model.content.details;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.Content;
 
@@ -33,6 +34,7 @@ public class Producer {
      */
     private final String username;
 
+    @JsonCreator
     public Producer(
             @JsonProperty("profilePageUrl") String profilePageUrl,
             @JsonProperty("profilePicUrl") String profilePicUrl,
@@ -97,10 +99,10 @@ public class Producer {
 
     public String toString() {
         return "Producer@" + this.hashCode() +
-                "{firstName=" + this.firstName +
-                ", lastName=" + this.lastName +
-                ", username=" + this.username +
-                ", profilePageUrl=" + this.profilePageUrl +
-                ", profilePicUrl=" + this.profilePicUrl + "}";
+                "{firstName=\"" + this.firstName +
+                "\", lastName=\"" + this.lastName +
+                "\", username=\"" + this.username +
+                "\", profilePageUrl=\"" + this.profilePageUrl +
+                "\", profilePicUrl=\"" + this.profilePicUrl + "\"}";
     }
 }
