@@ -126,8 +126,8 @@ public class TokenEntry {
      */
     public String toString() {
         return "TokenEntry@" + this.hashCode() +
-                "{contentSourceId=" + this.contentSourceId +
-                ", accessToken=HIDDEN" +
+                "{contentSourceId=\"" + this.contentSourceId +
+                "\", accessToken=HIDDEN" +
                 ", lastUpdated=" + this.lastUpdated +
                 ", expires=" + this.expires +"}";
     }

@@ -1,7 +1,10 @@
 package com.justinquinnb.onefeed.data.model.content;
 
-import com.justinquinnb.onefeed.data.model.content.details.Producer;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.data.model.content.attachments.Attachment;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
+import com.justinquinnb.onefeed.data.model.content.details.Producer;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -9,7 +12,7 @@ import java.util.Arrays;
 /**
  * A single piece of content from some user-generated feed.
  */
-public abstract class Content {
+public class Content {
     /**
      * The {@link Instant} the content was posted to or generated on the {@link #platform}.
      */
@@ -31,14 +34,15 @@ public abstract class Content {
     private final Platform platform;
 
     /**
-     * The written part of {@code this} content, usually referred to as the caption, description, or summary
+     * The written part of {@code this} content, usually referred to as the caption, description, or summary.
      */
     private final String text;
 
     /**
-     * URLs to the media associated with {@code this} content, for example photos or videos in an Instagram post
+     * Any {@link Attachment}s associated with {@code this} {@code Content}, in the order that they appear in the
+     * content on its source.
      */
-    private final String[] attachmentUrls;
+    private final Attachment[] attachments;
 
     /**
      * Instantiates a piece of {@link Content} containing text and attached media.
@@ -48,16 +52,17 @@ public abstract class Content {
      * @param producer details about the user or entity that produced {@code this} {@code Content}
      * @param platform details about the site or platform hosting {@code this} {@code Content}
      * @param text the written part of {@code this} content, usually referred to as the caption, description, or summary
-     * @param attachmentUrls URLs to the media associated with {@code this} content, for example photos or videos in an
-     *                       Instagram post
+     * @param attachments any {@link Attachment}s associated with {@code this} {@code Content}, in the order that they
+     *                    appear in the content on its source
      */
+    @JsonCreator
     public Content(
-            Instant timestamp,
-            String contentUrl,
-            Producer producer,
-            Platform platform,
-            String text,
-            String[] attachmentUrls
+            @JsonProperty("timestamp") Instant timestamp,
+            @JsonProperty("contentUrl") String contentUrl,
+            @JsonProperty("producer") Producer producer,
+            @JsonProperty("platform") Platform platform,
+            @JsonProperty("text") String text,
+            @JsonProperty("attachments") Attachment[] attachments
     ) {
         this.timestamp = timestamp;
         this.contentUrl = contentUrl;
@@ -65,12 +70,12 @@ public abstract class Content {
         this.platform = platform;
 
         this.text = text;
-        this.attachmentUrls = attachmentUrls;
+        this.attachments = attachments;
 
     }
 
     /**
-     * Instantiates a piece of {@link Content} containing text and attached media.
+     * Instantiates a piece of {@link Content} containing text but no attached media.
      *
      * @param timestamp the {@link Instant} the content was posted to or generated on the {@link #platform}
      * @param contentUrl the URL of {@code this} content on its host {@code platform}.
@@ -85,27 +90,27 @@ public abstract class Content {
             Platform platform,
             String text
     ) {
-        this(timestamp, contentUrl, producer, platform, text, new String[0]);
+        this(timestamp, contentUrl, producer, platform, text, new Attachment[0]);
     }
 
     /**
-     * Instantiates a piece of {@link Content} containing text and attached media.
+     * Instantiates a piece of {@link Content} containing no text but attached media.
      *
      * @param timestamp the {@link Instant} the content was posted to or generated on the {@link #platform}
      * @param contentUrl the URL of {@code this} content on its host {@code platform}.
      * @param producer details about the user or entity that produced {@code this} {@code Content}
      * @param platform details about the site or platform hosting {@code this} {@code Content}
-     * @param attachmentUrls URLs to the media associated with {@code this} content, for example photos or videos in an
-     *                       Instagram post
+     * @param attachments any {@link Attachment}s associated with {@code this} {@code Content}, in the order that they
+     *                    appear in the content on its source
      */
     public Content(
             Instant timestamp,
             String contentUrl,
             Producer producer,
             Platform platform,
-            String[] attachmentUrls
+            Attachment[] attachments
     ) {
-        this(timestamp, contentUrl, producer, platform, "", attachmentUrls);
+        this(timestamp, contentUrl, producer, platform, "", attachments);
     }
 
     /**
@@ -145,21 +150,21 @@ public abstract class Content {
     }
 
     /**
-     * Gets the attachment URLs of {@code this} {@code Content}.
+     * Gets the attachments of {@code this} {@code Content}.
      *
-     * @return the attachment URLs of {@code this} {@code Content}.
+     * @return the attachments of {@code this} {@code Content}.
      */
-    public String[] getAttachmentsUrls() {
-        return Arrays.copyOf(this.attachmentUrls, this.attachmentUrls.length);
+    public Attachment[] getAttachments() {
+        return Arrays.copyOf(this.attachments, this.attachments.length);
     }
 
     public String toString() {
         return "Content@" + this.hashCode() +
                 "{timestamp=" + this.timestamp +
-                ", contentUrl=" + this.contentUrl +
-                ", producer=" + this.producer.getUsername() +
+                ", contentUrl=\"" + this.contentUrl +
+                "\", producer=" + this.producer.getUsername() +
                 ", platform=" + this.platform.getName() +
-                ", text=" + this.text +
-                ", attachmentUrls=" + Arrays.toString(this.attachmentUrls) + "}";
+                "\", text=\"" + this.text +
+                "\", attachments=" + Arrays.toString(this.attachments) + "}";
     }
 }

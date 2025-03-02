@@ -1,5 +1,6 @@
 package com.justinquinnb.onefeed.data.model.content.details;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.Content;
 
@@ -22,6 +23,7 @@ public class Platform {
      */
     private final String usernamePrefix;
 
+    @JsonCreator
     public Platform(
             @JsonProperty("homepageUrl") String homepageUrl,
             @JsonProperty("name") String name,
@@ -63,8 +65,8 @@ public class Platform {
 
     public String toString() {
         return "Platform@" + this.hashCode() +
-                "{name=" + this.name +
-                ", homepageUrl=" + this.homepageUrl +
-                ", usernamePrefix=" + this.usernamePrefix + "}";
+                "{name=\"" + this.name +
+                "\", homepageUrl=\"" + this.homepageUrl +
+                "\", usernamePrefix=\"" + this.usernamePrefix + "\"}";
     }
 }

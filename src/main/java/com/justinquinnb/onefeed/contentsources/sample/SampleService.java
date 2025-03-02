@@ -41,7 +41,7 @@ public class SampleService extends ContentSource {
         try {
             sampleContent = mapper.readValue(
                     new File(SAMPLE_CONTENT_LOCATION),
-                    SampleContent[].class);
+                    Content[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -56,7 +56,7 @@ public class SampleService extends ContentSource {
         try {
             sampleContent = mapper.readValue(
                     new File(SAMPLE_CONTENT_LOCATION),
-                    SampleContent[].class);
+                    Content[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
