@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.api.endpoints.content;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
-import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.content.BasicContent;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.exceptions.IllegalContentCountException;
 import com.justinquinnb.onefeed.exceptions.InvalidSourceIdException;
@@ -50,7 +50,7 @@ public class ContentController {
      * @return {@code count}-many pieces of content that meets all the provided requirements.
      */
     @GetMapping("/content")
-    public ResponseEntity<Content[]> getContent(
+    public ResponseEntity<BasicContent[]> getContent(
             @RequestParam(name = "count") Integer contentCount,
             @RequestParam(name = "from") Optional<String> fromSources,
             @RequestParam(name = "between") Optional<String> betweenTimes
@@ -79,7 +79,7 @@ public class ContentController {
         }
 
         // Now grab the content with the correct method
-        CompletableFuture<Content[]> possibleResponse;
+        CompletableFuture<BasicContent[]> possibleResponse;
 
         if (fromSources.isPresent() && betweenTimes.isPresent()) {
             logger.debug("Processing request for: {} pieces from {} between {} and {}",

@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.api.endpoints.content;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
-import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.content.BasicContent;
 import com.justinquinnb.onefeed.data.model.content.ContentComparator;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.exceptions.InvalidSourceIdException;
@@ -26,7 +26,7 @@ public class ContentService {
     private static final Logger logger = LoggerFactory.getLogger(ContentService.class);
 
     /**
-     * Gets the {@code count} latest units of {@link Content} from all available {@link ContentSource}s
+     * Gets the {@code count} latest units of {@link BasicContent} from all available {@link ContentSource}s
      * in reverse-chronological order.
      *
      * @param count the amount of {@code Content} to retrieve
@@ -35,14 +35,14 @@ public class ContentService {
      * units of {@code Content} can be retrieved, then all that could be retrieved is returned.
      */
     @Async
-    public CompletableFuture<Content[]> getContent(int count) {
+    public CompletableFuture<BasicContent[]> getContent(int count) {
         logger.debug("Attempting to retrieve Content: {} pieces", count);
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
-        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
+        CompletableFuture<BasicContent[]> completableFuture = new CompletableFuture<>();
 
-        Collection<Content> allContent = new ArrayList<>();
-        Collection<Content> newContent;
+        Collection<BasicContent> allContent = new ArrayList<>();
+        Collection<BasicContent> newContent;
 
         // For every Content Source identified at OneFeed startup, try to get `count`-many pieces of
         // Content because any given source might hold the top `count` most recent pieces
@@ -57,7 +57,7 @@ public class ContentService {
 
         // Aggregate the Content into an array of at most `count` most recent pieces of Content because the amount of
         // Content posted across all Content Sources may total less than the desired count
-        Content[] aggregation = aggregateContent(allContent, count);
+        BasicContent[] aggregation = aggregateContent(allContent, count);
         logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
 
         completableFuture.complete(aggregation);
@@ -65,7 +65,7 @@ public class ContentService {
     }
 
     /**
-     * Gets the {@code count} latest units of {@link Content} from the {@link ContentSource}s
+     * Gets the {@code count} latest units of {@link BasicContent} from the {@link ContentSource}s
      * specified in {@code fromSources} in reverse-chronological order.
      *
      * @param count the amount of {@code Content} to retrieve
@@ -79,14 +79,14 @@ public class ContentService {
      * OneFeed is not aware of.
      */
     @Async
-    public CompletableFuture<Content[]> getContent(int count, ContentSource[] fromSources)
+    public CompletableFuture<BasicContent[]> getContent(int count, ContentSource[] fromSources)
             throws InvalidSourceIdException {
         logger.debug("Attempting to retrieve Content: {} pieces from sources {}", count, Arrays.toString(fromSources));
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
-        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
-        Collection<Content> allContent = new ArrayList<>();
-        Collection<Content> newContent;
+        CompletableFuture<BasicContent[]> completableFuture = new CompletableFuture<>();
+        Collection<BasicContent> allContent = new ArrayList<>();
+        Collection<BasicContent> newContent;
 
         // For every Content Source ID specified, try to get `count`-many pieces of Content
         // because any given source might hold the top `count` most recent pieces
@@ -104,7 +104,7 @@ public class ContentService {
         // Aggregate the Content into an array of at most `count` most recent pieces of Content
         // because the amount of Content posted across the desired Content Sources may total less
         // than the desired count
-        Content[] aggregation = aggregateContent(allContent, count);
+        BasicContent[] aggregation = aggregateContent(allContent, count);
         logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
 
         completableFuture.complete(aggregation);
@@ -112,7 +112,7 @@ public class ContentService {
     }
 
     /**
-     * Gets the {@code count} latest units of {@link Content} between the specified
+     * Gets the {@code count} latest units of {@link BasicContent} between the specified
      * {@code betweenTimes} from all available {@link ContentSource}s in reverse-chronological order.
      *
      * @param count the amount of {@code Content} to retrieve
@@ -125,14 +125,14 @@ public class ContentService {
      * retrieved is returned.
      */
     @Async
-    public CompletableFuture<Content[]> getContent(int count, Instant[] betweenTimes) {
+    public CompletableFuture<BasicContent[]> getContent(int count, Instant[] betweenTimes) {
         logger.debug("Attempting to retrieve Content: {} pieces between instants {} and {}",
                 count, betweenTimes[0], betweenTimes[1]);
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
-        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
-        Collection<Content> allContent = new ArrayList<>();
-        Collection<Content> newContent;
+        CompletableFuture<BasicContent[]> completableFuture = new CompletableFuture<>();
+        Collection<BasicContent> allContent = new ArrayList<>();
+        Collection<BasicContent> newContent;
 
         for (String sourceId : OneFeedApplication.CONTENT_SOURCES.keySet()) {
             // Retrieve the actual content
@@ -149,7 +149,7 @@ public class ContentService {
         // Aggregate the Content into an array of at most `count` most recent pieces of Content
         // because the amount of Content posted across all Content Sources may total less than the
         // desired count
-        Content[] aggregation = aggregateContent(allContent, count);
+        BasicContent[] aggregation = aggregateContent(allContent, count);
         logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
 
         completableFuture.complete(aggregation);
@@ -157,7 +157,7 @@ public class ContentService {
     }
 
     /**
-     * Gets the {@code count} latest units of {@link Content} between the specified
+     * Gets the {@code count} latest units of {@link BasicContent} between the specified
      * {@code betweenTimes} from all available {@link ContentSource}s in reverse-chronological order.
      *
      * @param count the amount of {@code Content} to retrieve
@@ -174,7 +174,7 @@ public class ContentService {
      * OneFeed is not aware of.
      */
     @Async
-    public CompletableFuture<Content[]> getContent(
+    public CompletableFuture<BasicContent[]> getContent(
         int count, ContentSource[] fromSources, Instant[] betweenTimes)
         throws InvalidSourceIdException
     {
@@ -182,9 +182,9 @@ public class ContentService {
                 count, Arrays.toString(fromSources), betweenTimes[0], betweenTimes[1]);
 
         // Get all the Content that could possibly be needed to make a count-sized aggregate
-        CompletableFuture<Content[]> completableFuture = new CompletableFuture<>();
-        Collection<Content> allContent = new ArrayList<>();
-        Collection<Content> newContent;
+        CompletableFuture<BasicContent[]> completableFuture = new CompletableFuture<>();
+        Collection<BasicContent> allContent = new ArrayList<>();
+        Collection<BasicContent> newContent;
 
         for (ContentSource source : fromSources) {
             // Then retrieve the actual Content
@@ -200,7 +200,7 @@ public class ContentService {
         /* Aggregate the Content into an array of at most `count` most recent pieces of Content
            because the amount of Content posted across the Content Sources and between the desired
            instants may total less than the desired count */
-        Content[] aggregation = aggregateContent(allContent, count);
+        BasicContent[] aggregation = aggregateContent(allContent, count);
         logger.debug("Retrieved Content aggregated into: {}", Arrays.toString(aggregation));
 
         completableFuture.complete(aggregation);
@@ -208,7 +208,7 @@ public class ContentService {
     }
 
     /**
-     * Takes a collection of miscellaneous {@link Content} and aggregates it into a single,
+     * Takes a collection of miscellaneous {@link BasicContent} and aggregates it into a single,
      * chronologically-ordered array of {@code Content} of at most {@code count} length.
      *
      * @param content any collection of {@code Content}
@@ -218,11 +218,11 @@ public class ContentService {
      * at max. Should the provided collection of content be any smaller than the desired count, the
      * output array will match that size instead.
      */
-    private static Content[] aggregateContent(Collection<Content> content, int count) {
+    private static BasicContent[] aggregateContent(Collection<BasicContent> content, int count) {
         logger.debug("Attempting to aggregate the following Content into an array of {} pieces: {}",
                 count, Arrays.toString(content.toArray()));
 
-        Content[] aggregateFeed = new Content[0];
+        BasicContent[] aggregateFeed = new BasicContent[0];
 
         // If no Content was sent through, then don't waste resources trying to aggregate nothing
         if (!content.isEmpty()) {
@@ -230,12 +230,12 @@ public class ContentService {
                 content.size());
 
             // Employ a PriorityQueue to do the sorting for us
-            PriorityQueue<Content> sortedContent = new PriorityQueue<>(content.size(), new ContentComparator());
+            PriorityQueue<BasicContent> sortedContent = new PriorityQueue<>(content.size(), new ContentComparator());
 
             // Take the count-most recent bits of content and return it
             sortedContent.addAll(content);
             int finalCount = Math.min(count, sortedContent.size());
-            aggregateFeed = new Content[finalCount];
+            aggregateFeed = new BasicContent[finalCount];
 
             for (int i = 0; i < finalCount; i++) {
                 aggregateFeed[i] = sortedContent.poll();

@@ -2,11 +2,12 @@ package com.justinquinnb.onefeed.data.model.content.attachments;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.content.BasicContent;
 import org.springframework.lang.Nullable;
 
 /**
- * Mixed media accompanying a piece of user-generated {@link Content}.
+ * Mixed media accompanying a piece of user-generated {@link BasicContent}. A basic/default implementation of
+ * {@link Attachment}.
  */
 public class BasicAttachment implements Attachment {
     /**
@@ -29,7 +30,7 @@ public class BasicAttachment implements Attachment {
      * is wanted on the end user's site. If neither functionality is desired, this field may be omitted as {@code null}.
      */
     @Nullable
-    private Link link = null;
+    private BasicLink link = null;
 
     /**
      * Optional caption text for the attachment, whether it's a standalone URL or visual.
@@ -38,7 +39,7 @@ public class BasicAttachment implements Attachment {
     private String caption = null;
 
     /**
-     * Constructs a {@link BasicAttachment} containing a {@link Visual}, {@link Link}, or both, and an optional caption
+     * Constructs a {@link BasicAttachment} containing a {@link Visual}, {@link BasicLink}, or both, and an optional caption
      * to accompany {@code this} {@code Attachment}.
      *
      * @param builder a completed {@link BasicAttachmentBuilder} containing the values to populate {@code this}
@@ -51,20 +52,20 @@ public class BasicAttachment implements Attachment {
     }
 
     /**
-     * Constructs a {@link BasicAttachment} containing a {@link Visual}, {@link Link}, or both, and an optional caption
+     * Constructs a {@link BasicAttachment} containing a {@link Visual}, {@link BasicLink}, or both, and an optional caption
      * to accompany {@code this} {@code Attachment}.
      *
      * @param visual an optional standalone visual (such as an Instagram post photo) or accompaniment to the
      * {@code link} (such as a website preview thumbnail)
      * @param link a standalone Internet link (such as a one to view an Instagram post or accompaniment to the
      * {@code visual} (such as a link to the website previewed by the {@code visual}
-     * @param caption a (typically) brief blurb to accompany the media, whether it be a {@link Link} of
+     * @param caption a (typically) brief blurb to accompany the media, whether it be a {@link BasicLink} of
      * {@link Visual}
      */
     @JsonCreator
     public BasicAttachment(
-            @Nullable @JsonProperty("visual") Visual visual,
-            @Nullable @JsonProperty("link") Link link,
+            @Nullable @JsonProperty("visual") BasicVisual visual,
+            @Nullable @JsonProperty("link") BasicLink link,
             @Nullable @JsonProperty("caption") String caption) {
         this.visual = visual;
         this.link = link;
@@ -85,7 +86,7 @@ public class BasicAttachment implements Attachment {
      *
      * @return the {@code #link} for {@code this} {@code Attachment}, if one was provided
      */
-    public Link getLink() {
+    public BasicLink getLink() {
         return link;
     }
 
@@ -111,7 +112,7 @@ public class BasicAttachment implements Attachment {
     public static class BasicAttachmentBuilder {
         Visual visual = null;
 
-        Link link = null;
+        BasicLink link = null;
 
         String caption = null;
 
@@ -132,7 +133,7 @@ public class BasicAttachment implements Attachment {
          * @param link a standalone Internet link (such as a one to view an Instagram post or accompaniment to the
          * {@code visual} (such as a link to the website previewed by the {@code visual}
          */
-        public BasicAttachmentBuilder setLink(Link link) {
+        public BasicAttachmentBuilder setLink(BasicLink link) {
             this.link = link;
             return this;
         }
@@ -140,7 +141,7 @@ public class BasicAttachment implements Attachment {
         /**
          * Sets the caption of the {@link BasicAttachment}.
          *
-         * @param caption a (typically) brief blurb to accompany the media, whether it be a {@link Link} of
+         * @param caption a (typically) brief blurb to accompany the media, whether it be a {@link BasicLink} of
          * {@link Visual}
          */
         public BasicAttachmentBuilder setCaption(String caption) {
