@@ -4,11 +4,11 @@ import java.time.Instant;
 import java.util.Comparator;
 
 /**
- * Specifies the comparison of {@link Content} via their {@code timestamp} fields.
+ * Specifies the comparison of {@link BasicContent} via their {@code timestamp} fields.
  */
-public class ContentComparator implements Comparator<Content> {
+public class ContentComparator implements Comparator<BasicContent> {
     @Override
-    public int compare(Content o1, Content o2) {
+    public int compare(BasicContent o1, BasicContent o2) {
         Instant o1Timestamp = o1.getTimestamp();
         Instant o2Timestamp = o2.getTimestamp();
 

@@ -1,6 +1,7 @@
 package com.justinquinnb.onefeed.contentsources.threads;
 
-import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.content.BasicContent;
+import com.justinquinnb.onefeed.data.model.content.details.BasicPlatform;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 
@@ -12,7 +13,7 @@ import java.time.Instant;
  * @see <a href="https://developers.facebook.com/docs/threads">Meta's Threads API Documentation</a>
  */
 public class ThreadsService extends ContentSource {
-    private static final Platform INFO = new Platform("https://threads.com", "Threads", "@");
+    private static final Platform INFO = new BasicPlatform("https://threads.com", "Threads", "@");
 
     public ThreadsService(String id) {
         super(id);
@@ -24,13 +25,13 @@ public class ThreadsService extends ContentSource {
     }
 
     @Override
-    public Content[] getLatestContent(int count) {
-        return new Content[0];
+    public BasicContent[] getLatestContent(int count) {
+        return new BasicContent[0];
     }
 
     @Override
-    public Content[] getLatestContent(int count, Instant[] betweenTimes) {
-        return new Content[0];
+    public BasicContent[] getLatestContent(int count, Instant[] betweenTimes) {
+        return new BasicContent[0];
     }
 
     @Override

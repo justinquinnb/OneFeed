@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.data.model.source;
 
-import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.content.BasicContent;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 
 import java.time.Instant;
@@ -28,17 +28,17 @@ public abstract class ContentSource {
     public abstract boolean isAvailable();
 
     /**
-     * Gets the {@code count} latest units of {@link Content} from the source.
+     * Gets the {@code count} latest units of {@link BasicContent} from the source.
      *
      * @param count the amount of {@code Content} to retrieve
      *
      * @return at most {@code count}-many units of {@code Content} from the source. If less than {@code count}-many
      * units of {@code Content} can be retrieved, then all that could be retrieved is returned.
      */
-    public abstract Content[] getLatestContent(int count);
+    public abstract BasicContent[] getLatestContent(int count);
 
     /**
-     * Gets the {@code count} latest units of {@link Content} from the source between the specified {@code betweenTimes}.
+     * Gets the {@code count} latest units of {@link BasicContent} from the source between the specified {@code betweenTimes}.
      *
      * @param count the amount of {@code Content} to retrieve
      * @param betweenTimes the {@link Instant}s that {@code Content} should fall between, element 0 indicating the start
@@ -48,7 +48,7 @@ public abstract class ContentSource {
      * source. If less than {@code count}-many units of {@code Content} can be retrieved, then all that could be retrieved
      * is returned.
      */
-    public abstract Content[] getLatestContent(int count, Instant[] betweenTimes);
+    public abstract BasicContent[] getLatestContent(int count, Instant[] betweenTimes);
 
     /**
      * Gets relevant source information as {@link Platform}.

@@ -3,7 +3,8 @@ package com.justinquinnb.onefeed.contentsources.sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.justinquinnb.onefeed.data.model.content.Content;
+import com.justinquinnb.onefeed.data.model.content.BasicContent;
+import com.justinquinnb.onefeed.data.model.content.details.BasicPlatform;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 
@@ -17,7 +18,7 @@ import java.util.Collection;
  * Provides an offline, tinker-able source of content to pull from, emulating a full-fledged Content Source.
  */
 public class SampleService extends ContentSource {
-    private static final Platform INFO = new Platform("N/A", "Sample Service", "@");
+    private static final Platform INFO = new BasicPlatform("N/A", "Sample Service", "@");
     private static final String SAMPLE_CONTENT_LOCATION = "src/main/java/com/justinquinnb/onefeed/contentsources/sample/sample-content.json";
 
     private static final String baseUrl = "sampleurl";
@@ -35,13 +36,13 @@ public class SampleService extends ContentSource {
     }
 
     @Override
-    public Content[] getLatestContent(int count) {
+    public BasicContent[] getLatestContent(int count) {
         int numToGet = Math.min(count, 6);
-        Content[] sampleContent = new Content[0];
+        BasicContent[] sampleContent = new BasicContent[0];
         try {
             sampleContent = mapper.readValue(
                     new File(SAMPLE_CONTENT_LOCATION),
-                    Content[].class);
+                    BasicContent[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -50,27 +51,27 @@ public class SampleService extends ContentSource {
     }
 
     @Override
-    public Content[] getLatestContent(int count, Instant[] betweenTimes) {
+    public BasicContent[] getLatestContent(int count, Instant[] betweenTimes) {
         int numToGet = Math.min(count, 6);
-        Content[] sampleContent = new Content[0];
+        BasicContent[] sampleContent = new BasicContent[0];
         try {
             sampleContent = mapper.readValue(
                     new File(SAMPLE_CONTENT_LOCATION),
-                    Content[].class);
+                    BasicContent[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         // Narrow the sample content down to only those within the date range
-        Collection<Content> filteredContent = new ArrayList<>();
-        for (Content content : sampleContent) {
+        Collection<BasicContent> filteredContent = new ArrayList<>();
+        for (BasicContent content : sampleContent) {
             Instant contentTimestamp = content.getTimestamp();
             if (isInclusiveBetween(contentTimestamp, betweenTimes[0], betweenTimes[1])) {
                 filteredContent.add(content);
             }
         }
 
-        return filteredContent.toArray(new Content[0]);
+        return filteredContent.toArray(new BasicContent[0]);
     }
 
     @Override
