@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.exceptions;
+package com.justinquinnb.onefeed.data.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

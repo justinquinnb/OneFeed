@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.attachments.Attachment;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
+import com.justinquinnb.onefeed.data.model.content.reception.Comment;
+import com.justinquinnb.onefeed.data.model.content.reception.Reception;
+import org.springframework.lang.Nullable;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -12,7 +15,7 @@ import java.util.Arrays;
 /**
  * A basic implementation of a single piece of content from some user-generated feed.
  */
-public class BasicContent implements Content {
+public class BasicContent implements Content, Comment {
     /**
      * The {@link Instant} the content was posted to or generated on the {@link #platform}.
      */
@@ -36,13 +39,21 @@ public class BasicContent implements Content {
     /**
      * The written part of {@code this} content, usually referred to as the caption, description, or summary.
      */
+    @Nullable
     private final String text;
 
     /**
      * Any {@link Attachment}s associated with {@code this} {@code Content}, in the order that they appear in the
      * content on its source.
      */
+    @Nullable
     private final Attachment[] attachments;
+
+    /**
+     * Details about {@code this} {@link Content}'s reception.
+     */
+    @Nullable
+    private final Reception reception;
 
     /**
      * Instantiates a piece of {@link BasicContent} containing text and attached media.
@@ -54,6 +65,7 @@ public class BasicContent implements Content {
      * @param text the written part of {@code this} content, usually referred to as the caption, description, or summary
      * @param attachments any {@link Attachment}s associated with {@code this} {@code Content}, in the order that they
      *                    appear in the content on its source
+     * @param reception details about the {@code Content}'s reception
      */
     @JsonCreator
     public BasicContent(
@@ -61,8 +73,9 @@ public class BasicContent implements Content {
             @JsonProperty("contentUrl") String contentUrl,
             @JsonProperty("producer") Producer producer,
             @JsonProperty("platform") Platform platform,
-            @JsonProperty("text") String text,
-            @JsonProperty("attachments") Attachment[] attachments
+            @Nullable @JsonProperty("text") String text,
+            @Nullable @JsonProperty("attachments") Attachment[] attachments,
+            @Nullable @JsonProperty("reception") Reception reception
     ) {
         this.timestamp = timestamp;
         this.contentUrl = contentUrl;
@@ -72,6 +85,7 @@ public class BasicContent implements Content {
         this.text = text;
         this.attachments = attachments;
 
+        this.reception = reception;
     }
 
     /**
@@ -82,15 +96,17 @@ public class BasicContent implements Content {
      * @param producer details about the user or entity that produced {@code this} {@code Content}
      * @param platform details about the site or platform hosting {@code this} {@code Content}
      * @param text the written part of {@code this} content, usually referred to as the caption, description, or summary
+     * @param reception details about the {@code Content}'s reception
      */
     public BasicContent(
             Instant timestamp,
             String contentUrl,
             Producer producer,
             Platform platform,
-            String text
+            String text,
+            Reception reception
     ) {
-        this(timestamp, contentUrl, producer, platform, text, new Attachment[0]);
+        this(timestamp, contentUrl, producer, platform, text, new Attachment[0], reception);
     }
 
     /**
@@ -102,15 +118,17 @@ public class BasicContent implements Content {
      * @param platform details about the site or platform hosting {@code this} {@code Content}
      * @param attachments any {@link Attachment}s associated with {@code this} {@code Content}, in the order that they
      *                    appear in the content on its source
+     * @param reception details about the {@code Content}'s reception
      */
     public BasicContent(
             Instant timestamp,
             String contentUrl,
             Producer producer,
             Platform platform,
-            Attachment[] attachments
+            Attachment[] attachments,
+            Reception reception
     ) {
-        this(timestamp, contentUrl, producer, platform, "", attachments);
+        this(timestamp, contentUrl, producer, platform, "", attachments, reception);
     }
 
     /**
@@ -158,6 +176,15 @@ public class BasicContent implements Content {
         return Arrays.copyOf(this.attachments, this.attachments.length);
     }
 
+    /**
+     * Gets details about the {@code Content}'s reception.
+     *
+     * @return the details about the {@code Content}'s reception
+     */
+    public Reception getReception() {
+        return this.reception;
+    }
+
     public String toString() {
         return "Content@" + this.hashCode() +
                 "{timestamp=" + this.timestamp +
@@ -165,6 +192,7 @@ public class BasicContent implements Content {
                 "\", producer=" + this.producer +
                 ", platform=" + this.platform +
                 "\", text=\"" + this.text +
-                "\", attachments=" + Arrays.toString(this.attachments) + "}";
+                "\", attachments=" + Arrays.toString(this.attachments) +
+                "\", reception=" + this.reception + "}";
     }
 }

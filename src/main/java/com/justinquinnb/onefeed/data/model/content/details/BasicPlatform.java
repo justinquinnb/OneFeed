@@ -2,10 +2,9 @@ package com.justinquinnb.onefeed.data.model.content.details;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.data.model.content.BasicContent;
 
 /**
- * A basic implementation of information about the place that a piece of {@link BasicContent} is hosted on or published
+ * A basic implementation of information about the place that a piece of digital media is hosted on or published
  * to.
  */
 public class BasicPlatform implements Platform {
@@ -36,18 +35,18 @@ public class BasicPlatform implements Platform {
     }
 
     /**
-     * Gets the homepage URL of the {@code BasicPlatform} where the parent {@code Content} was published.
+     * Gets the homepage URL of the {@code BasicPlatform} where the parent digital media was published.
      *
-     * @return the homepage URL of the {@code BasicPlatform} where the parent {@code Content} was published.
+     * @return the homepage URL of the {@code BasicPlatform} where the parent digital media was published.
      */
     public String getHomepageUrl() {
         return homepageUrl;
     }
 
     /**
-     * Gets the name of the {@code BasicPlatform} where the parent {@code Content} was published.
+     * Gets the name of the {@code BasicPlatform} where the digital media was published.
      *
-     * @return the name of the {@code BasicPlatform} where the parent {@code Content} was published.
+     * @return the name of the {@code BasicPlatform} where the parent digital media was published.
      */
     public String getName() {
         return name;
@@ -55,10 +54,10 @@ public class BasicPlatform implements Platform {
 
     /**
      * Gets the username prefix (like Reddit's "u/" or Insta's "@") of the {@code BasicPlatform} where the parent
-     * {@code Content} was published.
+     * digital media was published.
      *
      * @return the username prefix (like Reddit's "u/" or Insta's "@") of the {@code BasicPlatform} where the parent
-     * {@code Content} was published.
+     * digital media was published.
      */
     public String getUsernamePrefix() {
         return usernamePrefix;

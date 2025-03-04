@@ -2,11 +2,10 @@ package com.justinquinnb.onefeed.data.model.content.attachments;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.data.model.content.BasicContent;
 import org.springframework.lang.Nullable;
 
 /**
- * Mixed media accompanying a piece of user-generated {@link BasicContent}. A basic/default implementation of
+ * Mixed media accompanying a piece of user-generated content. A basic/default implementation of
  * {@link Attachment}.
  */
 public class BasicAttachment implements Attachment {

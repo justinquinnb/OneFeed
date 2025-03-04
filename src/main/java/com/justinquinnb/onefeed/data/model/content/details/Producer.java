@@ -1,10 +1,9 @@
 package com.justinquinnb.onefeed.data.model.content.details;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.justinquinnb.onefeed.data.model.content.BasicContent;
 
 /**
- * Information about the entity producing the {@link BasicContent}.
+ * Information about the entity producing some digital content.
  */
 @JsonDeserialize(as = BasicProducer.class)
 public interface Producer {

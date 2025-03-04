@@ -1,8 +1,8 @@
 package com.justinquinnb.onefeed.data.model.token;
 
+import com.justinquinnb.onefeed.data.exceptions.TokenEntryNotFound;
 import com.justinquinnb.onefeed.data.model.source.AuthorizationCodeOAuth;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
-import com.justinquinnb.onefeed.exceptions.TokenEntryNotFound;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
