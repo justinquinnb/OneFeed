@@ -38,8 +38,7 @@ public class BasicAttachment implements Attachment {
     private String caption = null;
 
     /**
-     * Constructs a {@link BasicAttachment} containing a {@link Visual}, {@link BasicLink}, or both, and an optional caption
-     * to accompany {@code this} {@code Attachment}.
+     * Constructs a {@link BasicAttachment} using the fields provided by the {@code builder}.
      *
      * @param builder a completed {@link BasicAttachmentBuilder} containing the values to populate {@code this}
      * {@code Attachment}'s fields with
@@ -109,17 +108,19 @@ public class BasicAttachment implements Attachment {
      * Builder for {@link BasicAttachment}.
      */
     public static class BasicAttachmentBuilder {
-        Visual visual = null;
+        private Visual visual = null;
 
-        BasicLink link = null;
+        private BasicLink link = null;
 
-        String caption = null;
+        private String caption = null;
 
         /**
          * Sets the {@link BasicAttachment}'s visual.
          *
          * @param visual an optional standalone visual (such as an Instagram post photo) or accompaniment to the
          * {@code link} (such as a website preview thumbnail)
+         *
+         * @return {@code this} {@link BasicAttachmentBuilder} with its {@code visual} field populated by {@code visual}
          */
         public BasicAttachmentBuilder setVisual(Visual visual) {
             this.visual = visual;
@@ -131,6 +132,8 @@ public class BasicAttachment implements Attachment {
          *
          * @param link a standalone Internet link (such as a one to view an Instagram post or accompaniment to the
          * {@code visual} (such as a link to the website previewed by the {@code visual}
+         *
+         * @return {@code this} {@link BasicAttachmentBuilder} with its {@code link} field populated by {@code link}
          */
         public BasicAttachmentBuilder setLink(BasicLink link) {
             this.link = link;
@@ -142,6 +145,8 @@ public class BasicAttachment implements Attachment {
          *
          * @param caption a (typically) brief blurb to accompany the media, whether it be a {@link BasicLink} of
          * {@link Visual}
+         *
+         * @return {@code this} {@link BasicAttachmentBuilder} with its {@code caption} field populated by {@code caption}
          */
         public BasicAttachmentBuilder setCaption(String caption) {
             this.caption = caption;
@@ -149,7 +154,8 @@ public class BasicAttachment implements Attachment {
         }
 
         /**
-         * Builds an {@link BasicAttachment} using the values provided in the
+         * Builds a {@link BasicAttachment} using the values provided through {@code this}
+         * {@link BasicAttachmentBuilder}.
          *
          * @return a new instance of an {@code BasicAttachment} with the fields specified by previous setter methods
          */

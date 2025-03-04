@@ -3,6 +3,7 @@ package com.justinquinnb.onefeed.data.model.content;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.attachments.Attachment;
+import com.justinquinnb.onefeed.data.model.content.attachments.BasicAttachment;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 import com.justinquinnb.onefeed.data.model.content.reception.Comment;
@@ -59,7 +60,7 @@ public class BasicContent implements Content, Comment {
      * Instantiates a piece of {@link BasicContent} containing text and attached media.
      *
      * @param timestamp the {@link Instant} the content was posted to or generated on the {@link #platform}
-     * @param contentUrl the URL of {@code this} content on its host {@code platform}.
+     * @param contentUrl the URL of {@code this} content on its host {@code platform}
      * @param producer details about the user or entity that produced {@code this} {@code Content}
      * @param platform details about the site or platform hosting {@code this} {@code Content}
      * @param text the written part of {@code this} content, usually referred to as the caption, description, or summary
@@ -89,46 +90,21 @@ public class BasicContent implements Content, Comment {
     }
 
     /**
-     * Instantiates a piece of {@link BasicContent} containing text but no attached media.
+     * Constructs an instance of {@link BasicContent} using the fields provided by the {@code builder}.
      *
-     * @param timestamp the {@link Instant} the content was posted to or generated on the {@link #platform}
-     * @param contentUrl the URL of {@code this} content on its host {@code platform}.
-     * @param producer details about the user or entity that produced {@code this} {@code Content}
-     * @param platform details about the site or platform hosting {@code this} {@code Content}
-     * @param text the written part of {@code this} content, usually referred to as the caption, description, or summary
-     * @param reception details about the {@code Content}'s reception
+     * @param builder a completed {@link BasicContentBuilder} containing the values to populate {@code this}
+     * {@code BasicContent}'s fields with
      */
-    public BasicContent(
-            Instant timestamp,
-            String contentUrl,
-            Producer producer,
-            Platform platform,
-            String text,
-            Reception reception
-    ) {
-        this(timestamp, contentUrl, producer, platform, text, new Attachment[0], reception);
-    }
+    public BasicContent(BasicContentBuilder builder) {
+        this.timestamp = builder.timestamp;
+        this.contentUrl = builder.contentUrl;
+        this.producer = builder.producer;
+        this.platform = builder.platform;
 
-    /**
-     * Instantiates a piece of {@link BasicContent} containing no text but attached media.
-     *
-     * @param timestamp the {@link Instant} the content was posted to or generated on the {@link #platform}
-     * @param contentUrl the URL of {@code this} content on its host {@code platform}.
-     * @param producer details about the user or entity that produced {@code this} {@code Content}
-     * @param platform details about the site or platform hosting {@code this} {@code Content}
-     * @param attachments any {@link Attachment}s associated with {@code this} {@code Content}, in the order that they
-     *                    appear in the content on its source
-     * @param reception details about the {@code Content}'s reception
-     */
-    public BasicContent(
-            Instant timestamp,
-            String contentUrl,
-            Producer producer,
-            Platform platform,
-            Attachment[] attachments,
-            Reception reception
-    ) {
-        this(timestamp, contentUrl, producer, platform, "", attachments, reception);
+        this.text = builder.text;
+        this.attachments = builder.attachments;
+
+        this.reception = builder.reception;
     }
 
     /**
@@ -194,5 +170,86 @@ public class BasicContent implements Content, Comment {
                 "\", text=\"" + this.text +
                 "\", attachments=" + Arrays.toString(this.attachments) +
                 "\", reception=" + this.reception + "}";
+    }
+
+    /**
+     * Builder for {@link BasicContent}
+     */
+    public static class BasicContentBuilder {
+        private Instant timestamp = null;
+        private String contentUrl = null;
+        private Producer producer = null;
+        private Platform platform = null;
+
+        private String text = null;
+        private Attachment[] attachments = null;
+
+        private Reception reception = null;
+
+        /**
+         * Starts a {@link BasicContentBuilder} with the required fields.
+         *
+         * @param timestamp the {@link Instant} the content was posted to or generated on the {@link #platform}
+         * @param contentUrl the URL of {@code this} content on its host {@code platform}
+         * @param producer details about the user or entity that produced {@code this} {@code Content}
+         * @param platform platform details about the site or platform hosting {@code this} {@code Content}
+         */
+        public BasicContentBuilder(Instant timestamp, String contentUrl, Producer producer, Platform platform) {
+            this.timestamp = timestamp;
+            this.contentUrl = contentUrl;
+            this.producer = producer;
+            this.platform = platform;
+        }
+
+        /**
+         * Sets the {@link BasicContent}'s text.
+         *
+         * @param text the written part of {@code this} content, usually referred to as the caption, description, or
+         *             summary
+         * @return {@code this} {@link BasicContentBuilder} with its {@code text} field populated by {@code text}
+         */
+        public BasicContentBuilder setText(String text) {
+            this.text = text;
+            return this;
+        }
+
+        /**
+         * Sets the {@link BasicContent}'s attachments.
+         *
+         * @param attachments any {@link Attachment}s associated with {@code this} {@code Content}, in the order that
+         *                    they appear in the content on its source
+         * @return {@code this} {@link BasicContentBuilder} with its {@code text} field populated by {@code text}
+         */
+        public BasicContentBuilder setAttachments(Attachment[] attachments) {
+            this.attachments = attachments;
+            return this;
+        }
+
+        /**
+         * Sets the {@link BasicContent}'s reception.
+         *
+         * @param reception details about the {@code Content}'s reception
+         * @return {@code this} {@link BasicContentBuilder} with its {@code reception} field populated by
+         * {@code reception}
+         */
+        public BasicContentBuilder setReception(Reception reception) {
+            this.reception = reception;
+            return this;
+        }
+
+        /**
+         * Builds a {@link BasicContent} instance using the values provided through {@code this}
+         * {@link BasicContentBuilder}.
+         *
+         * @return a new instance of an {@code BasicContent} with the fields specified by {@code this}
+         * {@code BasicContentBuilder}
+         */
+        public BasicContent build() {
+            if (text == null && attachments == null) {
+                throw new IllegalStateException("Text and attachments fields cannot both be null");
+            }
+
+            return new BasicContent(this);
+        }
     }
 }
