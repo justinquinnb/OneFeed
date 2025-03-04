@@ -2,14 +2,13 @@ package com.justinquinnb.onefeed.data.model.content.details;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.data.model.content.BasicContent;
 
 /**
- * A basic implementation of information about the entity producing the {@link BasicContent}.
+ * A basic implementation of information about an entity producing digital media.
  */
 public class BasicProducer implements Producer {
     /**
-     * A direct link to the {@code BasicProducer}'s profile page on the {@link BasicPlatform} their {@link BasicContent}
+     * A direct link to the {@code BasicProducer}'s profile page on the {@link BasicPlatform} their digital media
      * is being hosted on.
      */
     private final String profilePageUrl;
@@ -49,49 +48,49 @@ public class BasicProducer implements Producer {
     }
 
     /**
-     * Gets the URL of {@code this} {@code Content} {@code BasicProducer}'s profile page on the platform where its parent
-     * content was published.
+     * Gets the URL of {@code this} digital media {@link Producer}'s profile page on the platform where it was
+     * published.
      *
-     * @return the URL of {@code this} {@code Content} {@code BasicProducer}'s profile page on the platform where its parent
-     * content was published.
+     * @return the URL of {@code this} digital media {@link Producer}'s profile page on the platform where it was
+     * published.
      */
     public String getProfilePageUrl() {
         return profilePageUrl;
     }
 
     /**
-     * Gets the URL of {@code this} {@code Content} {@code BasicProducer}'s profile picture on the platform where its parent
-     * content was published.
+     * Gets the URL of {@code this} digital media {@link Producer}'s profile picture on the platform where it was
+     * published.
      *
-     * @return the URL of {@code this} {@code Content} {@code BasicProducer}'s profile picture on the platform where its
-     * parent content was published.
+     * @return the URL of {@code this} digital media {@link Producer}'s profile picture on the platform where was
+     * published.
      */
     public String getProfilePicUrl() {
         return profilePicUrl;
     }
 
     /**
-     * Gets the first name (or platform equivalent) of {@code this} {@code Content}'s {@code BasicProducer}.
+     * Gets the first name (or platform equivalent) of {@code this} {@link Producer}.
      *
-     * @return the first name (or platform equivalent) of {@code this} {@code Content}'s {@code BasicProducer}.
+     * @return the first name (or platform equivalent) of {@code this} {@link Producer}.
      */
     public String getFirstName() {
         return firstName;
     }
 
     /**
-     * Gets the last name (or platform equivalent) of {@code this} {@code Content}'s {@code BasicProducer}.
+     * Gets the last name (or platform equivalent) of {@code this} {@link Producer}.
      *
-     * @return the last name (or platform equivalent) of {@code this} {@code Content}'s {@code BasicProducer}.
+     * @return the last name (or platform equivalent) of {@code this} {@link Producer}.
      */
     public String getLastName() {
         return lastName;
     }
 
     /**
-     * Gets the username (or platform equivalent) of {@code this} {@code Content}'s {@code BasicProducer}.
+     * Gets the username (or platform equivalent) of {@code this} {@link Producer}.
      *
-     * @return the username (or platform equivalent) of {@code this} {@code Content}'s {@code BasicProducer}.
+     * @return the username (or platform equivalent) of {@code this} {@link Producer}.
      */
     public String getUsername() {
         return username;

@@ -2,11 +2,10 @@ package com.justinquinnb.onefeed.data.model.content.attachments;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.data.model.content.BasicContent;
 import org.springframework.lang.Nullable;
 
 /**
- * A basic implementation for a photo that accompanies a piece of {@link BasicContent}.
+ * A basic implementation of a photo or visual.
  */
 public class BasicVisual implements Visual {
     /**

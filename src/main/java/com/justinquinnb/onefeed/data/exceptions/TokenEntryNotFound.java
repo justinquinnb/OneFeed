@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.exceptions;
+package com.justinquinnb.onefeed.data.exceptions;
 
 import com.justinquinnb.onefeed.data.model.token.TokenStorage;
 import org.springframework.http.HttpStatus;

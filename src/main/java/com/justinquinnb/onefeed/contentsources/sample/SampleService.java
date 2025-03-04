@@ -19,7 +19,7 @@ import java.util.Collection;
  */
 public class SampleService extends ContentSource {
     private static final Platform INFO = new BasicPlatform("N/A", "Sample Service", "@");
-    private static final String SAMPLE_CONTENT_LOCATION = "src/main/java/com/justinquinnb/onefeed/contentsources/sample/sample-content.json";
+    private static final String SAMPLE_CONTENT_LOCATION = "src/main/resources/samplecontent/sample-content.json";
 
     private static final String baseUrl = "sampleurl";
     private static final ObjectMapper mapper = JsonMapper.builder()

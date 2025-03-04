@@ -1,11 +1,11 @@
 package com.justinquinnb.onefeed.data.storage;
 
 import com.justinquinnb.onefeed.api.endpoints.oauth.OAuthService;
+import com.justinquinnb.onefeed.data.exceptions.TokenEntryNotFound;
 import com.justinquinnb.onefeed.data.model.source.AuthorizationCodeOAuth;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.data.model.token.TokenEntry;
 import com.justinquinnb.onefeed.data.model.token.TokenStorage;
-import com.justinquinnb.onefeed.exceptions.TokenEntryNotFound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

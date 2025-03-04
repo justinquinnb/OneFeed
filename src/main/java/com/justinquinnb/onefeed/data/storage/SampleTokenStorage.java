@@ -1,8 +1,8 @@
 package com.justinquinnb.onefeed.data.storage;
 
+import com.justinquinnb.onefeed.data.exceptions.TokenEntryNotFound;
 import com.justinquinnb.onefeed.data.model.token.TokenEntry;
 import com.justinquinnb.onefeed.data.model.token.TokenStorage;
-import com.justinquinnb.onefeed.exceptions.TokenEntryNotFound;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
