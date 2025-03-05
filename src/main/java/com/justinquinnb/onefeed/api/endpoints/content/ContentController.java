@@ -5,7 +5,7 @@ import com.justinquinnb.onefeed.data.exceptions.IllegalContentCountException;
 import com.justinquinnb.onefeed.data.exceptions.InvalidSourceIdException;
 import com.justinquinnb.onefeed.data.exceptions.InvalidTimeException;
 import com.justinquinnb.onefeed.data.exceptions.InvalidTimeRangeException;
-import com.justinquinnb.onefeed.data.model.content.BasicContent;
+import com.justinquinnb.onefeed.data.model.content.Content;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class ContentController {
      * @return {@code count}-many pieces of content that meets all the provided requirements.
      */
     @GetMapping("/content")
-    public ResponseEntity<BasicContent[]> getContent(
+    public ResponseEntity<Content[]> getContent(
             @RequestParam(name = "count") Integer contentCount,
             @RequestParam(name = "from") Optional<String> fromSources,
             @RequestParam(name = "between") Optional<String> betweenTimes
@@ -79,7 +79,7 @@ public class ContentController {
         }
 
         // Now grab the content with the correct method
-        CompletableFuture<BasicContent[]> possibleResponse;
+        CompletableFuture<Content[]> possibleResponse;
 
         if (fromSources.isPresent() && betweenTimes.isPresent()) {
             logger.debug("Processing request for: {} pieces from {} between {} and {}",
@@ -110,11 +110,11 @@ public class ContentController {
      * Instantiates an array of {@link ContentSource}s to attempt content retrieval from by the
      * {@link ContentService}.
      *
-     * @param idString a {@code String} of {@code +}-delimited {@code ContentSource} IDs
+     * @param idString a {@code String} of {@code +}-delimited {@code ContentSourceId}s
      *
-     * @return an array of the {@code ContentSource}s bound to the {@code ContentSource} IDs held
+     * @return an array of the {@code ContentSource}s bound to the {@code ContentSourceId}s held
      * statically in {@link OneFeedApplication}
-     * @throws InvalidSourceIdException if any of the encoded {@code ContentSource} IDs in the
+     * @throws InvalidSourceIdException if any of the encoded {@code ContentSourceId}s in the
      * {@code idString} are not bound to a {@code ContentSource}
      */
     private static ContentSource[] parseSourceIds(String idString) throws InvalidSourceIdException {

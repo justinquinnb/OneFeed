@@ -3,11 +3,12 @@ package com.justinquinnb.onefeed.data.model.content;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justinquinnb.onefeed.data.model.content.attachments.Attachment;
-import com.justinquinnb.onefeed.data.model.content.attachments.BasicAttachment;
+import com.justinquinnb.onefeed.data.model.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.content.details.Producer;
 import com.justinquinnb.onefeed.data.model.content.reception.Comment;
 import com.justinquinnb.onefeed.data.model.content.reception.Reception;
+import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import org.springframework.lang.Nullable;
 
 import java.time.Instant;
@@ -16,17 +17,7 @@ import java.util.Arrays;
 /**
  * A basic implementation of a single piece of content from some user-generated feed.
  */
-public class BasicContent implements Content, Comment {
-    /**
-     * The {@link Instant} the content was posted to or generated on the {@link #platform}.
-     */
-    private final Instant timestamp;
-
-    /**
-     * The URL of {@code this} content on its host {@code platform}.
-     */
-    private final String contentUrl;
-
+public class BasicContent extends Content implements Comment {
     /**
      * Details about the user or entity that produced {@code this} {@code Content}.
      */
@@ -70,6 +61,7 @@ public class BasicContent implements Content, Comment {
      */
     @JsonCreator
     public BasicContent(
+            @JsonProperty("origin") ContentSourceId origin,
             @JsonProperty("timestamp") Instant timestamp,
             @JsonProperty("contentUrl") String contentUrl,
             @JsonProperty("producer") Producer producer,
@@ -78,8 +70,7 @@ public class BasicContent implements Content, Comment {
             @Nullable @JsonProperty("attachments") Attachment[] attachments,
             @Nullable @JsonProperty("reception") Reception reception
     ) {
-        this.timestamp = timestamp;
-        this.contentUrl = contentUrl;
+        super(origin, timestamp, contentUrl);
         this.producer = producer;
         this.platform = platform;
 
@@ -96,8 +87,8 @@ public class BasicContent implements Content, Comment {
      * {@code BasicContent}'s fields with
      */
     public BasicContent(BasicContentBuilder builder) {
-        this.timestamp = builder.timestamp;
-        this.contentUrl = builder.contentUrl;
+        super(builder.origin, builder.timestamp, builder.contentUrl);
+
         this.producer = builder.producer;
         this.platform = builder.platform;
 
@@ -105,15 +96,6 @@ public class BasicContent implements Content, Comment {
         this.attachments = builder.attachments;
 
         this.reception = builder.reception;
-    }
-
-    /**
-     * Gets the timestamp at which {@code this} {@code Content} was published.
-     *
-     * @return the timestamp at which the content was published.
-     */
-    public Instant getTimestamp() {
-        return this.timestamp;
     }
 
     /**
@@ -163,8 +145,9 @@ public class BasicContent implements Content, Comment {
 
     public String toString() {
         return "Content@" + this.hashCode() +
-                "{timestamp=" + this.timestamp +
-                ", contentUrl=\"" + this.contentUrl +
+                "{origin=\"" + getOrigin() +
+                "\", timestamp=" + getTimestamp() +
+                ", contentUrl=\"" + getContentUrl() +
                 "\", producer=" + this.producer +
                 ", platform=" + this.platform +
                 "\", text=\"" + this.text +
@@ -176,6 +159,7 @@ public class BasicContent implements Content, Comment {
      * Builder for {@link BasicContent}
      */
     public static class BasicContentBuilder {
+        private ContentSourceId origin = null;
         private Instant timestamp = null;
         private String contentUrl = null;
         private Producer producer = null;
@@ -189,12 +173,16 @@ public class BasicContent implements Content, Comment {
         /**
          * Starts a {@link BasicContentBuilder} with the required fields.
          *
+         * @param origin the {@link ContentSourceId} of the {@link ContentSource} instance that the {@code Content}
+         *               originates from
          * @param timestamp the {@link Instant} the content was posted to or generated on the {@link #platform}
          * @param contentUrl the URL of {@code this} content on its host {@code platform}
          * @param producer details about the user or entity that produced {@code this} {@code Content}
          * @param platform platform details about the site or platform hosting {@code this} {@code Content}
          */
-        public BasicContentBuilder(Instant timestamp, String contentUrl, Producer producer, Platform platform) {
+        public BasicContentBuilder(
+                ContentSourceId origin, Instant timestamp, String contentUrl, Producer producer, Platform platform) {
+            this.origin = origin;
             this.timestamp = timestamp;
             this.contentUrl = contentUrl;
             this.producer = producer;

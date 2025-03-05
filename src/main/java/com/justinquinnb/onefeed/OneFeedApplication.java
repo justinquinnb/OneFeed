@@ -5,6 +5,7 @@ import com.justinquinnb.onefeed.contentsources.instagram.InstagramService;
 import com.justinquinnb.onefeed.contentsources.linkedin.LinkedInService;
 import com.justinquinnb.onefeed.contentsources.sample.SampleService;
 import com.justinquinnb.onefeed.contentsources.threads.ThreadsService;
+import com.justinquinnb.onefeed.data.model.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,26 +59,26 @@ public class OneFeedApplication {
 	}
 
 	/**
-	 * Gets and stores instance of each {@link ContentSource} provided in {@link com.justinquinnb.onefeed.data.contentsources}
+	 * Gets and stores instance of each {@link ContentSource} provided in {@link com.justinquinnb.onefeed.contentsources}
 	 * directory.
 	 */
 	private static void getContentSources() {
 		logger.info("Instantiating Content Sources...");
 
 		// TODO replace this with the plugin system... register them here and automatically grab info
-		CONTENT_SOURCES.put("IG", new InstagramService("IG"));
+		CONTENT_SOURCES.put("IG", new InstagramService(ContentSourceId.of("IG")));
 		logger.info("Instagram service \"{}\" instantiated.", "IG");
 
-		CONTENT_SOURCES.put("TH", new  ThreadsService("TH"));
+		CONTENT_SOURCES.put("TH", new  ThreadsService(ContentSourceId.of("TH")));
 		logger.info("Threads service \"{}\" instantiated.", "TH");
 
-		CONTENT_SOURCES.put("LI", new LinkedInService("LI"));
+		CONTENT_SOURCES.put("LI", new LinkedInService(ContentSourceId.of("LI")));
 		logger.info("LinkedIn service \"{}\" instantiated.", "LI");
 
-		CONTENT_SOURCES.put("GH", new GitHubGraphQlService("GH"));
+		CONTENT_SOURCES.put("GH", new GitHubGraphQlService(ContentSourceId.of("GH")));
 		logger.info("GitHub service \"{}\" instantiated.", "GH");
 
-		CONTENT_SOURCES.put("SP", new SampleService("SP"));
+		CONTENT_SOURCES.put("SP", new SampleService(ContentSourceId.of("SP")));
 		logger.info("Sample service \"{}\" instantiated.", "SP");
 
 		logger.info("Content Sources successfully instantiated.");

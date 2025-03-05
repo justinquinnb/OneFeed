@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.contentsources.github;
 
 import com.justinquinnb.onefeed.data.model.content.BasicContent;
 import com.justinquinnb.onefeed.data.model.content.details.BasicPlatform;
+import com.justinquinnb.onefeed.data.model.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.data.model.content.details.Platform;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 
@@ -13,10 +14,10 @@ import java.time.Instant;
  * @see <a href="https://docs.github.com/en/graphql/overview/about-the-graphql-api">GitHub GraphQL API Documentation</a>
  */
 public class GitHubGraphQlService extends ContentSource {
-    private static final Platform INFO = new BasicPlatform("https://github.com", "GitHub", "@");
+    private static final Platform PLATFORM_INFO = new BasicPlatform("https://github.com", "GitHub", "@");
 
-    public GitHubGraphQlService(String id) {
-        super(id);
+    public GitHubGraphQlService(ContentSourceId id) {
+        super(id, PLATFORM_INFO);
     }
 
     @Override
@@ -32,10 +33,5 @@ public class GitHubGraphQlService extends ContentSource {
     @Override
     public BasicContent[] getLatestContent(int count, Instant[] betweenTimes) {
         return new BasicContent[0];
-    }
-
-    @Override
-    public Platform getSourceInfo() {
-        return INFO;
     }
 }

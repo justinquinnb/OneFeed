@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.data.storage;
 
 import com.justinquinnb.onefeed.api.endpoints.oauth.OAuthService;
 import com.justinquinnb.onefeed.data.exceptions.TokenEntryNotFound;
+import com.justinquinnb.onefeed.data.model.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.data.model.source.AuthorizationCodeOAuth;
 import com.justinquinnb.onefeed.data.model.source.ContentSource;
 import com.justinquinnb.onefeed.data.model.token.TokenEntry;
@@ -50,7 +51,7 @@ public class TokenStoreController {
      *
      * @param tokenEntry the {@link TokenEntry} to add to or update in the {@code tokenStore}
      *
-     * @return {@code true} if an existing entry was found and updated with the {@code tokenEntry}'s Content Source ID,
+     * @return {@code true} if an existing entry was found and updated with the {@code tokenEntry}'s {@link ContentSourceId},
      * else {@code false}
      */
     public boolean save(TokenEntry tokenEntry) {
@@ -66,18 +67,18 @@ public class TokenStoreController {
     }
 
     /**
-     * Removes the {@link TokenEntry} with Content Source ID {@code contentSourceId} from the the active token
+     * Removes the {@link TokenEntry} with {@link ContentSourceId} {@code contentSourceId} from the active token
      * storage medium, {@link #tokenStore}.
      *
      * @param contentSourceId the ID of the {@link AuthorizationCodeOAuth}-enabled {@link ContentSource} whose access
      *                        token is being stored
      *
-     * @throws TokenEntryNotFound if a {@code TokenEntry} does not exist with Content Source ID {@code contentSourceId}
+     * @throws TokenEntryNotFound if a {@code TokenEntry} does not exist with {@code ContentSourceId} {@code contentSourceId}
      * in the {@link #tokenStore}
      */
     public void removeTokenEntryFor(String contentSourceId) throws TokenEntryNotFound {
         if (!tokenStore.tokenEntryExistsFor(contentSourceId)) {
-            throw new TokenEntryNotFound("Could not find a TokenEntry with a Content Source ID of \"" + contentSourceId
+            throw new TokenEntryNotFound("Could not find a TokenEntry with a ContentSourceId of \"" + contentSourceId
                     + "\"");
         }
 
@@ -85,19 +86,19 @@ public class TokenStoreController {
     }
 
     /**
-     * Updates the access token associated with Content Source ID {@code contentSourceId} in the active token storage
+     * Updates the access token associated with {@link ContentSourceId} {@code contentSourceId} in the active token storage
      * medium, {@link #tokenStore}.
      *
      * @param contentSourceId the ID of the {@link AuthorizationCodeOAuth}-enabled {@link ContentSource} whose access
      *                        token is to be stored in the {@code tokenStore}
      * @param newAccessToken the new access token to associate with the Content Source with ID {@code contentSourceId}
      *
-     * @throws TokenEntryNotFound if a {@link TokenEntry} does not exist with Content Source ID {@code contentSourceId}
+     * @throws TokenEntryNotFound if a {@link TokenEntry} does not exist with {@code ContentSourceId} {@code contentSourceId}
      * in the {@code #tokenStore}
      */
     public void updateTokenEntryFor(String contentSourceId, String newAccessToken) throws TokenEntryNotFound {
         if (!tokenStore.tokenEntryExistsFor(contentSourceId)) {
-            throw new TokenEntryNotFound("Could not find a TokenEntry with a Content Source ID of \"" + contentSourceId
+            throw new TokenEntryNotFound("Could not find a TokenEntry with a ContentSourceId of \"" + contentSourceId
                     + "\"");
         }
 
@@ -115,10 +116,10 @@ public class TokenStoreController {
      */
     public TokenEntry getTokenEntryFor(String contentSourceId) {
         try {
-            logger.debug("Attempting to fetch token entry for Content Source with ID {}", contentSourceId);
+            logger.debug("Attempting to fetch token entry for ContentSourceID {}", contentSourceId);
             return tokenStore.getTokenEntryFor(contentSourceId);
         } catch (TokenEntryNotFound e) {
-            logger.warn("Token Entry not found for Content Source ID {}", contentSourceId);
+            logger.warn("Token Entry not found for ContentSourceID {}", contentSourceId);
             return null;
         }
     }
@@ -137,7 +138,7 @@ public class TokenStoreController {
             logger.debug("Attempting to fetch access token for Content Source with ID {}", contentSourceId);
             return tokenStore.getAccessTokenFor(contentSourceId);
         } catch (TokenEntryNotFound e) {
-            logger.warn("Token Entry not found for Content Source ID {}", contentSourceId);
+            logger.warn("Token Entry not found for ContentSourceId {}", contentSourceId);
             return null;
         }
     }
@@ -157,7 +158,7 @@ public class TokenStoreController {
                     contentSourceId);
             return tokenStore.getLastUpdatedTimeFor(contentSourceId);
         } catch (TokenEntryNotFound e) {
-            logger.warn("Token Entry not found for Content Source ID {}", contentSourceId);
+            logger.warn("Token Entry not found for ContentSourceId {}", contentSourceId);
             return null;
         }
     }
@@ -177,7 +178,7 @@ public class TokenStoreController {
                     contentSourceId);
             return tokenStore.getExpirationTimeFor(contentSourceId);
         } catch (TokenEntryNotFound e) {
-            logger.warn("Token Entry not found for Content Source ID {}", contentSourceId);
+            logger.warn("Token Entry not found for ContentSourceId {}", contentSourceId);
             return null;
         }
     }
@@ -196,7 +197,7 @@ public class TokenStoreController {
                     contentSourceId);
             return tokenStore.isAccessTokenExpiredFor(contentSourceId);
         } catch (TokenEntryNotFound e) {
-            logger.warn("Token Entry not found for Content Source ID {}", contentSourceId);
+            logger.warn("Token Entry not found for ContentSourceId {}", contentSourceId);
             return false;
         }
     }
