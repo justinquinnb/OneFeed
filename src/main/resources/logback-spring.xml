@@ -21,15 +21,15 @@
             <level>INFO</level>
         </filter>
     </appender>
-    <appender name="File" class="ch.qos.logback.core.FileAppender">
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- Appends to the below file -->
         <file>./logs/latest.log</file>
 
         <!-- Rollover/Archive policy -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>%d{yyyy-MM-dd} (%i).log</fileNamePattern>
-            <maxHistory>1</maxHistory>
-            <totalSizeCap>10KB</totalSizeCap>
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>3</maxHistory>
         </rollingPolicy>
 
         <!-- Uses the Default PatternLayoutEncoder -->
