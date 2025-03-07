@@ -2,7 +2,6 @@ package com.justinquinnb.onefeed.data.model.content.details;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Wrapper for a unique {@code String} that identifies a specific {@code ContentSource} instance when interacting with the

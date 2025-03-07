@@ -1,0 +1,14 @@
+<config xmlns="https://www.onefeed.justinquinnb.com/onefeed-config.xsd">
+    <meta>
+        <api-key-filepath></api-key-filepath>
+    </meta>
+    <content-sources>
+        <content-source name="Sample">
+            <content-mapper>SampleContentMapper.class</content-mapper>
+            <text-style-guide>SampleStyleGuide.class</text-style-guide>
+            <feeds>
+                <feed id="SP"/>
+            </feeds>
+        </content-source>
+    </content-sources>
+</config>

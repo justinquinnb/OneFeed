@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.justinquinnb</groupId>
-	<artifactId>OneFeed</artifactId>
+	<artifactId>onefeed</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>OneFeed</name>
 	<description>OneFeed</description>

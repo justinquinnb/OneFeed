@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://www.onefeed.justinquinnb.com/onefeed-config.xsd"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+    <xs:element name="config">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="meta">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="api-key-filepath" type="xs:anyURI"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="content-sources">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="content-source" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="content-mapper" type="xs:string" minOccurs="0" nillable="true"/>
+                                        <xs:element name="text-style-guide" type="xs:string" minOccurs="0" nillable="true"/>
+                                        <xs:element name="feeds">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="feed" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:any minOccurs="0" processContents="lax"/>
+                                                            </xs:sequence>
+                                                            <xs:attribute name="id" type="xs:string" use="required"/>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
