@@ -1,10 +1,9 @@
 package com.justinquinnb.onefeed.api.security;
 
-import com.justinquinnb.onefeed.api.OneFeedApiConfig;
+import com.justinquinnb.onefeed.OneFeedApplication;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -25,13 +24,6 @@ public class AuthenticationService {
      */
     public static final String AUTH_TOKEN_HEADER_NAME = "x-api-key";
 
-    private OneFeedApiConfig oneFeedApiConfig;
-
-    @Autowired
-    public AuthenticationService(OneFeedApiConfig apiConfig) {
-        this.oneFeedApiConfig = apiConfig;
-    }
-
     /**
      * Attempts to retrieve and validate the API Key from the request header.
      * If valid, it creates an Authentication object representing the API Key.
@@ -44,7 +36,7 @@ public class AuthenticationService {
     public Authentication getAuthentication(HttpServletRequest request) {
         String requestApiKey = request.getHeader(AUTH_TOKEN_HEADER_NAME);
         logger.debug("Checking API key in request header");
-        if (requestApiKey == null || !requestApiKey.equals(oneFeedApiConfig.getKey())) {
+        if (requestApiKey == null || !requestApiKey.equals(OneFeedApplication.getCompleteConfig().getMetaConfig().getApiKey())) {
             logger.warn("API request denied: Invalid OneFeed API key");
             throw new BadCredentialsException("Invalid OneFeed API key");
         }

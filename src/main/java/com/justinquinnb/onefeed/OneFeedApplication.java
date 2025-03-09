@@ -1,12 +1,14 @@
 package com.justinquinnb.onefeed;
 
-import com.justinquinnb.onefeed.contentsources.github.GitHubGraphQlService;
-import com.justinquinnb.onefeed.contentsources.instagram.InstagramService;
-import com.justinquinnb.onefeed.contentsources.linkedin.LinkedInService;
-import com.justinquinnb.onefeed.contentsources.sample.SampleService;
-import com.justinquinnb.onefeed.contentsources.threads.ThreadsService;
-import com.justinquinnb.onefeed.data.model.content.details.ContentSourceId;
-import com.justinquinnb.onefeed.data.model.source.ContentSource;
+import com.justinquinnb.onefeed.addons.github.GitHubGraphQlService;
+import com.justinquinnb.onefeed.addons.instagram.InstagramService;
+import com.justinquinnb.onefeed.addons.linkedin.LinkedInService;
+import com.justinquinnb.onefeed.addons.sample.SampleService;
+import com.justinquinnb.onefeed.addons.threads.ThreadsService;
+import com.justinquinnb.onefeed.content.details.ContentSourceId;
+import com.justinquinnb.onefeed.customization.CustomizationHandler;
+import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.config.OneFeedCompleteConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -24,6 +26,9 @@ public class OneFeedApplication {
 	 * Maps unique {@link ContentSource} identifiers to their respective service file.
 	 */
 	public static final HashMap<String, ContentSource> CONTENT_SOURCES = new HashMap<>();
+
+	private static OneFeedCompleteConfig oneFeedCompleteConfig;
+
 	private static final Logger logger = LoggerFactory.getLogger(OneFeedApplication.class);
 
 	public static void main(String[] args) {
@@ -36,6 +41,9 @@ public class OneFeedApplication {
 		try {
 			// Run application
 			SpringApplication.run(OneFeedApplication.class, args);
+
+			// Load all of OneFeed's customizations
+			CustomizationHandler.loadCustomizations();
 
 			// Grab and test all the Content Sources
 			getContentSources();
@@ -59,7 +67,7 @@ public class OneFeedApplication {
 	}
 
 	/**
-	 * Gets and stores instance of each {@link ContentSource} provided in {@link com.justinquinnb.onefeed.contentsources}
+	 * Gets and stores instance of each {@link ContentSource} provided in {@link com.justinquinnb.onefeed.addons}
 	 * directory.
 	 */
 	private static void getContentSources() {
@@ -110,5 +118,24 @@ public class OneFeedApplication {
 		} else {
 			logger.info("All Content Sources are available.");
 		}
+	}
+
+	/**
+	 * Stores OneFeed's complete configuration for reference by the application.
+	 *
+	 * @param oneFeedCompleteConfig the complete configuration profile for OneFeed to employ
+	 */
+	public static void provideOneFeedCompleteConfig(OneFeedCompleteConfig oneFeedCompleteConfig) {
+		oneFeedCompleteConfig = oneFeedCompleteConfig;
+		logger.info("Saved OneFeed's complete configuration profile.");
+	}
+
+	/**
+	 * Gets the global configurations currently used by OneFeed.
+	 *
+	 * @return the instance of {@link OneFeedCompleteConfig} currently being used
+	 */
+	public static OneFeedCompleteConfig getCompleteConfig() {
+		return oneFeedCompleteConfig;
 	}
 }

@@ -1,11 +1,11 @@
 package com.justinquinnb.onefeed.api.endpoints.oauth;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
-import com.justinquinnb.onefeed.data.exceptions.InvalidSourceIdException;
-import com.justinquinnb.onefeed.data.exceptions.InvalidSourceTypeException;
-import com.justinquinnb.onefeed.data.model.source.AuthorizationCodeOAuth;
-import com.justinquinnb.onefeed.data.model.source.ContentSource;
-import com.justinquinnb.onefeed.data.model.token.TokenEntry;
+import com.justinquinnb.onefeed.api.endpoints.content.InvalidSourceIdException;
+import com.justinquinnb.onefeed.api.security.InvalidSourceTypeException;
+import com.justinquinnb.onefeed.customization.addon.contentsource.AuthorizationCodeOAuth;
+import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.datastorage.token.TokenEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
