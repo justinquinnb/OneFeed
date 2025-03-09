@@ -1,12 +1,8 @@
 package com.justinquinnb.onefeed.api.endpoints.content;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
-import com.justinquinnb.onefeed.data.exceptions.IllegalContentCountException;
-import com.justinquinnb.onefeed.data.exceptions.InvalidSourceIdException;
-import com.justinquinnb.onefeed.data.exceptions.InvalidTimeException;
-import com.justinquinnb.onefeed.data.exceptions.InvalidTimeRangeException;
-import com.justinquinnb.onefeed.data.model.content.Content;
-import com.justinquinnb.onefeed.data.model.source.ContentSource;
+import com.justinquinnb.onefeed.content.Content;
+import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
