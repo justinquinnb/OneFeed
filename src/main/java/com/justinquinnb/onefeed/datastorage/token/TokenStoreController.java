@@ -2,8 +2,8 @@ package com.justinquinnb.onefeed.datastorage.token;
 
 import com.justinquinnb.onefeed.api.endpoints.oauth.OAuthService;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
-import com.justinquinnb.onefeed.customization.addon.contentsource.AuthorizationCodeOAuth;
-import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.contentsource.AuthorizationCodeOAuth;
+import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

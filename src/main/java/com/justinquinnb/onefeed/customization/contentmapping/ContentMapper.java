@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.customization.addon.process.contentmapping;
+package com.justinquinnb.onefeed.customization.contentmapping;
 
 
 import com.justinquinnb.onefeed.content.OneFeedContent;

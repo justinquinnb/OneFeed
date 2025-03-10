@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.datastorage.token;
 
-import com.justinquinnb.onefeed.customization.addon.contentsource.AuthorizationCodeOAuth;
-import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.contentsource.AuthorizationCodeOAuth;
+import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;

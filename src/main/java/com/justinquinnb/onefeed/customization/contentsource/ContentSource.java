@@ -1,10 +1,14 @@
-package com.justinquinnb.onefeed.customization.addon.contentsource;
+package com.justinquinnb.onefeed.customization.contentsource;
 
 import com.justinquinnb.onefeed.content.BasicContent;
 import com.justinquinnb.onefeed.content.RawContent;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
-import com.justinquinnb.onefeed.customization.addon.process.contentmapping.ContentMapper;
+import com.justinquinnb.onefeed.customization.contentmapping.ContentMapper;
+import com.justinquinnb.onefeed.customization.defaults.BasicFormattingLanguage;
+import com.justinquinnb.onefeed.customization.textstyle.indexing.FormattingIndexer;
+import com.justinquinnb.onefeed.customization.textstyle.indexing.MarkedUpText;
+import com.justinquinnb.onefeed.customization.textstyle.indexing.TextMarkupLanguage;
 
 import java.time.Instant;
 
@@ -12,7 +16,7 @@ import java.time.Instant;
  * Outlines the functionalities of a valid source of content.
  * @param <T>
  */
-public abstract class ContentSource<T extends RawContent> {
+public abstract class ContentSource<T extends RawContent, U extends TextMarkupLanguage> {
     /**
      * The unique {@code String} used to identify a specific {@code ContentSource} instance when interacting with the
      * OneFeed API. Facilitates the tracking of multiple {@code ContentSource} instances, a situation possible when
@@ -66,28 +70,53 @@ public abstract class ContentSource<T extends RawContent> {
      */
     public abstract BasicContent[] getLatestContent(int count, Instant[] betweenTimes);
 
+    /**
+     *
+     * @return
+     */
     public abstract ContentMapper<T, BasicContent> getContentMapper();
 
-    public abstract TextFormattingIndexer
+    /**
+     *
+     * @param rawContent
+     * @return
+     */
+    public BasicContent[] mapContent(T[] rawContent) {
+        ContentMapper<T, BasicContent> mapper = this.getContentMapper();
+        BasicContent[] mappedContent = new BasicContent[rawContent.length];
 
-//    /**
-//     * Maps the provided {@link RawContent} into {@link BasicContent}.
-//     *
-//     * @param rawContent the {@code RawContent} (content data as provided from the source API) to map into the uniform
-//     *                   {@code BasicContent} type
-//     * @return the provided {@code RawContent} in the most basic implementation of {@link OneFeedContent},
-//     * {@code BasicContent}.
-//     */
-//    public abstract BasicContent mapToContent(T rawContent);
-//
-//    /**
-//     * Builds a {@link TextFormattingIndex} for the provided {@code plainText}.
-//     *
-//     * @param plainText the plain text (possibly containing {@link ContentSource}-specific symbols) to build an index
-//     *                  for
-//     * @return a {@code TextStyleIndex} mapping formatted substrings to their respective {@code TextFormatting} tags
-//     */
-//    public abstract TextFormattingIndex buildTextFormattingIndexFor(String plainText);
+        for (int i = 0; i < rawContent.length; i++) {
+            mappedContent[i] = mapper.mapContent(rawContent[i]);
+        }
+
+        return mappedContent;
+    }
+
+    /**
+     *
+     * @param rawContent
+     * @return
+     */
+    public BasicContent mapContent(T rawContent) {
+        ContentMapper<T, BasicContent> mapper = this.getContentMapper();
+        return mapper.mapContent(rawContent);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public abstract FormattingIndexer<BasicHtml, BasicFormattingLanguage> getFormattingIndexer();
+
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public TextStylingInstructions<BasicFormattingLanguage> getFormattingInstructions(MarkedUpText<U> text) {
+        FormattingIndexer<U, BasicFormattingLanguage> indexer = this.getFormattingIndexer();
+        return indexer.createStylingInstructionsFor(text);
+    }
 
     /**
      * Gets an array of all of {@code this} {@code ContentSource}'s instances, as specified by its configuration.

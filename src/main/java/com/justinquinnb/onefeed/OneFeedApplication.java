@@ -7,7 +7,7 @@ import com.justinquinnb.onefeed.addons.sample.SampleService;
 import com.justinquinnb.onefeed.addons.threads.ThreadsService;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.customization.CustomizationHandler;
-import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
 import com.justinquinnb.onefeed.customization.config.OneFeedCompleteConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

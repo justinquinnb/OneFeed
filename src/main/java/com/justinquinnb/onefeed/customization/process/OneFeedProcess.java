@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.customization.addon.process;
+package com.justinquinnb.onefeed.customization.process;
 
 /**
  *
