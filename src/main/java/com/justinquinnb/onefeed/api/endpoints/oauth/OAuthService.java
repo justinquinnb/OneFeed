@@ -2,8 +2,8 @@ package com.justinquinnb.onefeed.api.endpoints.oauth;
 
 
 import com.justinquinnb.onefeed.OneFeedApplication;
-import com.justinquinnb.onefeed.customization.addon.contentsource.AuthorizationCodeOAuth;
-import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.contentsource.AuthorizationCodeOAuth;
+import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
 import com.justinquinnb.onefeed.datastorage.token.TokenEntry;
 import com.justinquinnb.onefeed.datastorage.token.TokenStorage;
 import com.justinquinnb.onefeed.datastorage.token.TokenStoreController;

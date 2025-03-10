@@ -8,7 +8,7 @@ import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.content.details.Producer;
 import com.justinquinnb.onefeed.content.reception.Comment;
 import com.justinquinnb.onefeed.content.reception.Reception;
-import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
 import org.springframework.lang.Nullable;
 
 import java.time.Instant;

@@ -4,7 +4,7 @@ import com.justinquinnb.onefeed.content.BasicContent;
 import com.justinquinnb.onefeed.content.details.BasicPlatform;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
-import com.justinquinnb.onefeed.customization.addon.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
 
 import java.time.Instant;
 

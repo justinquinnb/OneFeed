@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.customization.addon.contentsource;
+package com.justinquinnb.onefeed.customization.contentsource;
 
 import java.time.Duration;
 

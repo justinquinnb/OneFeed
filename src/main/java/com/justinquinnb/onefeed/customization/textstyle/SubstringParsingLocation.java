@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.customization.addon.process.textstyle;
+package com.justinquinnb.onefeed.customization.textstyle;
 
 /**
  * Specifies the location of a substring to parse out.
