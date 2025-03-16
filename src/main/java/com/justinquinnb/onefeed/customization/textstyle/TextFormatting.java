@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.customization.defaults;
+package com.justinquinnb.onefeed.customization.textstyle;
 
 //TODO
 
@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  *
  */
-public class TextFormatting {
+public abstract class TextFormatting {
     /**
      *
      */

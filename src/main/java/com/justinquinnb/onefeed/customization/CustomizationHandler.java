@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Loads and manages OneFeed's configurations, modifications, and addons.
+ */
 @Component
 public class CustomizationHandler {
     /**
