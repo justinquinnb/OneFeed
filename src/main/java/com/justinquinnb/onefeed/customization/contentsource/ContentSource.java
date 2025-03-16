@@ -5,10 +5,7 @@ import com.justinquinnb.onefeed.content.RawContent;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.customization.contentmapping.ContentMapper;
-import com.justinquinnb.onefeed.customization.defaults.BasicFormattingLanguage;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.FormattingIndexer;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.MarkedUpText;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.TextMarkupLanguage;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingRuleset;
 
 import java.time.Instant;
 
@@ -16,7 +13,7 @@ import java.time.Instant;
  * Outlines the functionalities of a valid source of content.
  * @param <T>
  */
-public abstract class ContentSource<T extends RawContent, U extends TextMarkupLanguage> {
+public abstract class ContentSource<T extends RawContent> {
     /**
      * The unique {@code String} used to identify a specific {@code ContentSource} instance when interacting with the
      * OneFeed API. Facilitates the tracking of multiple {@code ContentSource} instances, a situation possible when
@@ -104,19 +101,8 @@ public abstract class ContentSource<T extends RawContent, U extends TextMarkupLa
 
     /**
      *
-     * @return
      */
-    public abstract FormattingIndexer<BasicHtml, BasicFormattingLanguage> getFormattingIndexer();
-
-    /**
-     *
-     * @param text
-     * @return
-     */
-    public TextStylingInstructions<BasicFormattingLanguage> getFormattingInstructions(MarkedUpText<U> text) {
-        FormattingIndexer<U, BasicFormattingLanguage> indexer = this.getFormattingIndexer();
-        return indexer.createStylingInstructionsFor(text);
-    }
+    public abstract FormattingRuleset<BasicFormattingLanguage> getFormattingRuleset();
 
     /**
      * Gets an array of all of {@code this} {@code ContentSource}'s instances, as specified by its configuration.
