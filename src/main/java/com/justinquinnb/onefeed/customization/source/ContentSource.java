@@ -1,10 +1,11 @@
-package com.justinquinnb.onefeed.customization.contentsource;
+package com.justinquinnb.onefeed.customization.source;
 
 import com.justinquinnb.onefeed.content.BasicContent;
 import com.justinquinnb.onefeed.content.RawContent;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
-import com.justinquinnb.onefeed.customization.contentmapping.ContentMapper;
+import com.justinquinnb.onefeed.customization.defaults.BasicFormatting;
+import com.justinquinnb.onefeed.customization.mapping.ContentMapper;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingRuleset;
 
 import java.time.Instant;
@@ -102,7 +103,7 @@ public abstract class ContentSource<T extends RawContent> {
     /**
      *
      */
-    public abstract FormattingRuleset<BasicFormattingLanguage> getFormattingRuleset();
+    public abstract FormattingRuleset<BasicFormatting> getFormattingRuleset();
 
     /**
      * Gets an array of all of {@code this} {@code ContentSource}'s instances, as specified by its configuration.

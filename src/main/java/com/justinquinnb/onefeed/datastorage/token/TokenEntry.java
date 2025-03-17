@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.datastorage.token;
 
-import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.source.ContentSource;
 
 import java.time.Duration;
 import java.time.Instant;
