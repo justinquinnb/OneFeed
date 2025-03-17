@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.api.security;
 
-import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.source.ContentSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

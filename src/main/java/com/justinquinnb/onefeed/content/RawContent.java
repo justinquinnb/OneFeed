@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.content;
 
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
-import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.source.ContentSource;
 
 import java.time.Instant;
 

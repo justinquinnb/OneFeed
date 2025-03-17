@@ -2,7 +2,7 @@ package com.justinquinnb.onefeed.api.endpoints.content;
 
 import com.justinquinnb.onefeed.OneFeedApplication;
 import com.justinquinnb.onefeed.content.Content;
-import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.source.ContentSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;

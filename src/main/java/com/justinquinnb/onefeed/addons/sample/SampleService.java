@@ -8,7 +8,7 @@ import com.justinquinnb.onefeed.content.Content;
 import com.justinquinnb.onefeed.content.details.BasicPlatform;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
-import com.justinquinnb.onefeed.customization.contentsource.ContentSource;
+import com.justinquinnb.onefeed.customization.source.ContentSource;
 
 import java.io.File;
 import java.io.IOException;
