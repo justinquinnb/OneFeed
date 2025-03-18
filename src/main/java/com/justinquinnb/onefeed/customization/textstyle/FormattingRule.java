@@ -3,16 +3,14 @@ package com.justinquinnb.onefeed.customization.textstyle;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-// TODO implement
-
 /**
- * An indication of what to do with text that matches the included Regex {@link Pattern}.
+ * An indication of what to do with text that matches the included regex {@link Pattern}.
  * @param <T> the language that the {@link FormattingMarkedText}'s {@link TextFormatting} marker belongs to as the
  *           {@link #process}' output
  */
 public class FormattingRule<T extends TextFormatting> {
     /**
-     * The Regex {@link Pattern} specifying what substrings to execute the {@link #process} on.
+     * The regex {@link Pattern} specifying what substrings to execute the {@link #process} on.
      */
     private Pattern regex;
 
@@ -21,4 +19,48 @@ public class FormattingRule<T extends TextFormatting> {
      * {@link FormattingMarkedText}.
      */
     private Function<String, FormattingMarkedText<T>> process;
+
+    /**
+     * Creates a {@link FormattingRule} mapping the provided {@code regex} to a {@link FormattingMarkedText}-producing
+     * {@code Function} that processes its matches.
+     *
+     * @param regex a regex {@link Pattern} specifying what to search for in any given {@code String}
+     * @param process the desired {@link Function} to run on matches to generate {@code FormattingMarkedText}
+     */
+    public FormattingRule(Pattern regex, Function<String, FormattingMarkedText<T>> process) {
+        this.regex = regex;
+        this.process = process;
+    }
+
+    /**
+     * Gets {@code this} {@link FormattingRule}'s regex {@link Pattern}.
+     *
+     * @return the regex {@code Pattern} specifying what to search for in any given {@code String}
+     */
+    public Pattern getRegex() {
+        return this.regex;
+    }
+
+    /**
+     * Gets the {@code this} {@link FormattingRule}'s {@link #process}.
+     *
+     * @return the {@link Function} to run on {@link #regex} matches and generate {@code FormattingMarkedText} with
+     */
+    public Function<String, FormattingMarkedText<T>> getProcess() {
+        return this.process;
+    }
+
+    /**
+     * Processes text (particularly that matching {@code this} {@link FormattingRule}'s {@link #regex}) using
+     * {@code this} {@code FormattingMarkedText}'s {@link #process} {@link Function}.
+     *
+     * @param matchText any text to apply the {@code process} function to, but particularly that which matches
+     *                  {@code this} {@code FormattingRule}'s {@code regex}.
+     *
+     * @return some {@link FormattingMarkedText} containing the (possibly) altered {@code matchText} and the
+     * {@link TextFormatting} now associated with it
+     */
+    public FormattingMarkedText<T> process(String matchText) {
+        return this.process.apply(matchText);
+    }
 }
