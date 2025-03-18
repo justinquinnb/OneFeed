@@ -75,6 +75,8 @@ public class SampleService extends ContentSource {
     public BasicContent[] getLatestContent(int count, Instant[] betweenTimes) {
         int numToGet = Math.min(count, 6);
         BasicContent[] sampleContent = new BasicContent[0];
+
+        // Attempt to read the sample content from the sample content JSON
         try {
             sampleContent = JSON_MAPPER.readValue(
                     new File(SAMPLE_CONTENT_LOCATION),

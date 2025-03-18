@@ -5,7 +5,6 @@ import com.justinquinnb.onefeed.customization.defaults.LinkFormat;
 
 import java.util.Objects;
 
-// TODO implement
 /**
  * A text formatting, like boldface or italics.
  * <br><br>
@@ -29,42 +28,25 @@ import java.util.Objects;
  */
 public abstract class TextFormatting {
     /**
-     *
+     * A label or name for the type of text formatting, like "Bold" or "Italic".
      */
     private String label;
 
     /**
+     * Instantiates a type of text formatting with label {@code label}.
      *
-     * @param label
+     * @param label the label/name for the constructed {@link TextFormatting} instance to assume
      */
     public TextFormatting(String label) {
         this.label = label.toUpperCase().strip();
     }
 
     /**
+     * Gets {@code this} {@link TextFormatting}'s {@link #label}.
      *
-     * @return
+     * @return the label/name of {@code this} {@code TextFormatting} instance
      */
     public String getLabel() {
         return this.label;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.getClass(), this.label);
-    }
-
-    /**
-     *
-     * @param o
-     * @return
-     */
-    @Override
-    public boolean equals(Object o) {
-        return this.hashCode() == o.hashCode();
     }
 }

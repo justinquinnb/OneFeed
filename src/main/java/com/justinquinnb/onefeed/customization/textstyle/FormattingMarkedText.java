@@ -1,13 +1,12 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
-// TODO implement
 /**
- * Unformatted text accompanied by the type of {@link TextFormatting} pending application to it.
+ * Unformatted text accompanied by some {@link TextFormatting} indicating how it should be formatted.
  * @param <T> the language of {@code TextFormatting}s possibly employed by {@code this} marking
  */
 public class FormattingMarkedText<T extends TextFormatting> {
     /**
-     * The unformatted text to format with the provided {@link #format}.
+     * The unformatted text to format with the provided {@link #formatting}.
      */
     private String unformattedText;
 
@@ -16,8 +15,34 @@ public class FormattingMarkedText<T extends TextFormatting> {
      */
     private TextFormatting formatting;
 
+    /**
+     * Constructs {@link FormattingMarkedText}, an association between some unformatted text, {@code unformattedText},
+     * and a {@link TextFormatting} instance representing how it should be formatted.
+     *
+     * @param unformattedText unformatted text described by the {@code TextFormat} provided by {@code formatting}
+     * @param formatting a {@code TextFormatting} instance representing the desired formatting of
+     * {@code unformattedText}
+     */
     public FormattingMarkedText(String unformattedText, T formatting) {
         this.unformattedText = unformattedText;
         this.formatting = formatting;
+    }
+
+    /**
+     * Gets this {@code this} {@link FormattingMarkedText}'s {@link #unformattedText}.
+     *
+     * @return the unformatted text {@code this} {@code FormattingMarkedText}'s {@link #formatting} applies to
+     */
+    public String getUnformattedText() {
+        return this.unformattedText;
+    }
+
+    /**
+     * Gets this {@code this} {@link FormattingMarkedText}'s {@link #formatting}.
+     *
+     * @return the formatting {@code this} {@code FormattingMarkedText}'s {@link #unformattedText} should receive
+     */
+    public TextFormatting getFormatting() {
+        return this.formatting;
     }
 }
