@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.justinquinnb.onefeed.content.BasicContent;
 import com.justinquinnb.onefeed.content.Content;
+import com.justinquinnb.onefeed.content.RawContent;
 import com.justinquinnb.onefeed.content.details.BasicPlatform;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 
+// TODO implement new required methods
 /**
  * Provides an offline, tinker-able source of content to pull from, emulating a full-fledged {@link ContentSource}.
  */
@@ -56,9 +58,9 @@ public class SampleService extends ContentSource {
         return true;
     }
 
-    public BasicContent[] getLatestContent(int count) {
+    public RawContent[] getLatestContent(int count) {
         int numToGet = Math.min(count, 6);
-        BasicContent[] sampleContent = new BasicContent[0];
+        RawContent[] sampleContent = new RawContent[0];
         try {
             sampleContent = JSON_MAPPER.readValue(
                     new File(SAMPLE_CONTENT_LOCATION),
@@ -72,9 +74,9 @@ public class SampleService extends ContentSource {
         return sampleContent;
     }
 
-    public BasicContent[] getLatestContent(int count, Instant[] betweenTimes) {
+    public RawContent[] getLatestContent(int count, Instant[] betweenTimes) {
         int numToGet = Math.min(count, 6);
-        BasicContent[] sampleContent = new BasicContent[0];
+        RawContent[] sampleContent = new RawContent[0];
 
         // Attempt to read the sample content from the sample content JSON
         try {
@@ -87,7 +89,7 @@ public class SampleService extends ContentSource {
 
         // Narrow the sample content down to only those within the date range
         Collection<BasicContent> filteredContent = new ArrayList<>();
-        for (BasicContent content : sampleContent) {
+        for (RawContent content : sampleContent) {
             Instant contentTimestamp = content.getTimestamp();
             if (isInclusiveBetween(contentTimestamp, betweenTimes[0], betweenTimes[1])) {
                 filteredContent.add(content);

@@ -1,6 +1,7 @@
 package com.justinquinnb.onefeed.addons.instagram;
 
 import com.justinquinnb.onefeed.content.BasicContent;
+import com.justinquinnb.onefeed.content.RawContent;
 import com.justinquinnb.onefeed.content.details.BasicPlatform;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
@@ -26,12 +27,12 @@ public class InstagramService extends ContentSource {
     }
 
     @Override
-    public BasicContent[] getLatestContent(int count) {
+    public RawContent[] getLatestContent(int count) {
         return new BasicContent[0];
     }
 
     @Override
-    public BasicContent[] getLatestContent(int count, Instant[] betweenTimes) {
+    public RawContent[] getLatestContent(int count, Instant[] betweenTimes) {
         return new BasicContent[0];
     }
 }
