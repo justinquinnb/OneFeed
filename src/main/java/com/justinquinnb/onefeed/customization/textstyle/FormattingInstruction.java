@@ -1,6 +1,5 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
-// TODO complete implementation
 /**
  * A single instruction to format some text at {@link #location} with a {@link #formatting}.
  * @param <T> the langauge of {@link TextFormatting}s.

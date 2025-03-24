@@ -61,7 +61,7 @@ public class ContentController {
         }
 
         // If a source filter is present, parse and use it
-        ContentSource[] sources = new ContentSource[contentCount];
+        ContentSource<?>[] sources = new ContentSource[contentCount];
         if (fromSources.isPresent()) {
             sources = parseSourceIds(fromSources.get());
             logger.debug("Content Source IDs identified in request: {}", Arrays.toString(sources));
@@ -113,10 +113,10 @@ public class ContentController {
      * @throws InvalidSourceIdException if any of the encoded {@code ContentSourceId}s in the
      * {@code idString} are not bound to a {@code ContentSource}
      */
-    private static ContentSource[] parseSourceIds(String idString) throws InvalidSourceIdException {
+    private static ContentSource<?>[] parseSourceIds(String idString) throws InvalidSourceIdException {
         logger.debug("Parsing Content Source idString \"{}\"", idString);
         String[] fromSources = idString.split("\\+");
-        ContentSource[] sources = new ContentSource[fromSources.length];
+        ContentSource<?>[] sources = new ContentSource[fromSources.length];
         String contentSourceId;
 
         for (int i = 0; i < fromSources.length; i++) {
