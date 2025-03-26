@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Contains everything necessary to apply {@link TextFormatting}s to some text.
+ * A bundle of unformatted/un-marked-up text and formatting instructions--everything necessary to apply
+ * {@link TextFormatting}s to some text via a mark-up process.
+ *
  * @param <T> the language of {@code TextFormatting}s employed by {@code this} kit's {@link #instructions}
  */
 public class FormattingKit<T extends TextFormatting> {

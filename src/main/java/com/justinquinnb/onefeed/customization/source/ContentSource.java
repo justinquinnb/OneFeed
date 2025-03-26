@@ -5,7 +5,7 @@ import com.justinquinnb.onefeed.content.RawContent;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.customization.CustomizationHandler;
-import com.justinquinnb.onefeed.customization.defaults.BasicFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.defaults.BasicFormatting;
 import com.justinquinnb.onefeed.customization.mapping.ContentMapper;
 import com.justinquinnb.onefeed.customization.textstyle.FormatIndexingRule;
 import com.justinquinnb.onefeed.customization.textstyle.FormatIndexingRuleset;
@@ -14,7 +14,7 @@ import java.time.Instant;
 
 /**
  * Outlines the functionalities of a valid source of content.
- * @param <T>
+ * @param <T> the type of {@link RawContent} {@code this} {@code ContentSource} produces
  */
 public abstract class ContentSource<T extends RawContent> {
     /**

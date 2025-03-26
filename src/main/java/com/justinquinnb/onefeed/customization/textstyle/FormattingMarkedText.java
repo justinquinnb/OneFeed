@@ -8,12 +8,12 @@ public class FormattingMarkedText<T extends TextFormatting> {
     /**
      * The unformatted text to format with the provided {@link #formatting}.
      */
-    private String unformattedText;
+    private final String unformattedText;
 
     /**
      * The {@link TextFormatting} associated with the currently {@link #unformattedText}.
      */
-    private TextFormatting formatting;
+    private final T formatting;
 
     /**
      * Constructs {@link FormattingMarkedText}, an association between some unformatted text, {@code unformattedText},
@@ -42,7 +42,7 @@ public class FormattingMarkedText<T extends TextFormatting> {
      *
      * @return the formatting {@code this} {@code FormattingMarkedText}'s {@link #unformattedText} should receive
      */
-    public TextFormatting getFormatting() {
+    public T getFormatting() {
         return this.formatting;
     }
 }

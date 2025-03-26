@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.customization.defaults;
+package com.justinquinnb.onefeed.customization.textstyle.defaults;
 
 import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
@@ -7,7 +7,7 @@ import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
  *
  * @see TextFormatting
  */
-public class LinkFormat extends BasicFormatting {
+public non-sealed class LinkFormat extends BasicFormatting{
     /**
      * The URL to link to.
      */
