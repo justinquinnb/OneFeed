@@ -2,18 +2,18 @@ package com.justinquinnb.onefeed.customization.textstyle;
 
 /**
  * A single instruction to format some text at {@link #location} with a {@link #formatting}.
- * @param <T> the langauge of {@link TextFormatting}s.
+ * @param <T> the language of {@link TextFormatting}s that {@code this} instruction's {@code formatting} belongs to
  */
 public class FormattingInstruction<T extends TextFormatting> implements Cloneable {
     /**
      * The location some substring that the {@link #formatting} applies to.
      */
-    private SubstringLocation location;
+    private final SubstringLocation location;
 
     /**
      * The {@link TextFormatting} to apply to some substring located at {@link #location}.
      */
-    private TextFormatting formatting;
+    private final T formatting;
 
     /**
      * Instantiates a {@link FormattingInstruction} specifying a type of {@link TextFormatting} to apply to a substring
@@ -23,7 +23,7 @@ public class FormattingInstruction<T extends TextFormatting> implements Cloneabl
      *                 {@code TextFormatting} should apply to
      * @param formatting the {@code TextFormatting} to apply to some substring at {@code location}
      */
-    public FormattingInstruction(SubstringLocation location, TextFormatting formatting) {
+    public FormattingInstruction(SubstringLocation location, T formatting) {
         this.location = location;
         this.formatting = formatting;
     }
@@ -45,7 +45,7 @@ public class FormattingInstruction<T extends TextFormatting> implements Cloneabl
      * @return the {@code TextFormatting} to be applied to the substring at location {@link #location} of some
      * {@code String}
      */
-    public TextFormatting getFormatting() {
+    public T getFormatting() {
         return this.formatting;
     }
 

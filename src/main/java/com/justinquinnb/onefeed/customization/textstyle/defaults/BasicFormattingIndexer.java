@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed.customization.defaults;
+package com.justinquinnb.onefeed.customization.textstyle.defaults;
 
 import com.justinquinnb.onefeed.customization.textstyle.*;
 import org.slf4j.Logger;
@@ -8,14 +8,13 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 
 /**
- * The default implementation of a {@link TextFormattingIndexer}, associating substrings with {@link TextFormatting}s
- * included in the {@link BasicFormatting} language.
+ * The default implementation of a {@link TextFormattingIndexer}, associating substrings with {@link TextFormatting}s.
  */
 public class BasicFormattingIndexer implements TextFormattingIndexer {
     private static final Logger logger = LoggerFactory.getLogger(BasicFormattingIndexer.class);
 
     @Override
-    public <T extends TextFormatting> FormattingKit<T> buildKitFor(
+    public <T extends TextFormatting> FormattingKit<T> buildKit(
             String markedUpText, FormatIndexingRuleset<T> formattingRules) {
         logger.debug("Building FormattingKit for text: {}", markedUpText);
 
@@ -32,7 +31,7 @@ public class BasicFormattingIndexer implements TextFormattingIndexer {
         SubstringLocation locationInFullStr; // The location of the generated replacement text in the markedUpText
         int matchStartIndex, matchEndOffset, replacementTextLength;
         FormattingMarkedText<T> generatedFmt;
-        TextFormatting generatedFormatting;
+        T generatedFormatting;
 
         Matcher regexMatcher;
         for (FormatIndexingRule<T> rule : formattingRules) {
@@ -47,9 +46,9 @@ public class BasicFormattingIndexer implements TextFormattingIndexer {
                 matchStartIndex = regexMatcher.start();
                 matchEndOffset = regexMatcher.end();
 
-                // Extract the match and process it according to the rule, saving the resultant unformatted text and
+                // Extract the match and apply it according to the rule, saving the resultant unformatted text and
                 // TextFormatting instance (bundled as FormattingMarkedText)
-                generatedFmt = rule.process(workingText.substring(matchStartIndex, matchEndOffset));
+                generatedFmt = rule.apply(workingText.substring(matchStartIndex, matchEndOffset));
                 logger.trace("Match found: {}", workingText.substring(matchStartIndex, matchEndOffset));
                 logger.trace("Replaced with: \"{}\"", generatedFmt.getUnformattedText());
 

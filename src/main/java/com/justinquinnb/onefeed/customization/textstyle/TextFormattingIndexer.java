@@ -19,5 +19,5 @@ public interface TextFormattingIndexer {
      * language isn't recognized by the rules), the {@code FormattingKit} will contain {@code markedUpText} as-is with
      * an empty index of formattings.
      */
-    public <T extends TextFormatting> FormattingKit<T> buildKitFor(String markedUpText, FormatIndexingRuleset<T> formattingRules);
+    public <T extends TextFormatting> FormattingKit<T> buildKit(String markedUpText, FormatIndexingRuleset<T> formattingRules);
 }
