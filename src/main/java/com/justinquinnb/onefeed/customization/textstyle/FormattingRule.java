@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 import java.util.function.Function;
 
 /**
@@ -64,5 +66,10 @@ public class FormattingRule<T extends TextFormatting> {
      */
     public String apply(FormattingMarkedText<T> markedText) {
         return this.process.apply(markedText);
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }

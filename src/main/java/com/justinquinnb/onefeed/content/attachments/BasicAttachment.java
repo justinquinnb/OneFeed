@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.content.attachments;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 import org.springframework.lang.Nullable;
 
 /**
@@ -161,6 +162,11 @@ public class BasicAttachment implements Attachment {
          */
         public BasicAttachment build() {
             return new BasicAttachment(this);
+        }
+
+        @Override
+        public String toString() {
+            return JsonToString.of(this);
         }
     }
 }

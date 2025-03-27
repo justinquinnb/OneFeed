@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.content;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 import com.justinquinnb.onefeed.content.attachments.Attachment;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
@@ -238,6 +239,11 @@ public class BasicContent extends OneFeedContent implements Comment {
             }
 
             return new BasicContent(this);
+        }
+
+        @Override
+        public String toString() {
+            return JsonToString.of(this);
         }
     }
 }

@@ -61,18 +61,4 @@ public abstract class TextFormatting {
     public final String getLabel() {
         return this.label;
     }
-
-    /**
-     * Returns a string representation of {@code this} {@code TextFormatting}.
-     *
-     * @return a string representation of {@code this} {@code TextFormatting}
-     *
-     * @implNote It is strongly encouraged (although not required) to return a {@code String} formatted with the pattern
-     * below as to maintain consistency with the built-in, {@link BasicFormatting}'s {@code String} representations
-     * as well as all other OneFeed objects:
-     * <br><br>
-     * "{@code className}@{@code this.hashCode()}{{@code field0Name}={@code field0Value},
-     * {@code field1Name}={@code field1Value}, <i>...</i>{@code fieldNName}={@code fieldNValue}}"
-     */
-    public abstract String toString();
 }

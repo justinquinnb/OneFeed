@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 /**
  * A single instruction to format some text at {@link #location} with a {@link #formatting}.
  * @param <T> the language of {@link TextFormatting}s that {@code this} instruction's {@code formatting} belongs to
@@ -57,5 +59,10 @@ public class FormattingInstruction<T extends TextFormatting> implements Cloneabl
     @Override
     public FormattingInstruction<T> clone() {
         return new FormattingInstruction<T>(this.location, this.formatting);
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }

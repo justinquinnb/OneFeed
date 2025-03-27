@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
@@ -77,5 +79,10 @@ public class FormattingRuleset<T extends TextFormatting> {
             throw new NoSuchElementException("No rule found for \"" + formatting.getName() + "\"-type formatting in ruleset \"" + name + "\"");
         }
         return this.rules.get(formatting);
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }

@@ -2,22 +2,12 @@ package com.justinquinnb.onefeed.content.details;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 
 /**
  * A basic implementation of information about an entity producing digital media.
  */
 public class BasicProducer implements Producer {
-    /**
-     * A direct link to the {@code BasicProducer}'s profile page on the {@link BasicPlatform} their digital media
-     * is being hosted on.
-     */
-    private final String profilePageUrl;
-
-    /**
-     * The URL of the {@code BasicProducer}'s profile picture, avatar, or platform equivalent.
-     */
-    private final String profilePicUrl;
-
     /**
      * The {@code BasicProducer}'s first (pen)name (or platform equivalent).
      */
@@ -33,13 +23,25 @@ public class BasicProducer implements Producer {
      */
     private final String username;
 
+    /**
+     * The URL of the {@code BasicProducer}'s profile picture, avatar, or platform equivalent.
+     */
+    private final String profilePicUrl;
+
+    /**
+     * A direct link to the {@code BasicProducer}'s profile page on the {@link BasicPlatform} their digital media
+     * is being hosted on.
+     */
+    private final String profilePageUrl;
+
     @JsonCreator
     public BasicProducer(
-            @JsonProperty("profilePageUrl") String profilePageUrl,
-            @JsonProperty("profilePicUrl") String profilePicUrl,
             @JsonProperty("firstName") String firstName,
             @JsonProperty("lastName") String lastName,
-            @JsonProperty("username") String username) {
+            @JsonProperty("username") String username,
+            @JsonProperty("profilePicUrl") String profilePicUrl,
+            @JsonProperty("profilePageUrl") String profilePageUrl
+    ) {
         this.profilePageUrl = profilePageUrl;
         this.profilePicUrl = profilePicUrl;
         this.firstName = firstName;
@@ -96,12 +98,8 @@ public class BasicProducer implements Producer {
         return username;
     }
 
+    @Override
     public String toString() {
-        return "BasicProducer@" + this.hashCode() +
-                "{firstName=\"" + this.firstName +
-                "\", lastName=\"" + this.lastName +
-                "\", username=\"" + this.username +
-                "\", profilePageUrl=\"" + this.profilePageUrl +
-                "\", profilePicUrl=\"" + this.profilePicUrl + "\"}";
+        return JsonToString.of(this);
     }
 }

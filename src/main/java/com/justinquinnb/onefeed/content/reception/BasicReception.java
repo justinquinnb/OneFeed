@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.content.reception;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 import org.springframework.lang.Nullable;
 
 import java.util.Arrays;
@@ -74,9 +75,8 @@ public class BasicReception implements Reception{
         return Arrays.copyOf(comments, comments.length);
     }
 
+    @Override
     public String toString() {
-        return "BasicReception@" + hashCode() + "{" +
-                "stats=" + stats +", " +
-                "comments=" + comments +'}';
+        return JsonToString.of(this);
     }
 }

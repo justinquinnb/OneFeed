@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 /**
  * The location of a substring within a {@code String}, inclusive.
  */
@@ -103,5 +105,10 @@ public class SubstringLocation {
     public void shift(int amount) {
         this.start += amount;
         this.end += amount;
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }

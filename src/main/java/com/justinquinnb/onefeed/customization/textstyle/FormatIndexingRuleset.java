@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -60,5 +62,10 @@ public class FormatIndexingRuleset<T extends TextFormatting> implements Iterable
     @Override
     public final Iterator<FormatIndexingRule<T>> iterator() {
         return this.rules.iterator();
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }

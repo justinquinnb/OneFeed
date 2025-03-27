@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.content.attachments;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 import org.springframework.lang.Nullable;
 
 /**
@@ -60,10 +61,8 @@ public class BasicVisual implements Visual {
         return altText;
     }
 
+    @Override
     public String toString() {
-        return "BasicVisual@" + this.hashCode() +
-                "{url=\"" + this.url + ", " +
-                "altText=" + (this.altText == null ? "null" : "\"" + this.altText + "\"") +
-                "}";
+        return JsonToString.of(this);
     }
 }

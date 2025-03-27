@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -63,5 +65,10 @@ public class FormatIndexingRule<T extends TextFormatting> {
      */
     public FormattingMarkedText<T> apply(String matchText) {
         return this.process.apply(matchText);
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }
