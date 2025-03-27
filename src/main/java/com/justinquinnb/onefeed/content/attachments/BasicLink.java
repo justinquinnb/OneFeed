@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.content.attachments;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 import com.justinquinnb.onefeed.content.BasicContent;
 import org.springframework.lang.Nullable;
 
@@ -61,10 +62,8 @@ public class BasicLink implements Link {
         return tooltip;
     }
 
+    @Override
     public String toString() {
-        return "BasicLink@" + this.hashCode() +
-                "{url=\"" + this.url + ", " +
-                "\"tooltip=" + (this.tooltip == null ? "null" : "\"" + this.tooltip + "\"") +
-                "}";
+        return JsonToString.of(this);
     }
 }

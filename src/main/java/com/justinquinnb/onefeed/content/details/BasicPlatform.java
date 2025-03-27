@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.content.details;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 
 /**
  * A basic implementation of information about the place that a piece of digital media is hosted on or published
@@ -9,14 +10,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class BasicPlatform implements Platform {
     /**
-     * The URL of the platform's homepage, such as {@code https://instagram.com} for Instagram.
-     */
-    private final String homepageUrl;
-
-    /**
      * The common name of the platform, such as "Instagram."
      */
     private final String name;
+
+    /**
+     * The URL of the platform's homepage, such as {@code https://instagram.com} for Instagram.
+     */
+    private final String homepageUrl;
 
     /**
      * The prefix used to mark a username on the platform, such as "@" for Instagram or "u/" for Reddit.
@@ -25,8 +26,8 @@ public class BasicPlatform implements Platform {
 
     @JsonCreator
     public BasicPlatform(
-            @JsonProperty("homepageUrl") String homepageUrl,
             @JsonProperty("name") String name,
+            @JsonProperty("homepageUrl") String homepageUrl,
             @JsonProperty("usernamePrefix") String usernamePrefix
     ) {
         this.homepageUrl = homepageUrl;
@@ -63,10 +64,8 @@ public class BasicPlatform implements Platform {
         return usernamePrefix;
     }
 
+    @Override
     public String toString() {
-        return "BasicPlatform@" + this.hashCode() +
-                "{name=\"" + this.name +
-                "\", homepageUrl=\"" + this.homepageUrl +
-                "\", usernamePrefix=\"" + this.usernamePrefix + "\"}";
+        return JsonToString.of(this);
     }
 }

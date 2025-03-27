@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -211,5 +213,10 @@ public class FormattingKit<T extends TextFormatting> {
     public static <V extends TextFormatting> void shiftWorkspaceForReplacement(
             List<FormattingInstruction<V>> instructions, String oldStr, String newStr, int at) {
         shiftWorkspace(instructions, newStr.length() - oldStr.length(), at);
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }

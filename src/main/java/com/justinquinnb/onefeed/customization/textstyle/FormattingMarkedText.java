@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.JsonToString;
+
 /**
  * Unformatted text accompanied by some {@link TextFormatting} indicating how it should be formatted.
  * @param <T> the language of {@code TextFormatting}s possibly employed by {@code this} marking
@@ -44,5 +46,10 @@ public class FormattingMarkedText<T extends TextFormatting> {
      */
     public T getFormatting() {
         return this.formatting;
+    }
+
+    @Override
+    public String toString() {
+        return JsonToString.of(this);
     }
 }

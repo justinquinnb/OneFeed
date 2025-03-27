@@ -2,6 +2,7 @@ package com.justinquinnb.onefeed.content.reception;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justinquinnb.onefeed.JsonToString;
 
 /**
  * A basic implementation of a numeric value with a label to identify/describe it.
@@ -53,6 +54,6 @@ public class BasicStat<T extends Number> implements Statistic {
 
     @Override
     public String toString() {
-        return "BasicStat@" + hashCode() + "{label=\"" + label + "\", value=" + value + "}";
+        return JsonToString.of(this);
     }
 }
