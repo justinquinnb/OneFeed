@@ -31,4 +31,8 @@ public non-sealed class ItalicFormat extends BasicFormatting {
         }
         return instance;
     }
+
+    public String toString() {
+        return "ItalicFormat@" + this.hashCode() + "{}";
+    }
 }

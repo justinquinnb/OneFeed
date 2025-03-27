@@ -31,4 +31,8 @@ public non-sealed class BoldFormat extends BasicFormatting {
         }
         return instance;
     }
+
+    public String toString() {
+        return "BoldFormat@" + this.hashCode() + "{}";
+    }
 }

@@ -39,7 +39,7 @@ public class FormatIndexingRuleset<T extends TextFormatting> implements Iterable
      *
      * @return {@code this} {@code FormatIndexingRuleset}'s name
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
@@ -48,7 +48,7 @@ public class FormatIndexingRuleset<T extends TextFormatting> implements Iterable
      *
      * @return a deep copy of {@code this} {@code FormatIndexingRuleset}'s {@code #rules}
      */
-    public LinkedHashSet<FormatIndexingRule<T>> getRules() {
+    public final LinkedHashSet<FormatIndexingRule<T>> getRules() {
         return new LinkedHashSet<>(this.rules); // TODO make this actually a deep copy(?)
     }
 
@@ -58,7 +58,7 @@ public class FormatIndexingRuleset<T extends TextFormatting> implements Iterable
      * @return an iterator for {@code this} {@code FormatIndexingRuleset}s {@link #rules}
      */
     @Override
-    public Iterator<FormatIndexingRule<T>> iterator() {
+    public final Iterator<FormatIndexingRule<T>> iterator() {
         return this.rules.iterator();
     }
 }

@@ -141,7 +141,8 @@ public class FormattingKit<T extends TextFormatting> {
      *
      * @throws IllegalArgumentException if {@code origin} is negative
      */
-    public static void shiftWorkspace(List<FormattingInstruction<?>> instructions, int amount, int origin)
+    public static <V extends TextFormatting> void shiftWorkspace(
+            List<FormattingInstruction<V>> instructions, int amount, int origin)
             throws IllegalArgumentException {
         // Insertion or deletion can't occur before the first index of a String, so prevent the implication of such
         if (origin < 0) {
@@ -157,7 +158,7 @@ public class FormattingKit<T extends TextFormatting> {
         // For each instruction, get the associated substring location and shift whichever indices come on or after the
         // inflection point
         SubstringLocation observedLocation;
-        for (FormattingInstruction<?> instruction : instructions) {
+        for (FormattingInstruction<V> instruction : instructions) {
             observedLocation = instruction.getLocation();
 
             // Only shift indices on or after the inflection point
@@ -179,19 +180,36 @@ public class FormattingKit<T extends TextFormatting> {
      * @param substr the word whose insertion at location {@code at} to account for
      * @param at the index the insertion has occurred at
      */
-    public static void shiftWorkspaceForInsertion(List<FormattingInstruction<?>> instructions, String substr, int at) {
+    public static <V extends TextFormatting> void shiftWorkspaceForInsertion(
+            List<FormattingInstruction<V>> instructions, String substr, int at) {
         shiftWorkspace(instructions, substr.length(), at);
     }
 
     /**
      * Adjusts a list of {@link FormattingInstruction}s' {@link SubstringLocation}s to account for the deletion of
-     * substring {@code substr} at index {@code at}
+     * substring {@code substr} that started at index {@code at}
      *
      * @param instructions the {@link List} of {@link FormattingInstruction}s whose workspace to shift
      * @param substr the word whose deletion at location {@code at} to account for
      * @param at the index the deletion has occurred at
      */
-    public static void shiftWorkspaceForDeletion(List<FormattingInstruction<?>> instructions, String substr, int at) {
+    public static <V extends TextFormatting> void shiftWorkspaceForDeletion(
+            List<FormattingInstruction<V>> instructions, String substr, int at) {
         shiftWorkspace(instructions, (substr.length() * -1), at);
+    }
+
+    /**
+     * Adjusts a list of {@link FormattingInstruction}s' {@link SubstringLocation}s to account for the replacement of
+     * {@code String} {@code oldStr} with {@code String} {@code newStr} at location {@code at} in the complete
+     * {@code String}.
+     *
+     * @param instructions the {@link List} of {@link FormattingInstruction}s whose workspace to shift
+     * @param oldStr the original {@code String} that started at index {@code at}
+     * @param newStr the new {@code String} starting at {@code at}
+     * @param at the index the replacement has occurred at
+     */
+    public static <V extends TextFormatting> void shiftWorkspaceForReplacement(
+            List<FormattingInstruction<V>> instructions, String oldStr, String newStr, int at) {
+        shiftWorkspace(instructions, newStr.length() - oldStr.length(), at);
     }
 }

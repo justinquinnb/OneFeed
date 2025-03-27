@@ -176,4 +176,18 @@ public abstract class ContentSource<T extends RawContent> {
         boolean isAfter = toCheck.isAfter(after) || toCheck.equals(after);
         return isBefore && isAfter;
     }
+
+    /**
+     * Returns a string representation of {@code this} {@code ContentSource}.
+     *
+     * @return a string representation of {@code this} {@code ContentSource}
+     */
+    @Override
+    public String toString() {
+        return "ContentSource@" + this.hashCode() +
+                "{contentSourceId=\"" + this.SOURCE_ID.getId() +
+                "\", platformInfo=" + this.PLATFORM_INFO +
+                ", contentMapper=" + this.getContentMapper() +
+                ", formattingRuleset=" + this.getFormattingRuleset() + "}";
+    }
 }

@@ -31,4 +31,8 @@ public non-sealed class StrikethroughFormat extends BasicFormatting {
         }
         return instance;
     }
+
+    public String toString() {
+        return "StrikethroughFormat@" + this.hashCode() + "{}";
+    }
 }
