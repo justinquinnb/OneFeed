@@ -41,4 +41,10 @@ public non-sealed class LinkFormat extends BasicFormatting{
         this.url = url;
         this.tooltip = tooltip;
     }
+
+    public String toString() {
+        return "LinkFormat@" + this.hashCode() +
+                "{url=" + this.url +
+                ", tooltip=" + this.tooltip + "}";
+    }
 }

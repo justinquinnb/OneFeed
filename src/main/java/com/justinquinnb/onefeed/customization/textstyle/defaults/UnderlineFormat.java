@@ -31,4 +31,8 @@ public non-sealed class UnderlineFormat extends BasicFormatting {
         }
         return instance;
     }
+
+    public String toString() {
+        return "UnderlineFormat@" + this.hashCode() + "{}";
+    }
 }
