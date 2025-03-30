@@ -17,7 +17,7 @@ public non-sealed class BoldFormat extends BasicFormatting {
      * Gets the single instance of {@code BoldFormat}. Multiple instances aren't necessary as this format requires no
      * complementary data--it's effectively a marker.
      *
-     * @return the singleton instance of {@code BasicFormatting}
+     * @return the singleton instance of {@code BoldFormatting}
      */
     public static BoldFormat getInstance() {
         // Lazy initialization delaying instantiation until first invocation w/ double-checked locking to avoid race

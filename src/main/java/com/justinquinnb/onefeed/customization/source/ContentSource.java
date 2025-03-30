@@ -7,8 +7,8 @@ import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.customization.CustomizationHandler;
 import com.justinquinnb.onefeed.customization.textstyle.defaults.BasicFormatting;
 import com.justinquinnb.onefeed.customization.mapping.ContentMapper;
-import com.justinquinnb.onefeed.customization.textstyle.FormatIndexingRule;
-import com.justinquinnb.onefeed.customization.textstyle.FormatIndexingRuleset;
+import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRule;
+import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRuleset;
 
 import java.time.Instant;
 
@@ -127,7 +127,7 @@ public abstract class ContentSource<T extends RawContent> {
      * @return a set of {@link FormatIndexingRule}s mapping regex that identifies formatted substrings in text
      * from this {@code ContentSource} to the function that can be used to de-format and label it.
      */
-    public abstract FormatIndexingRuleset<BasicFormatting> getFormattingRuleset();
+    public abstract FormatIndexingRuleset<BasicFormatting> getFormatIndexingRuleset();
 
     /**
      * Gets an array of all of {@code this} {@link ContentSource}'s instances.
@@ -188,6 +188,6 @@ public abstract class ContentSource<T extends RawContent> {
                 "{contentSourceId=\"" + this.SOURCE_ID.getId() +
                 "\", platformInfo=" + this.PLATFORM_INFO +
                 ", contentMapper=" + this.getContentMapper() +
-                ", formattingRuleset=" + this.getFormattingRuleset() + "}";
+                ", formattingRuleset=" + this.getFormatIndexingRuleset() + "}";
     }
 }
