@@ -7,7 +7,7 @@ import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
  *
  * @see TextFormatting
  */
-public non-sealed class LinkFormat extends BasicFormatting{
+public class LinkFormat extends TextFormatting {
     /**
      * The URL to link to.
      */

@@ -1,9 +1,11 @@
 package com.justinquinnb.onefeed.customization.textstyle.defaults;
 
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
+
 /**
  * Marker for underline text formatting.
  */
-public non-sealed class UnderlineFormat extends BasicFormatting {
+public class UnderlineFormat extends TextFormatting {
     private static volatile UnderlineFormat instance = null;
 
     /**
