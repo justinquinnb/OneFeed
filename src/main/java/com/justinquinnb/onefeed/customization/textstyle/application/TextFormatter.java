@@ -1,4 +1,8 @@
-package com.justinquinnb.onefeed.customization.textstyle;
+package com.justinquinnb.onefeed.customization.textstyle.application;
+
+import com.justinquinnb.onefeed.customization.textstyle.FormattingInstruction;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingKit;
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
 /**
  * A type capable of marking up text using some markup language using the {@link TextFormatting}s mapped to substrings

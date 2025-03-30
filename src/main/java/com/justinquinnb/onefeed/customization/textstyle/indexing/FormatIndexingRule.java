@@ -1,6 +1,8 @@
-package com.justinquinnb.onefeed.customization.textstyle;
+package com.justinquinnb.onefeed.customization.textstyle.indexing;
 
 import com.justinquinnb.onefeed.JsonToString;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
 import java.util.function.Function;
 import java.util.regex.Pattern;

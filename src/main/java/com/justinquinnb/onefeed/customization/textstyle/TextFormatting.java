@@ -1,5 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
+import com.justinquinnb.onefeed.customization.textstyle.application.FormattingRuleset;
+import com.justinquinnb.onefeed.customization.textstyle.application.TextFormatter;
 import com.justinquinnb.onefeed.customization.textstyle.defaults.BasicFormatting;
 import com.justinquinnb.onefeed.customization.textstyle.defaults.LinkFormat;
 

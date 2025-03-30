@@ -1,4 +1,7 @@
-package com.justinquinnb.onefeed.customization.textstyle;
+package com.justinquinnb.onefeed.customization.textstyle.indexing;
+
+import com.justinquinnb.onefeed.customization.textstyle.FormattingKit;
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
 /**
  * A type capable of translating marked-up text into an index of {@link TextFormatting}s mapped to where they occur

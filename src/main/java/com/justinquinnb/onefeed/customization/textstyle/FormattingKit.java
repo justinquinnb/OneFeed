@@ -1,6 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
 import com.justinquinnb.onefeed.JsonToString;
+import com.justinquinnb.onefeed.customization.textstyle.application.TextFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

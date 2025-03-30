@@ -15,7 +15,7 @@ public class FormattingRule<T extends TextFormatting> {
      * The type of {@link TextFormatting} that {@code this} {@code FormattingRule}'s {@link #process} specifies the
      * markup procedure for. Must belong to the language specified by {@link T}.
      */
-    private final Class<? extends T> formatting;
+    private final Class<T> formatting;
 
     /**
      * The {@link Function} that text formatted with {@code this} {@link FormattingRule}'s {@link #formatting} is piped
@@ -30,7 +30,7 @@ public class FormattingRule<T extends TextFormatting> {
      * @param formatting the type of {@link TextFormatting} that the process should be invoked to generate
      * @param process the {@code Function} that can apply the specified type of {@code formatting} to text
      */
-    public FormattingRule(Class<? extends T> formatting, Function<FormattingMarkedText<T>, String> process) {
+    public FormattingRule(Class<T> formatting, Function<FormattingMarkedText<T>, String> process) {
         this.formatting = formatting;
         this.process = process;
     }
@@ -41,7 +41,7 @@ public class FormattingRule<T extends TextFormatting> {
      * @return the {@link TextFormatting} that {@code this} {@code FormattingRule}'s {@link #process} specifies the
      * markup procedure for
      */
-    public Class<? extends T> getFormatting() {
+    public final Class<T> getFormatting() {
         return this.formatting;
     }
 
@@ -51,7 +51,7 @@ public class FormattingRule<T extends TextFormatting> {
      * @return the {@link Function} that specifies how to mark up/format text that calls for {@code this}
      * {@code FormattingRule}'s {@link #formatting}
      */
-    public Function<FormattingMarkedText<T>, String> getProcess() {
+    public final Function<FormattingMarkedText<T>, String> getProcess() {
         return this.process;
     }
 
@@ -64,7 +64,7 @@ public class FormattingRule<T extends TextFormatting> {
      *
      * @return {@code markedText}'s text marked up to achieve the desired formatting in the desired markup language
      */
-    public String apply(FormattingMarkedText<T> markedText) {
+    public final String apply(FormattingMarkedText<T> markedText) {
         return this.process.apply(markedText);
     }
 
