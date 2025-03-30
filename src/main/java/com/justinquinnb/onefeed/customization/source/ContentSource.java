@@ -5,7 +5,6 @@ import com.justinquinnb.onefeed.content.RawContent;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.customization.CustomizationHandler;
-import com.justinquinnb.onefeed.customization.textstyle.defaults.BasicFormatting;
 import com.justinquinnb.onefeed.customization.mapping.ContentMapper;
 import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRule;
 import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRuleset;

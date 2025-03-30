@@ -1,9 +1,11 @@
 package com.justinquinnb.onefeed.customization.textstyle.defaults;
 
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
+
 /**
  * Marker for strikethrough text formatting.
  */
-public non-sealed class StrikethroughFormat extends BasicFormatting {
+public class StrikethroughFormat extends TextFormatting {
     private static volatile StrikethroughFormat instance = null;
 
     /**

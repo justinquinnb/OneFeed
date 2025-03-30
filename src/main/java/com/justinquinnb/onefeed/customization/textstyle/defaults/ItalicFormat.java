@@ -1,9 +1,11 @@
 package com.justinquinnb.onefeed.customization.textstyle.defaults;
 
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
+
 /**
  * Marker for italic text formatting.
  */
-public non-sealed class ItalicFormat extends BasicFormatting {
+public class ItalicFormat extends TextFormatting {
     private static volatile ItalicFormat instance = null;
 
     /**

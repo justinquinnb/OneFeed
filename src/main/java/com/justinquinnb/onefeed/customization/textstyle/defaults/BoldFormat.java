@@ -1,9 +1,11 @@
 package com.justinquinnb.onefeed.customization.textstyle.defaults;
 
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
+
 /**
  * Marker for bold/boldface text formatting.
  */
-public non-sealed class BoldFormat extends BasicFormatting {
+public class BoldFormat extends TextFormatting {
     private static volatile BoldFormat instance = null;
 
     /**
