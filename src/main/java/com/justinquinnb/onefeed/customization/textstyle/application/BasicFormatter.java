@@ -1,8 +1,7 @@
-package com.justinquinnb.onefeed.customization.textstyle.defaults;
+package com.justinquinnb.onefeed.customization.textstyle.application;
 
-import com.justinquinnb.onefeed.customization.textstyle.*;
-import com.justinquinnb.onefeed.customization.textstyle.application.FormattingRuleset;
-import com.justinquinnb.onefeed.customization.textstyle.application.TextFormatter;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

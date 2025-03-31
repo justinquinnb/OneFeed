@@ -1,11 +1,14 @@
-package com.justinquinnb.onefeed.customization.textstyle.defaults;
+package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
+import java.util.function.Function;
+
 /**
- * Marker for underline text formatting.
+ * Marker for underline text formatting. Obtain an instance through {@link #getInstance()}.
  */
-public class UnderlineFormat extends TextFormatting {
+public class UnderlineFormat extends TextFormatting implements Html {
     private static volatile UnderlineFormat instance = null;
 
     /**
@@ -19,7 +22,7 @@ public class UnderlineFormat extends TextFormatting {
      * Gets the single instance of {@code UnderlineFormat}. Multiple instances aren't necessary as this format requires
      * no complementary data--it's effectively a marker.
      *
-     * @return the singleton instance of {@code UnderlineFormatting}
+     * @return the singleton instance of {@code UnderlineFormat}
      */
     public static UnderlineFormat getInstance() {
         // Lazy initialization delaying instantiation until first invocation w/ double-checked locking to avoid race
@@ -32,6 +35,20 @@ public class UnderlineFormat extends TextFormatting {
             }
         }
         return instance;
+    }
+
+    @Override
+    public MarkedUpText applyHtml(String text) {
+        return new MarkedUpText("<u>" + text + "</u>", Html.class);
+    }
+
+    @Override
+    public Function<String, MarkedUpText> getMarkupLangApplierFor(Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this::applyHtml;
+        } else {
+            return null;
+        }
     }
 
     public String toString() {
