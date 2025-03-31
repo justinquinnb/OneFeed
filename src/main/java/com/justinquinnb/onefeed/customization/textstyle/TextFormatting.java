@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
-import com.justinquinnb.onefeed.customization.textstyle.defaults.BoldFormat;
+import com.justinquinnb.onefeed.customization.textstyle.formattings.BoldFormat;
 
 /**
  * Some sort of text formatting, like boldface or italics.

@@ -1,9 +1,7 @@
-package com.justinquinnb.onefeed.customization.textstyle.defaults;
+package com.justinquinnb.onefeed.customization.textstyle.indexing;
 
-import com.justinquinnb.onefeed.customization.textstyle.*;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRule;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRuleset;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.TextFormattingIndexer;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
+import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
