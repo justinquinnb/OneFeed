@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle.application;
 
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +10,14 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 /**
- * The default implementation of a {@link TextFormatter}, marking up a {@code String} according to its desired
+ * The default implementation of a {@link TextFormattingApplier}, marking up a {@code String} according to its desired
  * formattings and the set of rules that specify how to apply them.
  */
-public class BasicFormatter implements TextFormatter {
-    private static final Logger logger = LoggerFactory.getLogger(BasicFormatter.class);
+public final class BasicFormattingApplier implements TextFormattingApplier {
+    private static final Logger logger = LoggerFactory.getLogger(BasicFormattingApplier.class);
 
     @Override
-    public <T extends TextFormatting> String applyFormatting(FormattingKit<T> kit, FormattingRuleset<T> formattingRules) {
+    public <T extends TextFormatting> String applyFormatting(FormattingKit<T> kit, FormatApplicationRuleset<T> formattingRules) {
         logger.debug("Applying formatting to raw text: {}", kit.getUnformattedText());
 
         // Make a copy of the kit's unformatted text since we'll be mutating it with each instruction read
@@ -65,7 +65,7 @@ public class BasicFormatter implements TextFormatter {
                         ogSubstr, newSubstr, newSubstr.length() - ogSubstr.length());
                 FormattingKit.shiftWorkspaceForReplacement(instructionsCopy, ogSubstr, newSubstr, location.getStart());
             } catch (NoSuchElementException nSEE) {
-                logger.debug("No markup function for {}-type formatting found in the provided FormattingRuleset",
+                logger.debug("No markup function for {}-type formatting found in the provided FormatApplicationRuleset",
                         formatting.getClass().getName());
 
                 // Remove the instruction as it's now been "used"

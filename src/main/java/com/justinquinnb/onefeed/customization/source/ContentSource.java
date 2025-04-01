@@ -6,8 +6,8 @@ import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.customization.CustomizationHandler;
 import com.justinquinnb.onefeed.customization.mapping.ContentMapper;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRule;
-import com.justinquinnb.onefeed.customization.textstyle.indexing.FormatIndexingRuleset;
+import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRule;
+import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRuleset;
 
 import java.time.Instant;
 
@@ -120,13 +120,13 @@ public abstract class ContentSource<T extends RawContent> {
     }
 
     /**
-     * Gets the {@link FormatIndexingRuleset} specifying how to interpret the formatting of text as it appears on
+     * Gets the {@link FormatParsingRuleset} specifying how to interpret the formatting of text as it appears on
      * {@code this} {@link ContentSource}'s Platform.
      *
-     * @return a set of {@link FormatIndexingRule}s mapping regex that identifies formatted substrings in text
+     * @return a set of {@link FormatParsingRule}s mapping regex that identifies formatted substrings in text
      * from this {@code ContentSource} to the function that can be used to de-format and label it.
      */
-    public abstract FormatIndexingRuleset<BasicFormatting> getFormatIndexingRuleset();
+    public abstract FormatParsingRuleset<BasicFormatting> getFormatIndexingRuleset();
 
     /**
      * Gets an array of all of {@code this} {@link ContentSource}'s instances.

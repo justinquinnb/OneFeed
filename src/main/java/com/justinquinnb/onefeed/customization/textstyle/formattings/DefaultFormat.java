@@ -1,7 +1,6 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
-import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
 import java.util.function.Function;
 

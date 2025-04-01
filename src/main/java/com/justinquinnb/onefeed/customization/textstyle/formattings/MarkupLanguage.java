@@ -1,10 +1,9 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
-import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
-import java.lang.invoke.*;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -81,12 +80,22 @@ public interface MarkupLanguage {
 
         // Because the applier methods are non-static, we can attempt to retrieve MarkedUpText using any String at any
         // time. Leverage this ability to check if the applier provided by getMarkupLangApplierFor() actually
-        // generates MarkedUpText that uses the desired markupLang (or a subset of it).
+        // generates MarkedUpText that uses strictly the desired markupLang (or a subset of it).
         MarkedUpText testText = applier.apply("");
-        if (markupLang.isAssignableFrom(testText.getMarkupLanguage())) {
+
+        ArrayList<Class<? extends MarkupLanguage>> employedLangs = testText.getMarkupLanguages();
+
+        // Ensure only the desired markupLang is used in the generated text
+        if (employedLangs.size() == 1 && markupLang.isAssignableFrom(employedLangs.getFirst())) {
+            // Gather the simple names of each markup lang used to they can be provided in the exception message
+            String[] langNames = new String[employedLangs.size()];
+            for (int i = 0; i < employedLangs.size(); i++) {
+                langNames[i] = employedLangs.get(i).getSimpleName();
+            }
+
             throw new ApplierMismatchException(this.getClass().getSimpleName() + "'s implementation of " +
-                    "getMarkupLangApplierFor() provides a method generating MarkedUpText of MarkupLanguage \"" +
-                    testText.getMarkupLanguage() + "\" instead of the expected " + markupLang.getSimpleName());
+                    "getMarkupLangApplierFor() provides a method generating MarkedUpText of MarkupLanguage(s) " +
+                    Arrays.toString(langNames) + " instead of the expected " + markupLang.getSimpleName());
         }
 
         return applier;

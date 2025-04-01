@@ -1,7 +1,6 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
-import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
 
 import java.util.function.Function;
 
@@ -15,12 +14,18 @@ public class HeadingFormat extends TextFormatting implements Html, Markdown, Ext
     private final int levelNumber;
 
     /**
-     * Creates an instance of heading formatting of level {@code levelNumber}. If a number outside the range [1,6]
+     * Creates an instance of heading formatting of level {@code levelNumber}. If a level outside the range [1,6] is
+     * provided, it is changed to be the closest extremity.
      *
      * @param levelNumber the level number of the {@code HeadingFormat} to construct
      */
     public HeadingFormat(int levelNumber) {
         super("Heading " + levelNumber);
+        if (levelNumber < 1) {
+            levelNumber = 1;
+        } else if (levelNumber > 6) {
+            levelNumber = 6;
+        }
         this.levelNumber = levelNumber;
     }
 

@@ -1,0 +1,64 @@
+package com.justinquinnb.onefeed.customization.textstyle;
+
+import com.justinquinnb.onefeed.customization.textstyle.application.FormatApplicationRuleset;
+import com.justinquinnb.onefeed.customization.textstyle.formattings.MarkupLanguage;
+import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRuleset;
+
+import java.util.HashMap;
+
+/**
+ * A type capable of generating {@link FormatApplicationRuleset}s and {@code FormatParsingRuleset}s that represent a
+ * defined {@link MarkupLanguage}.
+ */
+public class FormattingRulesetGenerator {
+    // TODO first and foremost, make the necessary modifications to the application ruleset type(s) and then
+    //  implement the defined, quick, and mutable sub-types in addition to the necessary modifications for parsing
+    //  rulesets. Then, go about adding the required regex and string to FormattingMarkedText-converting function
+    //  getters to the MarkupLanguage interface and all implementors. Remember, for each MarkupLanguage a
+    //  TextFormatting type implements, it should need to provide Regex to represent it in each language and a method
+    //  to take Strings matching that regex and extract a TextFormatting and unformatted text string from it
+    //  (FormattingMarkedText). Specify a default method that ensures the strings passed to the extractFrom___
+    //  methods match the regex specified by the TextFormatting type, throwing an exception if not.
+
+    // What's best about the caching approach is that Content Sources can choose to either define a markup language
+    // class OR just provide a ruleset. If a markup language is used to generate a ruleset, then it gets cached as
+    // soon as that content source gets called upon at OneFeed's initialization-- the prime time to load them all up.
+    // This seems like the best approach
+
+    // TODO Because the getApplicationRuleset method is very resource-intensive, cache its findings each time a new
+    //  language is queried.
+    /**
+     *
+     */
+    private static final HashMap<Class<? extends MarkupLanguage>, FormatApplicationRuleset> CACHED_APPLICATION_RULESETS =
+            new HashMap<>();
+
+    // TODO If a ruleset for the desired language hasn't already been cached, find all implementors of the desired
+    //  class and get its applier method using the getApplier interface method. Then, build a rule from that lambda.
+    //  Otherwise, return the ruleset for the desired class from the cache to save resources.
+    /**
+     *
+     * @return
+     */
+    public static FormatApplicationRuleset getApplicationRulesetFor(Class<? extends MarkupLanguage>) {
+    }
+
+    // TODO this will have to leverage the creation of new regex getters and String to FormattingMarkedText functions
+    //  specified by the MarkupLanguage interface. Likely a similar approach to appliers will have to be taken.
+    /**
+     *
+     * @return
+     */
+    public static FormatParsingRuleset getParsingRulesetFor(Class<? extends MarkupLanguage>) {
+    }
+
+    // TODO make this iterate through the existing hashmap and regenerate each ruleset
+    // this method should be invoked when new customizations are loaded at runtime(?). depends on if I add that
+    // capability
+    /**
+     *
+     */
+    public static void refreshCachedApplicationRulesets() {
+
+    }
+}
