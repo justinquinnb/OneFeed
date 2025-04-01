@@ -1,55 +1,35 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
-import com.justinquinnb.onefeed.JsonToString;
+import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
 
 /**
- * Unformatted text accompanied by some {@link TextFormatting} indicating how it should be formatted.
- * @param <T> the language of {@code TextFormatting}s possibly employed by {@code this} marking
+ * Text accompanied by some {@link TextFormatting} indicating how it should be formatted.
  */
-public class FormattingMarkedText<T extends TextFormatting> {
+public class FormattingMarkedText extends FormattedText {
     /**
-     * The unformatted text to format with the provided {@link #formatting}.
+     * The {@link TextFormatting} associated with {@code this} {@code FormattedText}'s text.
      */
-    private final String unformattedText;
-
-    /**
-     * The {@link TextFormatting} associated with the currently {@link #unformattedText}.
-     */
-    private final T formatting;
+    private final TextFormatting formatting;
 
     /**
      * Constructs {@link FormattingMarkedText}, an association between some unformatted text, {@code unformattedText},
      * and a {@link TextFormatting} instance representing how it should be formatted.
      *
-     * @param unformattedText unformatted text described by the {@code TextFormat} provided by {@code formatting}
+     * @param text the {@code String} described by the {@code TextFormatting} provided by {@code formatting}
      * @param formatting a {@code TextFormatting} instance representing the desired formatting of
-     * {@code unformattedText}
+     * {@code text}
      */
-    public FormattingMarkedText(String unformattedText, T formatting) {
-        this.unformattedText = unformattedText;
+    public FormattingMarkedText(String text, TextFormatting formatting) {
+        super(text);
         this.formatting = formatting;
-    }
-
-    /**
-     * Gets this {@code this} {@link FormattingMarkedText}'s {@link #unformattedText}.
-     *
-     * @return the unformatted text {@code this} {@code FormattingMarkedText}'s {@link #formatting} applies to
-     */
-    public String getUnformattedText() {
-        return this.unformattedText;
     }
 
     /**
      * Gets this {@code this} {@link FormattingMarkedText}'s {@link #formatting}.
      *
-     * @return the formatting {@code this} {@code FormattingMarkedText}'s {@link #unformattedText} should receive
+     * @return the formatting {@code this} {@code FormattingMarkedText}'s text should receive
      */
-    public T getFormatting() {
+    public TextFormatting getFormatting() {
         return this.formatting;
-    }
-
-    @Override
-    public String toString() {
-        return JsonToString.of(this);
     }
 }

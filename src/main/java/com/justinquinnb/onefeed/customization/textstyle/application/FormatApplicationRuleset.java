@@ -2,32 +2,33 @@ package com.justinquinnb.onefeed.customization.textstyle.application;
 
 import com.justinquinnb.onefeed.JsonToString;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
 
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 /**
- * A mapping of {@link TextFormatting}s to the {@link Function}s that consume them and raw text to produce formatted
- * text.
+ * A mapping of {@link TextFormatting}s to the {@link Function}s that consume them and {@link FormattingMarkedText} to
+ * produce {@link MarkedUpText}.
  */
-public sealed abstract class FormattingRuleset
-        permits DefinedFormattingRuleset, QuickFormattingRuleset {
+public abstract sealed class FormatApplicationRuleset
+        permits DefinedFormatApplicationRuleset, QuickFormatApplicationRuleset {
 
     /**
-     * Gets the name of {@code this} {@link QuickFormattingRuleset}.
+     * Gets the name of {@code this} {@code FormatApplicationRuleset}.
      *
-     * @return {@code this} {@code QuickFormattingRuleset}'s name
+     * @return {@code this} {@code FormatApplicationRuleset}'s name
      */
     public abstract String getName();
 
     /**
-     * Gets {@code this} {@link QuickFormattingRuleset}'s rules.
+     * Gets {@code this} {@code FormatApplicationRuleset}'s rules.
      *
-     * @return a deep copy of {@code this} {@code QuickFormattingRuleset}'s rules
+     * @return a deep copy of {@code this} {@code FormatApplicationRuleset}'s rules
      */
-    public abstract HashMap<Class<? extends TextFormatting>, Function<FormattingMarkedText<? extends TextFormatting>, String>> getRules();
+    public abstract HashMap<Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>> getRules();
 
     /**
      * Gets the {@link Function} that specifies how to mark up text with {@link TextFormatting} of type
@@ -40,7 +41,7 @@ public sealed abstract class FormattingRuleset
      * @throws NoSuchElementException if a {@code Function} couldn't be found for the provided {@code formatting} in
      * {@code this} ruleset
      */
-    public abstract Function<FormattingMarkedText<? extends TextFormatting>, String> getRuleFor(Class<? extends TextFormatting> formatting)
+    public abstract Function<FormattingMarkedText, MarkedUpText> getRuleFor(Class<? extends TextFormatting> formatting)
             throws NoSuchElementException;
 
     @Override

@@ -1,7 +1,7 @@
-package com.justinquinnb.onefeed.customization.textstyle.indexing;
+package com.justinquinnb.onefeed.customization.textstyle.parsing;
 
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 
 /**
- * The default implementation of a {@link TextFormattingIndexer}, associating substrings with {@link TextFormatting}s.
+ * The default implementation of a {@link TextFormattingParser}, associating substrings with {@link TextFormatting}s.
  */
-public class BasicFormattingIndexer implements TextFormattingIndexer {
-    private static final Logger logger = LoggerFactory.getLogger(BasicFormattingIndexer.class);
+public final class BasicFormattingParser implements TextFormattingParser {
+    private static final Logger logger = LoggerFactory.getLogger(BasicFormattingParser.class);
 
     @Override
     public <T extends TextFormatting> FormattingKit<T> buildKit(
-            String markedUpText, FormatIndexingRuleset<T> formattingRules) {
+            String markedUpText, FormatParsingRuleset<T> formattingRules) {
         logger.debug("Building FormattingKit for text: {}", markedUpText);
 
         // For clarity, the text actively being worked on, which may or may not contain any markup at any given time,
@@ -35,7 +35,7 @@ public class BasicFormattingIndexer implements TextFormattingIndexer {
         T generatedFormatting;
 
         Matcher regexMatcher;
-        for (FormatIndexingRule<T> rule : formattingRules) {
+        for (FormatParsingRule<T> rule : formattingRules) {
             logger.trace("Searching for substrings matching pattern: {}", rule.getRegex().toString());
 
             // Find matches in markedUpText for the current rule's Regex
