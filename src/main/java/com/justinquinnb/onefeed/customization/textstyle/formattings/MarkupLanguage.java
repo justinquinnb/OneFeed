@@ -41,13 +41,15 @@ public interface MarkupLanguage {
      * @return the {@code Function} capable of marking up a {@code String} into {@link MarkedUpText} employing
      * {@link MarkupLanguage} {@code markupLang}
      *
-     * @implSpec If no {@code Function} exists to generate {@code MarkedUpText} in the desired {@code markupLang} type,
+     * @implSpec
+     * If no {@code Function} exists to generate {@code MarkedUpText} in the desired {@code markupLang} type,
      * {@code null} should be returned.
-     * <br><br>
+     *
+     * @implNote
      * If the {@code Function} provided by this method's implementation generates {@code MarkedUpText} that does not
-     * employ the desired {@code markupLang}, then attempts to use the applier will throw an
-     * {@link IoMismatchException} via {@link #apply}, the handling of which is unknown if OneFeed's default
-     * approach is overridden.
+     * employ the desired {@code markupLang}, then attempts to use the applier may produce unknown and undesirable
+     * behavior. By default, OneFeed's formatting approach will not produce any exceptions in such circumstances as a
+     * mismatch may be intentional and can be handled automatically.
      */
     public Function<String, MarkedUpText> getMarkupLangApplierFor(Class<? extends MarkupLanguage> markupLang);
 
@@ -60,11 +62,9 @@ public interface MarkupLanguage {
      *
      * @throws NoSuchMethodException when an applier method could not be found in {@code this} type's implementor for
      *     the target {@code markupLang}
-     * @throws IoMismatchException when an applier method is found, but generates {@code MarkedUpText} that doesn't
-     *     employ the target {@code markupLang}
      */
     private Function<String, MarkedUpText> findMarkupLangApplierFor(Class<? extends MarkupLanguage> markupLang) throws
-            NoSuchMethodException, IoMismatchException {
+            NoSuchMethodException {
         Function<String, MarkedUpText> applier = this.getMarkupLangApplierFor(markupLang);
 
         // If an applier can't be found for the markupLang, throw an exception indicating the desired Formatting does
@@ -74,42 +74,26 @@ public interface MarkupLanguage {
                     this.getClass().getName() + " for markup language " + markupLang.getSimpleName());
         }
 
-        // Because the applier methods are non-static, we can attempt to retrieve MarkedUpText using any String at any
-        // time. Leverage this ability to check if the applier provided by getMarkupLangApplierFor() actually
-        // generates MarkedUpText that uses strictly the desired markupLang.
-        MarkedUpText testText = applier.apply("");
-
-        ArrayList<Class<? extends MarkupLanguage>> employedLangs = testText.getMarkupLanguages();
-
-        // Ensure only the desired markupLang is used in the generated text
-        if (employedLangs.size() == 1 && markupLang.isAssignableFrom(employedLangs.getFirst())) {
-            // Gather the simple names of each markup lang used to they can be provided in the exception message
-            String[] langNames = new String[employedLangs.size()];
-            for (int i = 0; i < employedLangs.size(); i++) {
-                langNames[i] = employedLangs.get(i).getSimpleName();
-            }
-
-            throw new IoMismatchException(this.getClass().getSimpleName() + "'s implementation of " +
-                    "getMarkupLangApplierFor() provides a method generating MarkedUpText of MarkupLanguage(s) " +
-                    Arrays.toString(langNames) + " instead of the expected " + markupLang.getSimpleName());
-        }
-
         return applier;
     }
 
     /**
-     * Applies the desired formatting to the provided {@code text} to generated some {@code MarkedUpText}.
+     * Applies the desired formatting to the provided {@code text} to generated some {@link MarkedUpText}.
+     * <br><br>
+     * Note that the produced {@code MarkedUpText} may not employ the same {@code MarkupLanguage} as specified by
+     * {@code markupLang}. In some cases, this may be the intended behavior of a {@code MarkupLanguage} implementor and
+     * is handled without issue by OneFeed. If a mismatch is unacceptable in the environment in which this method is
+     * employed though, consider checking whether the generated {@code MarkedUpText} employs the intended {@code
+     * markupLang}.
      *
      * @param text the {@code String} to apply the desired formatting to
      *
-     * @return {@code text} formatted in the desired way in the {@code MarkupLanguage}, packaged as {@link MarkedUpText}
+     * @return {@code text} formatted in the desired way in the {@code MarkupLanguage}, bundled as {@link MarkedUpText}
      * @throws NoSuchMethodException when an applier method could not be found in {@code this} type's implementor for
      *     the target {@code markupLang}
-     * @throws IoMismatchException when {@code MarkedUpText} that doesn't employ the target {@code markupLang} is
-     * generated by the implementing type
      */
     public default MarkedUpText apply(String text, Class<? extends MarkupLanguage> markupLang) throws
-            NoSuchMethodException, IoMismatchException {
+            NoSuchMethodException {
         Function<String, MarkedUpText> applier = this.findMarkupLangApplierFor(markupLang);
         return applier.apply(text);
     }
@@ -137,18 +121,17 @@ public interface MarkupLanguage {
      * the target {@code markupLang}
      */
     private Pattern findMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) throws NoSuchPatternException {
-        return null;
+        Pattern markupPattern = this.getMarkupPatternFor(markupLang);
+
+        // If a pattern can't be found for the markupLang, throw an exception indicating the desired Formatting does
+        // not specify a markup pattern for the desired markup language
+        if (markupPattern == null) {
+            throw new NoSuchPatternException("A regex pattern could not be found in " +
+                    this.getClass().getName() + " for markup language " + markupLang.getSimpleName());
+        }
+
+        return markupPattern;
     }
-
-    // TODO getRegexFor(Class<? extends MarkupLanguage)
-    // TODO findRegexFor(Class<? extends MarkupLanguage)
-    // TODO getRegex(Class<? extends MarkupLanguage) effectively just getRegexFor... not necessary
-
-    // TODO getFormattingExtractorFor(Class<? extends MarkupLanguage)
-    // TODO findFormattingExtractorFor(Class<? extends MarkupLanguage)
-    // TODO extractFormatting(MarkedUpText) default method in this class that just combines the results of an invocation
-    //  of extractFormatting(String, Class<? extends MarkupLanguage) for each MarkupLanguage the MarkedUpText employs
-    // TODO extractFormatting(String, Class<? extends MarkupLanguage )
 
     // GENERATING TEXT FORMATTING OBJECTS FROM MARKED-UP TEXT
     /**
@@ -160,13 +143,15 @@ public interface MarkupLanguage {
      * @return the {@code Function} capable of extracting a {@code TextFormatting} whose contents represent the
      * formatting specified by the text of a {@code MarkedUpText} object's markup
      *
-     * @implSpec If no {@code Function} exists to produce {@code FormattingMarkedText} from {@code MarkedUpText} in the
+     * @implSpec
+     * If no {@code Function} exists to produce {@code FormattingMarkedText} from {@code MarkedUpText} in the
      * specified language, {@code null} should be returned.
-     * <br><br>
+     *
+     * @implNote
      * If the {@code Function} provided by this method's implementation generates {@code FormattingMarkedText} that does
-     * not match the implementing object's type, then attempts to use the extractor will throw an
-     * {@link IoMismatchException} via {@link #extract}, the handling of which is unknown if OneFeed's default
-     * approach is overridden.
+     * not match the implementing object's type, then attempts to use the extractor may produce unknown and
+     * undesirable behavior. By default, OneFeed's formatting approach will not produce any exceptions in such
+     * circumstances as a mismatch may be intentional and can be handled automatically.
      */
     public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
             Class<? extends MarkupLanguage> markupLang);
@@ -182,24 +167,31 @@ public interface MarkupLanguage {
      *
      * @throws NoSuchMethodException when an extractor method could not be found in {@code this} type's implementor for
      *     the target {@code markupLang}
-     * @throws IoMismatchException when an extractor method is found, but generates {@code FormattingMarkedText} that
-     * doesn't employ the target {@code markupLang}
      */
     private Function<MarkedUpText, FormattingMarkedText> findFormattingExtractorFor(
             Class<? extends MarkupLanguage> markupLang) throws NoSuchMethodException {
-        return null;
+        Function<MarkedUpText, FormattingMarkedText> extractor = this.getFormattingExtractorFor(markupLang);
+
+        // If an extractor can't be found for the markupLang, throw an exception indicating the desired Formatting does
+        // not specify a parsing implementation for the desired markup language
+        if (extractor == null) {
+            throw new NoSuchMethodException("A formatting extractor method could not be found in " +
+                    this.getClass().getName() + " for markup language " + markupLang.getSimpleName());
+        }
+
+        return extractor;
     }
 
-    // Make sure to catch possible exceptions due to parsing and handle them by throwing a parsing error that the user of
-    // the extract formatting method can choose how to handle
-    // TODO add additional check to applier method to chuck the formatted text that it generates into the same type's
-    // extractor to ensure it works error-free. If it raises an error, then throw some sort of exception
-
     /**
-     *
      * Generates a {@link FormattingMarkedText} object that specifies how the {@code text} should be formatted given
      * the markup it contains in language {@code markupLang}. The returned {@code FormattingMarkedText} contains the
      * original {@code text} with all of its markup removed, making it markup-language-agnostic.
+     * <br><br>
+     * Note that the produced {@code FormattingMarkedText} may not employ the same type of {@link TextFormatting} as
+     * {@code this} {@code MarkupLanguage} implementor. In some cases, this may be the intended behavior of a
+     * {@code MarkupLanguage} implementor and is handled without issue by OneFeed. If a mismatch is unacceptable in the
+     * environment in which this method is employed though, consider checking whether the generated
+     * {@code FormattingMarkedText} employs the intended {@code TextFormatting} type.
      *
      * @param text the text formatted as {@code this} {@link MarkupLanguage}-implementing type, as specified by its
      *             markup in language {@code markupLang}
@@ -212,11 +204,10 @@ public interface MarkupLanguage {
      * @throws ParseException if the provided {@code text} is malformed for the specified {@code markupLang}
      * @throws NoSuchMethodException if a method couldn't be found to derive {@code FormattingMarkedText} from the
      * provided, {@code markupLang}-marked {@code text}
-     * @throws IoMismatchException when {@code FormattingMarkedText} that doesn't reference the invoking
-     * {@code MarkupLanguage}-implementing type is generated
      */
     public default FormattingMarkedText extract(String text, Class<? extends MarkupLanguage> markupLang)
-            throws ParseException, NoSuchMethodException, IoMismatchException {
-        return null;
+            throws ParseException, NoSuchMethodException {
+        Function<MarkedUpText, FormattingMarkedText> extractor = this.findFormattingExtractorFor(markupLang);
+        return extractor.apply(new MarkedUpText(text, markupLang));
     }
 }
