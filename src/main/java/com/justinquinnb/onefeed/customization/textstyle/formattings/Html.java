@@ -1,6 +1,9 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+
+import java.util.regex.Pattern;
 
 /**
  * A type capable of generating {@link MarkedUpText} in HTML provided some text.
@@ -15,4 +18,10 @@ public interface Html extends MarkupLanguage {
      * @return the {@code text} formatted in the desired way using HTML
      */
     public MarkedUpText applyHtml(String text);
+
+    // TODO
+    public Pattern getHtmlPattern();
+
+    // TODO
+    public FormattingMarkedText extractFromHtml(String text);
 }
