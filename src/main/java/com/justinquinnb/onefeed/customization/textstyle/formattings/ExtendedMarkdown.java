@@ -1,6 +1,9 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+
+import java.util.regex.Pattern;
 
 /**
  * A type capable of generating {@link MarkedUpText} in Markdown (plus Extended Syntax) provided some text.
@@ -15,4 +18,10 @@ public interface ExtendedMarkdown extends MarkupLanguage {
      * @return the {@code text} formatted in the desired way using Markdown
      */
     public MarkedUpText applyExtdMd(String text);
+
+    // TODO
+    public Pattern getExtdMdPattern();
+
+    // TODO
+    public FormattingMarkedText extractFromExtdMd(String text);
 }
