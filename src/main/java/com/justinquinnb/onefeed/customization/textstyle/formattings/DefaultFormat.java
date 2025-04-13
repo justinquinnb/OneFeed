@@ -1,8 +1,10 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Marker for default/unformatted text. Obtain an instance through {@link #getInstance()}.
@@ -42,13 +44,43 @@ public class DefaultFormat extends TextFormatting implements Html, Markdown, Ext
     }
 
     @Override
+    public Pattern getHtmlPattern() {
+        return Pattern.compile(".*", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+    }
+
+    @Override
     public MarkedUpText applyMd(String text) {
         return new MarkedUpText(text, Markdown.class);
     }
 
     @Override
+    public Pattern getMdPattern() {
+        return Pattern.compile(".*", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromMd(MarkedUpText text) {
+        return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+    }
+
+    @Override
     public MarkedUpText applyExtdMd(String text) {
         return new MarkedUpText(text, ExtendedMarkdown.class);
+    }
+
+    @Override
+    public Pattern getExtdMdPattern() {
+        return Pattern.compile(".*", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
+        return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
     }
 
     @Override
@@ -59,6 +91,33 @@ public class DefaultFormat extends TextFormatting implements Html, Markdown, Ext
             return this::applyMd;
         } else if (markupLang.equals(ExtendedMarkdown.class)) {
             return this::applyExtdMd;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this.getMdPattern();
+        } else if (markupLang.equals(Markdown.class)) {
+            return this.getMdPattern();
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this.getExtdMdPattern();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
+            Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this::extractFromHtml;
+        } else if (markupLang.equals(Markdown.class)) {
+            return this::extractFromMd;
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this::extractFromExtdMd;
         } else {
             return null;
         }

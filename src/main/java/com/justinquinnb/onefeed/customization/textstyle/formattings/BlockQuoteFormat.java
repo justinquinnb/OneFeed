@@ -1,9 +1,14 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
+import java.text.ParseException;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+// TODO implement markdown
 /**
  * Marker for block quote text formatting. Obtain an instance through {@link #getInstance()}.
  */
@@ -38,7 +43,21 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
 
     @Override
     public MarkedUpText applyHtml(String text) {
-        return new MarkedUpText("<b>" + text + "</b>", Html.class);
+        return new MarkedUpText("<blockquote>" + text + "</blockquote>", Html.class);
+    }
+
+    @Override
+    public Pattern getHtmlPattern() {
+        return Pattern.compile("(<blockquote\s(.*)>)(.*)(</blockquote\s>)");
+    }
+
+    @Override
+    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        // Define the blockquote element tags
+        Pattern startTag = Pattern.compile("^(<blockquote\s(.*)>)");
+        Pattern endTag = Pattern.compile("(</blockquote\s>)$");
+
+        return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, BlockQuoteFormat.getInstance());
     }
 
     @Override
@@ -47,8 +66,48 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
     }
 
     @Override
+    public Pattern getMdPattern() {
+        return Pattern.compile("(>\s(.*)$)+", Pattern.MULTILINE);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromMd(MarkedUpText text) {
+        String rawText = text.getText();
+
+        // Specify the start-of-blockquote line pattern
+        Pattern linePattern = Pattern.compile("^>\s");
+        Matcher match;
+        boolean foundMatch = false;
+        String blockquoteText = "";
+
+        match = linePattern.matcher(rawText);
+
+        // Find each line's delimiter in order to determine the blockquote's actual content, extracting what follows it
+        while (match.find()) {
+            foundMatch = true;
+            blockquoteText += rawText.substring(match.start(), match.end());
+        }
+
+        if (!foundMatch) {
+            return new FormattingMarkedText(rawText, DefaultFormat.getInstance());
+        }
+
+        return new FormattingMarkedText(blockquoteText, BlockQuoteFormat.getInstance());
+    }
+
+    @Override
     public MarkedUpText applyExtdMd(String text) {
         return new MarkedUpText(">" + text, ExtendedMarkdown.class);
+    }
+
+    @Override
+    public Pattern getExtdMdPattern() {
+        return this.getMdPattern();
+    }
+
+    @Override
+    public FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
+        return extractFromMd(text);
     }
 
     @Override
@@ -59,6 +118,33 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
             return this::applyMd;
         } else if (markupLang.equals(ExtendedMarkdown.class)) {
             return this::applyExtdMd;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this.getMdPattern();
+        } else if (markupLang.equals(Markdown.class)) {
+            return this.getMdPattern();
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this.getExtdMdPattern();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
+            Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this::extractFromHtml;
+        } else if (markupLang.equals(Markdown.class)) {
+            return this::extractFromMd;
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this::extractFromExtdMd;
         } else {
             return null;
         }

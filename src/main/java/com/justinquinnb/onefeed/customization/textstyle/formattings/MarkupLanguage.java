@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -24,7 +25,7 @@ import java.util.regex.Pattern;
  * {@code extractFrom___()} methods (where {@code ___} equals an abbreviation of the language name) for consistency’s
  * sake. The {@code apply___()} method should mimic the functionality of {@link #apply(String, Class)}; the {@code
  * get___Pattern()} method should mimic the functionality of {@link #getMarkupPatternFor(Class)}; and the {@code
- * extractFrom()} method should mimic the functionality of {@link #extract(MarkedUpText)}.
+ * extractFrom()} method should mimic the functionality of {@link #extract(String, Class)}.
  * <br><br>
  * The motivation for this is requiring {@code TextFormatting}s that implement a {@code MarkupLanguage} to
  * individually implement and distinguish the requirements of each language.
@@ -201,13 +202,107 @@ public interface MarkupLanguage {
      * {@code MarkupLanguage}-implementing type representing the formatting specified by the {@code markupLang}-type
      * markup in {@code text} with a copy of {@code text} that has all of its markup removed
      *
-     * @throws ParseException if the provided {@code text} is malformed for the specified {@code markupLang}
      * @throws NoSuchMethodException if a method couldn't be found to derive {@code FormattingMarkedText} from the
      * provided, {@code markupLang}-marked {@code text}
      */
     public default FormattingMarkedText extract(String text, Class<? extends MarkupLanguage> markupLang)
-            throws ParseException, NoSuchMethodException {
+            throws NoSuchMethodException {
         Function<MarkedUpText, FormattingMarkedText> extractor = this.findFormattingExtractorFor(markupLang);
         return extractor.apply(new MarkedUpText(text, markupLang));
+    }
+
+
+    /**
+     * Extracts the content from the single element in {@code rawText} using the provided {@code startBound} and
+     * {@code endBound}.
+     *
+     * @param rawText a {@code String} containing a single HTML element represented by {@code startBound} and
+     * {@code endBound}
+     * @param startBound a pattern representing the opening tag of the desired HTML element in {@code rawText} whose
+     *                 content to extract
+     * @param endBound a pattern representing the closing tag of the desired HTML element in {@code rawText} whose content
+     *               to extract
+     *
+     * @return the content contained within the element delimited by the provided {@code startBound} and {@code endBound}
+     * @throws ParseException if the provided tags cannot be found in {@code rawText}
+     */
+    private static String parseTextBetweenBounds(String rawText, Pattern startBound, Pattern endBound) throws ParseException {
+        Matcher match;
+        int contentStart = -1, contentEnd = -1;
+
+        // Get the leftmost tag
+        match = startBound.matcher(rawText);
+        if (match.find()) {
+            contentStart = match.end() + 1;
+        }
+
+        // Get the rightmost tag
+        match = endBound.matcher(rawText);
+        if (match.find()) {
+            contentEnd = match.start();
+        }
+
+        // If both outermost tags couldn't be found
+        if (contentStart == -1 || contentEnd == -1) {
+            throw new ParseException(rawText, 0);
+        }
+
+        return rawText.substring(contentStart, contentEnd);
+    }
+
+    /**
+     * Produces a {@link FormattingMarkedText} object with text matching {@code text}'s content as bounded by the
+     * {@code startBound} and {@code endBound} patterns, stripped of that markup, and the included
+     * {@link TextFormatting} matching that specified by {@code label} (assuming parsing is successful).
+     *
+     * @param text some {@code MarkedUpText} containing text with the desired, markup-bounded formatting applied
+     * @param startBound a pattern representing the opening tag of the desired HTML element in {@code rawText} whose
+     *                 content to extract
+     * @param endBound a pattern representing the closing tag of the desired HTML element in {@code rawText} whose content
+     *               to extract
+     * @param label the desired {@code TextFormatting} with which to include in the generated
+     * {@code FormattingMarkedText} when a parse is successful
+     * @param fallbackLabel the {@code TextFormatting} to include in the generated {@code FormattingMarkedText} when a
+     *                      match for text within the provided bound patterns could not be found in the {@code text}
+     *
+     * @return If the desired element could be found, the content contained within the element delimited by the
+     * provided {@code startBound} and {@code endBound}, contained in a {@code FormattingMarkedText} object with
+     * {@code TextFormatting} {@code label}. If the desired element couldn't be found, {@code fallbackLabel} is used and
+     * the text included in the returned {@code FormattingMarkedText} simply matches that included in {@code text}.
+     */
+    public static FormattingMarkedText parseFmtBetweenBounds(MarkedUpText text, Pattern startBound, Pattern endBound,
+            TextFormatting label, TextFormatting fallbackLabel) {
+        String rawText = text.getText();
+
+        // If a match can't be found, fall back to using the text's rawText labelled with the provided fallback
+        try {
+            String blockquoteContent = parseTextBetweenBounds(rawText, startBound, endBound);
+            return new FormattingMarkedText(blockquoteContent, label);
+        } catch (ParseException e) {
+            return new FormattingMarkedText(rawText, fallbackLabel);
+        }
+    }
+
+    /**
+     * Produces a {@link FormattingMarkedText} object with text matching {@code text}'s content as bounded by the
+     * {@code startBound} and {@code endBound} patterns, stripped of that markup, and the included
+     * {@link TextFormatting} matching that specified by {@code label} (assuming parsing is successful).
+     *
+     * @param text some {@code MarkedUpText} containing text with the desired, markup-bounded formatting applied
+     * @param startBound a pattern representing the opening tag of the desired HTML element in {@code rawText} whose
+     *                 content to extract
+     * @param endBound a pattern representing the closing tag of the desired HTML element in {@code rawText} whose content
+     *               to extract
+     * @param label the desired {@code TextFormatting} with which to include in the generated
+     * {@code FormattingMarkedText} when a parse is successful
+     *
+     * @return If the desired element could be found, the content contained within the element delimited by the
+     * provided {@code startBound} and {@code endBound}, contained in a {@code FormattingMarkedText} object with
+     * {@code TextFormatting} {@code label}. If the desired element couldn't be found, {@link DefaultFormat} is used
+     * and the text included in the returned {@code FormattingMarkedText} simply matches that included in {@code text}.
+     */
+    public static FormattingMarkedText parseFmtBetweenBounds(MarkedUpText text, Pattern startBound, Pattern endBound,
+            TextFormatting label) {
+        return parseFmtBetweenBounds(text, startBound, endBound, label, DefaultFormat.getInstance());
     }
 }
