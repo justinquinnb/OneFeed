@@ -40,12 +40,10 @@ public interface ExtendedMarkdown extends MarkupLanguage {
      * @return a {@code FormattingMarkedText} object representing the type of formatting specified by the Extended
      * Markdown contained in {@code text} with a copy of {@code text} that has all of its markup removed
      *
-     * @throws ParseException if the provided {@code text} is malformed Extended Markdown
-     *
      * @implNote
      * Note that the produced {@code FormattingMarkedText} may not employ the same type of {@link TextFormatting} as
      * {@code this} {@code ExtendedMarkdown} language implementor. In some cases, this may be the intended behavior and
      * is handled without issue by OneFeed. Generally speaking though, such behavior should be avoided.
      */
-    public FormattingMarkedText extractFromExtdMd(String text) throws ParseException;
+    public FormattingMarkedText extractFromExtdMd(MarkedUpText text);
 }

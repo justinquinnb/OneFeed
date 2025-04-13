@@ -1,8 +1,11 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
+import java.text.ParseException;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Marker for code block text formatting. Obtain an instance through {@link #getInstance()}.
@@ -42,6 +45,20 @@ public class CodeBlockFormat extends TextFormatting implements Html {
     }
 
     @Override
+    public Pattern getHtmlPattern() {
+        return Pattern.compile("((<pre\s(.*)>)\s(<code\s(.*)>)(.*)(</code\s>)\s(</pre\s>))");
+    }
+
+    @Override
+    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        // Find the outermost element tags in order to determine that outermost element's content
+        Pattern startTag = Pattern.compile("^((<pre\s(.*)>)\s(<code\s(.*)>))");
+        Pattern endTag = Pattern.compile("((</code\s>)\s(</pre\s))$");
+
+        return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, CodeBlockFormat.getInstance());
+    }
+
+    @Override
     public Function<String, MarkedUpText> getMarkupLangApplierFor(
             Class<? extends MarkupLanguage> markupLang) {
         if (markupLang.equals(Html.class)) {
@@ -49,5 +66,16 @@ public class CodeBlockFormat extends TextFormatting implements Html {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
+        return null;
+    }
+
+    @Override
+    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
+            Class<? extends MarkupLanguage> markupLang) {
+        return null;
     }
 }
