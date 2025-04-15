@@ -7,12 +7,20 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// TODO implement markdown
 /**
  * Marker for block quote text formatting. Obtain an instance through {@link #getInstance()}.
  */
 public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, ExtendedMarkdown {
     private static volatile BlockQuoteFormat instance = null;
+
+    static {
+        TextFormattingRegistry.registerForLanguage(
+                BlockQuoteFormat.class, Html.class, getHtmlPattern(), BlockQuoteFormat::extractFromHtml);
+        TextFormattingRegistry.registerForLanguage(
+                BlockQuoteFormat.class, Markdown.class, getMdPattern(), BlockQuoteFormat::extractFromMd);
+        TextFormattingRegistry.registerForLanguage(
+                BlockQuoteFormat.class, ExtendedMarkdown.class, getMdPattern(), BlockQuoteFormat::extractFromMd);
+    }
 
     /**
      * Creates an instance of bold formatting.
@@ -45,13 +53,11 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
         return new MarkedUpText("<blockquote>" + text + "</blockquote>", Html.class);
     }
 
-    @Override
-    public Pattern getHtmlPattern() {
+    public static Pattern getHtmlPattern() {
         return Pattern.compile("(<blockquote(.*)>)(.*)(</blockquote\\s>)", Pattern.DOTALL);
     }
 
-    @Override
-    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+    public static FormattingMarkedText extractFromHtml(MarkedUpText text) {
         try {
             return Html.extractContentFromElement(text, BlockQuoteFormat.getInstance(), "blockquote");
         } catch (IllegalStateException e) {
@@ -64,13 +70,11 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
         return new MarkedUpText(">" + text, Markdown.class);
     }
 
-    @Override
-    public Pattern getMdPattern() {
+    public static Pattern getMdPattern() {
         return Pattern.compile("(>(.*)$)+", Pattern.MULTILINE | Pattern.DOTALL);
     }
 
-    @Override
-    public FormattingMarkedText extractFromMd(MarkedUpText text) {
+    public static FormattingMarkedText extractFromMd(MarkedUpText text) {
         String rawText = text.getText();
 
         // Specify the start-of-blockquote line pattern
@@ -100,16 +104,6 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
     }
 
     @Override
-    public Pattern getExtdMdPattern() {
-        return this.getMdPattern();
-    }
-
-    @Override
-    public FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
-        return extractFromMd(text);
-    }
-
-    @Override
     public Function<String, MarkedUpText> getMarkupLangApplierFor(Class<? extends MarkupLanguage> markupLang) {
         if (markupLang.equals(Html.class)) {
             return this::applyHtml;
@@ -117,33 +111,6 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
             return this::applyMd;
         } else if (markupLang.equals(ExtendedMarkdown.class)) {
             return this::applyExtdMd;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
-        if (markupLang.equals(Html.class)) {
-            return this.getMdPattern();
-        } else if (markupLang.equals(Markdown.class)) {
-            return this.getMdPattern();
-        } else if (markupLang.equals(ExtendedMarkdown.class)) {
-            return this.getExtdMdPattern();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
-            Class<? extends MarkupLanguage> markupLang) {
-        if (markupLang.equals(Html.class)) {
-            return this::extractFromHtml;
-        } else if (markupLang.equals(Markdown.class)) {
-            return this::extractFromMd;
-        } else if (markupLang.equals(ExtendedMarkdown.class)) {
-            return this::extractFromExtdMd;
         } else {
             return null;
         }
