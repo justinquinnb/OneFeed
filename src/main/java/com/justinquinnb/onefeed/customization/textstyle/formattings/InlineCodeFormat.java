@@ -1,8 +1,10 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Marker for inline code text formatting. Obtain an instance through {@link #getInstance()}.
@@ -42,13 +44,54 @@ public class InlineCodeFormat extends TextFormatting implements Html, Markdown, 
     }
 
     @Override
+    public Pattern getExtdMdPattern() {
+        return this.getMdPattern();
+    }
+
+    @Override
+    public FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
+        return this.extractFromMd(text);
+    }
+
+    @Override
     public MarkedUpText applyHtml(String text) {
         return new MarkedUpText("<code>" + text + "</code>", Html.class);
     }
 
     @Override
+    public Pattern getHtmlPattern() {
+        return Pattern.compile("(<code(.*)>)(.*)(</code\\s>)", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        // Attempt to parse out the content
+        try {
+            return Html.extractContentFromElement(text, InlineCodeFormat.getInstance(), "code");
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
+    }
+
+    @Override
     public MarkedUpText applyMd(String text) {
         return new MarkedUpText("`" + text + "`", Markdown.class);
+    }
+
+    @Override
+    public Pattern getMdPattern() {
+        return Pattern.compile("`(.*)`", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromMd(MarkedUpText text) {
+        try {
+            Pattern startBound = Pattern.compile("^`");
+            Pattern endBound = Pattern.compile("`$");
+            return MarkupLanguage.parseFmtBetweenBounds(text, startBound, endBound, InlineCodeFormat.getInstance());
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
     }
 
     @Override
@@ -60,6 +103,33 @@ public class InlineCodeFormat extends TextFormatting implements Html, Markdown, 
             return this::applyMd;
         } else if (markupLang.equals(ExtendedMarkdown.class)) {
             return this::applyExtdMd;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this.getHtmlPattern();
+        } else if (markupLang.equals(Markdown.class)) {
+            return this.getMdPattern();
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this.getExtdMdPattern();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
+            Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this::extractFromHtml;
+        } else if (markupLang.equals(Markdown.class)) {
+            return this::extractFromMd;
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this::extractFromExtdMd;
         } else {
             return null;
         }

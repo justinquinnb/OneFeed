@@ -3,7 +3,6 @@ package com.justinquinnb.onefeed.customization.textstyle.formattings;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
-import java.text.ParseException;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,16 +47,16 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
 
     @Override
     public Pattern getHtmlPattern() {
-        return Pattern.compile("(<blockquote\s(.*)>)(.*)(</blockquote\s>)");
+        return Pattern.compile("(<blockquote(.*)>)(.*)(</blockquote\\s>)", Pattern.DOTALL);
     }
 
     @Override
     public FormattingMarkedText extractFromHtml(MarkedUpText text) {
-        // Define the blockquote element tags
-        Pattern startTag = Pattern.compile("^(<blockquote\s(.*)>)");
-        Pattern endTag = Pattern.compile("(</blockquote\s>)$");
-
-        return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, BlockQuoteFormat.getInstance());
+        try {
+            return Html.extractContentFromElement(text, BlockQuoteFormat.getInstance(), "blockquote");
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
     }
 
     @Override
@@ -67,7 +66,7 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
 
     @Override
     public Pattern getMdPattern() {
-        return Pattern.compile("(>\s(.*)$)+", Pattern.MULTILINE);
+        return Pattern.compile("(>(.*)$)+", Pattern.MULTILINE | Pattern.DOTALL);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class BlockQuoteFormat extends TextFormatting implements Html, Markdown, 
         String rawText = text.getText();
 
         // Specify the start-of-blockquote line pattern
-        Pattern linePattern = Pattern.compile("^>\s");
+        Pattern linePattern = Pattern.compile("^\\s>\\s");
         Matcher match;
         boolean foundMatch = false;
         String blockquoteText = "";

@@ -46,16 +46,19 @@ public class CodeBlockFormat extends TextFormatting implements Html {
 
     @Override
     public Pattern getHtmlPattern() {
-        return Pattern.compile("((<pre\s(.*)>)\s(<code\s(.*)>)(.*)(</code\s>)\s(</pre\s>))");
+        return Pattern.compile("((<pre(.*)>)\\s(<code(.*)>)(.*)(</code\\s>)\\s(</pre\\s>))", Pattern.DOTALL);
     }
 
     @Override
     public FormattingMarkedText extractFromHtml(MarkedUpText text) {
-        // Find the outermost element tags in order to determine that outermost element's content
-        Pattern startTag = Pattern.compile("^((<pre\s(.*)>)\s(<code\s(.*)>))");
-        Pattern endTag = Pattern.compile("((</code\s>)\s(</pre\s))$");
-
-        return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, CodeBlockFormat.getInstance());
+        try {
+            // Find the outermost element tags in order to determine that outermost element's content
+            Pattern startTag = Pattern.compile("^((<pre\\s(.*)>)\\s(<code\\s(.*)>))");
+            Pattern endTag = Pattern.compile("((</code\\s>)\\s(</pre\\s))$");
+            return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, CodeBlockFormat.getInstance());
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
     }
 
     @Override
@@ -70,12 +73,20 @@ public class CodeBlockFormat extends TextFormatting implements Html {
 
     @Override
     public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
-        return null;
+        if (markupLang.equals(Html.class)) {
+            return this.getHtmlPattern();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
             Class<? extends MarkupLanguage> markupLang) {
-        return null;
+        if (markupLang.equals(Html.class)) {
+            return this::extractFromHtml;
+        } else {
+            return null;
+        }
     }
 }

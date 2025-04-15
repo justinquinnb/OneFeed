@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A {@code String} of text associated with the types of markup languages it employs to represent its formatting.
+ * A {@code String} of text associated with the types of markup languages it employs to represent its formatting. The
+ * text should only contain the literal text and its surrounding and embedded markup.
  */
 public class MarkedUpText extends FormattedText {
     /**

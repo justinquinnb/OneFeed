@@ -1,8 +1,10 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Marker for underline text formatting. Obtain an instance through {@link #getInstance()}.
@@ -42,9 +44,43 @@ public class UnderlineFormat extends TextFormatting implements Html {
     }
 
     @Override
+    public Pattern getHtmlPattern() {
+        return Pattern.compile("<u(.*)>(.*)</u\\s>", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        // Attempt to parse out the content
+        try {
+            return Html.extractContentFromElement(text, UnderlineFormat.getInstance(), "u");
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
+    }
+
+    @Override
     public Function<String, MarkedUpText> getMarkupLangApplierFor(Class<? extends MarkupLanguage> markupLang) {
         if (markupLang.equals(Html.class)) {
             return this::applyHtml;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this.getHtmlPattern();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
+            Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this::extractFromHtml;
         } else {
             return null;
         }
