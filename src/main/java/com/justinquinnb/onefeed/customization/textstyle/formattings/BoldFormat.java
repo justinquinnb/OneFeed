@@ -3,7 +3,6 @@ package com.justinquinnb.onefeed.customization.textstyle.formattings;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
-import java.text.ParseException;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -47,19 +46,17 @@ public class BoldFormat extends TextFormatting implements Html, Markdown, Extend
 
     @Override
     public Pattern getHtmlPattern() {
-        return Pattern.compile("((<b\s(.*)>)(.*)(</b\s>))|((<strong\s(.*)>)(.*)(</strong\s>))");
+        return Pattern.compile("((<b\\s(.*)>)(.*)(</b\\s>))|((<strong\\s(.*)>)(.*)(</strong\\s>))");
     }
 
     @Override
     public FormattingMarkedText extractFromHtml(MarkedUpText text) {
-        // Find the outermost boldface element tags in order to determine that outermost element's content
-        Pattern startTag = Pattern.compile("^((<b\s(.*)>)|(<strong\s(.*)>))");
-
-        // Since tags shouldn't really be mismatched in proper use and there's no need for nested boldfacing, this is
-        // (as far as I know) the best approach
-        Pattern endTag = Pattern.compile("((</b\s>)|(</strong\s>))$");
-
-        return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, BoldFormat.getInstance());
+        // Attempt to parse out the content
+        try {
+            return Html.extractContentFromElement(text, BoldFormat.getInstance(), "b", "strong");
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
     }
 
     @Override
@@ -69,16 +66,19 @@ public class BoldFormat extends TextFormatting implements Html, Markdown, Extend
 
     @Override
     public Pattern getMdPattern() {
-        return Pattern.compile("\\*\\*(.*)\\*\\*");
+        return Pattern.compile("\\*\\*(.*)\\*\\*", Pattern.DOTALL);
     }
 
     @Override
     public FormattingMarkedText extractFromMd(MarkedUpText text) {
-        // Find the outermost boldface element tags in order to determine that outermost element's content
-        Pattern startTag = Pattern.compile("^(\\*\\*)");
-        Pattern endTag = Pattern.compile("(\\*\\*)$");
-
-        return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, BoldFormat.getInstance());
+        try {
+            // Find the outermost boldface bounds in order to determine that outermost element's content
+            Pattern startBound = Pattern.compile("^(\\*\\*)");
+            Pattern endBound = Pattern.compile("(\\*\\*)$");
+            return MarkupLanguage.parseFmtBetweenBounds(text, startBound, endBound, BoldFormat.getInstance());
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
     }
 
     @Override
@@ -112,7 +112,7 @@ public class BoldFormat extends TextFormatting implements Html, Markdown, Extend
     @Override
     public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
         if (markupLang.equals(Html.class)) {
-            return this.getMdPattern();
+            return this.getHtmlPattern();
         } else if (markupLang.equals(Markdown.class)) {
             return this.getMdPattern();
         } else if (markupLang.equals(ExtendedMarkdown.class)) {

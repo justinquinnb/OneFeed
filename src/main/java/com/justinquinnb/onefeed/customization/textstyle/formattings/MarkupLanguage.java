@@ -3,9 +3,6 @@ package com.justinquinnb.onefeed.customization.textstyle.formattings;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -204,6 +201,28 @@ public interface MarkupLanguage {
      *
      * @throws NoSuchMethodException if a method couldn't be found to derive {@code FormattingMarkedText} from the
      * provided, {@code markupLang}-marked {@code text}
+     *
+     * @implNote
+     * If the desired {@code TextFormatting} could not be extracted from the provided {@code text}, it is strongly
+     * encouraged to return a new {@code FormattingMarkedText} instance containing the original {@code text} as-is with
+     * a default {@code TextFormatting} type such as the provided {@link DefaultFormat}.
+     * <br><br>
+     * Additionally, the {@code text} provided to this method may not contain markup for the implementing type. In the
+     * majority of cases, the {@code text} will contain just the content itself and its surrounding and embedded
+     * formatting markup (see example A). However, as it is possible for the text to include more (example B), it is
+     * encouraged to implement parsing that can account for this edge case, even when that edge case has no practical
+     * use, does not adhere to the principles of the system, and therefore should not be employed.<br>
+     * <b>Examples in HTML:</b>
+     * <ul>
+     *     <li>
+     *         <b>Example A:</b> Expected {@code String} in the provided {@code MarkedUpText}<br>
+     *         {@code <b>content <i>text</i></b>}
+     *     </li>
+     *     <li>
+     *         <b>Example B:</b> Possible (but unlikely) edge case<br>
+     *         {@code Junk surrounding the <b>content <i>text</i></b>}
+     *     </li>
+     * </ul>
      */
     public default FormattingMarkedText extract(String text, Class<? extends MarkupLanguage> markupLang)
             throws NoSuchMethodException {
@@ -224,9 +243,10 @@ public interface MarkupLanguage {
      *               to extract
      *
      * @return the content contained within the element delimited by the provided {@code startBound} and {@code endBound}
-     * @throws ParseException if the provided tags cannot be found in {@code rawText}
+     * @throws IllegalStateException if the provided tags cannot be found in {@code rawText}
      */
-    private static String parseTextBetweenBounds(String rawText, Pattern startBound, Pattern endBound) throws ParseException {
+    public static String parseTextBetweenBounds(String rawText, Pattern startBound, Pattern endBound)
+            throws IllegalStateException {
         Matcher match;
         int contentStart = -1, contentEnd = -1;
 
@@ -244,7 +264,7 @@ public interface MarkupLanguage {
 
         // If both outermost tags couldn't be found
         if (contentStart == -1 || contentEnd == -1) {
-            throw new ParseException(rawText, 0);
+            throw new IllegalStateException("A complete pair of boundaries could not be found in the provided String: " + rawText);
         }
 
         return rawText.substring(contentStart, contentEnd);
@@ -262,47 +282,51 @@ public interface MarkupLanguage {
      *               to extract
      * @param label the desired {@code TextFormatting} with which to include in the generated
      * {@code FormattingMarkedText} when a parse is successful
-     * @param fallbackLabel the {@code TextFormatting} to include in the generated {@code FormattingMarkedText} when a
-     *                      match for text within the provided bound patterns could not be found in the {@code text}
      *
-     * @return If the desired element could be found, the content contained within the element delimited by the
-     * provided {@code startBound} and {@code endBound}, contained in a {@code FormattingMarkedText} object with
-     * {@code TextFormatting} {@code label}. If the desired element couldn't be found, {@code fallbackLabel} is used and
-     * the text included in the returned {@code FormattingMarkedText} simply matches that included in {@code text}.
+     * @return the content contained within the element delimited by the provided {@code startBound} and
+     * {@code endBound}, contained in a {@code FormattingMarkedText} object with {@code TextFormatting} {@code label}
+     * @throws IllegalStateException if the desired element couldn't be found in the {@code text}
      */
     public static FormattingMarkedText parseFmtBetweenBounds(MarkedUpText text, Pattern startBound, Pattern endBound,
-            TextFormatting label, TextFormatting fallbackLabel) {
+            TextFormatting label) throws IllegalStateException {
         String rawText = text.getText();
 
         // If a match can't be found, fall back to using the text's rawText labelled with the provided fallback
-        try {
-            String blockquoteContent = parseTextBetweenBounds(rawText, startBound, endBound);
-            return new FormattingMarkedText(blockquoteContent, label);
-        } catch (ParseException e) {
-            return new FormattingMarkedText(rawText, fallbackLabel);
-        }
+        String content = parseTextBetweenBounds(rawText, startBound, endBound);
+        return new FormattingMarkedText(content, label);
     }
 
     /**
-     * Produces a {@link FormattingMarkedText} object with text matching {@code text}'s content as bounded by the
-     * {@code startBound} and {@code endBound} patterns, stripped of that markup, and the included
-     * {@link TextFormatting} matching that specified by {@code label} (assuming parsing is successful).
+     * Determines which of the provided {@code regex} {@link Pattern}s has the earliest match in the {@code text}, if
+     * any.
      *
-     * @param text some {@code MarkedUpText} containing text with the desired, markup-bounded formatting applied
-     * @param startBound a pattern representing the opening tag of the desired HTML element in {@code rawText} whose
-     *                 content to extract
-     * @param endBound a pattern representing the closing tag of the desired HTML element in {@code rawText} whose content
-     *               to extract
-     * @param label the desired {@code TextFormatting} with which to include in the generated
-     * {@code FormattingMarkedText} when a parse is successful
+     * @param text the {@link MarkedUpText} possibly containing a substring matching one of the provided {@code regexes}
+     * @param regexes the {@code Pattern}s to search for in {@code MarkedUpText}'s text, in the order they were passed
+     *                as an argument
      *
-     * @return If the desired element could be found, the content contained within the element delimited by the
-     * provided {@code startBound} and {@code endBound}, contained in a {@code FormattingMarkedText} object with
-     * {@code TextFormatting} {@code label}. If the desired element couldn't be found, {@link DefaultFormat} is used
-     * and the text included in the returned {@code FormattingMarkedText} simply matches that included in {@code text}.
+     * @return the {@code Pattern} in {@code regexes} that appears first in the {@code MarkedUpText}'s text, if a match
+     * for any exists
+     * @throws IllegalStateException if none of the provided {@code regexes} have a match in the provided {@code text}
      */
-    public static FormattingMarkedText parseFmtBetweenBounds(MarkedUpText text, Pattern startBound, Pattern endBound,
-            TextFormatting label) {
-        return parseFmtBetweenBounds(text, startBound, endBound, label, DefaultFormat.getInstance());
+    public static Pattern findEarliestMatch(MarkedUpText text, Pattern ... regexes) throws IllegalStateException {
+        String rawText = text.getText();
+        int earliestMatchPos = rawText.length();
+        Pattern earliestMatch = null;
+        Matcher matcher;
+
+        // Find the pattern with the earliest match in the text
+        for (Pattern regex : regexes) {
+            matcher = regex.matcher(rawText);
+            if (matcher.find() && matcher.start() < earliestMatchPos) {
+                earliestMatchPos = matcher.start();
+                earliestMatch = regex;
+            }
+        }
+
+        if (earliestMatch == null) {
+            throw new IllegalStateException("No match could be found for any provided regex in string: " + rawText);
+        }
+
+        return earliestMatch;
     }
 }

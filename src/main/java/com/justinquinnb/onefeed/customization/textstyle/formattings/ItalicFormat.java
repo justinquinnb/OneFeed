@@ -1,8 +1,10 @@
 package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Marker for italic text formatting. Obtain an instance through {@link #getInstance()}.
@@ -42,13 +44,56 @@ public class ItalicFormat extends TextFormatting implements Html, Markdown, Exte
     }
 
     @Override
+    public Pattern getHtmlPattern() {
+        return Pattern.compile("<i(.*)>(.*)</i\\s>", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        // Attempt to parse out the content
+        try {
+            return Html.extractContentFromElement(text, ItalicFormat.getInstance(), "i");
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
+    }
+
+    @Override
     public MarkedUpText applyMd(String text) {
         return new MarkedUpText("*" + text + "*", Markdown.class);
     }
 
     @Override
+    public Pattern getMdPattern() {
+        return Pattern.compile("\\*(.*)\\*", Pattern.DOTALL);
+    }
+
+    @Override
+    public FormattingMarkedText extractFromMd(MarkedUpText text) {
+        try {
+            // Find the outermost italic bounds in order to determine that outermost element's content
+            Pattern startTag = Pattern.compile("^(\\*)");
+            Pattern endTag = Pattern.compile("(\\*)$");
+
+            return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, ItalicFormat.getInstance());
+        } catch (IllegalStateException e) {
+            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        }
+    }
+
+    @Override
     public MarkedUpText applyExtdMd(String text) {
         return new MarkedUpText("*" + text + "*", Markdown.class);
+    }
+
+    @Override
+    public Pattern getExtdMdPattern() {
+        return this.getMdPattern();
+    }
+
+    @Override
+    public FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
+        return this.extractFromMd(text);
     }
 
     @Override
@@ -59,6 +104,33 @@ public class ItalicFormat extends TextFormatting implements Html, Markdown, Exte
             return this::applyMd;
         } else if (markupLang.equals(ExtendedMarkdown.class)) {
             return this::applyExtdMd;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this.getHtmlPattern();
+        } else if (markupLang.equals(Markdown.class)) {
+            return this.getMdPattern();
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this.getExtdMdPattern();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
+            Class<? extends MarkupLanguage> markupLang) {
+        if (markupLang.equals(Html.class)) {
+            return this::extractFromHtml;
+        } else if (markupLang.equals(Markdown.class)) {
+            return this::extractFromMd;
+        } else if (markupLang.equals(ExtendedMarkdown.class)) {
+            return this::extractFromExtdMd;
         } else {
             return null;
         }

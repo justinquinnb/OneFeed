@@ -70,17 +70,17 @@ public class DefaultFormat extends TextFormatting implements Html, Markdown, Ext
 
     @Override
     public MarkedUpText applyExtdMd(String text) {
-        return new MarkedUpText(text, ExtendedMarkdown.class);
+        return this.applyMd(text);
     }
 
     @Override
     public Pattern getExtdMdPattern() {
-        return Pattern.compile(".*", Pattern.DOTALL);
+        return this.getMdPattern();
     }
 
     @Override
     public FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
-        return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        return this.extractFromMd(text);
     }
 
     @Override
