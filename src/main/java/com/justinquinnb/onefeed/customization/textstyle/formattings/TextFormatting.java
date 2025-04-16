@@ -2,6 +2,10 @@ package com.justinquinnb.onefeed.customization.textstyle.formattings;
 
 import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.customization.source.ContentSource;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
+import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+
+import java.util.function.Function;
 
 /**
  * Some sort of text formatting, like boldface or italics.

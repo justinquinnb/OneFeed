@@ -3,6 +3,7 @@ package com.justinquinnb.onefeed.customization.textstyle.formattings;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
+import java.text.ParseException;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -38,49 +39,51 @@ public class UnderlineFormat extends TextFormatting implements Html {
         return instance;
     }
 
-    @Override
-    public MarkedUpText applyHtml(String text) {
-        return new MarkedUpText("<u>" + text + "</u>", Html.class);
-    }
-
-    @Override
-    public Pattern getHtmlPattern() {
+    // PATTERNS
+    /**
+     * Gets the {@link Pattern} indicating how {@code this} {@code UnderlineFormat} appears in text marked up in HTML.
+     *
+     * @return a {@code Pattern} capable of identifying underline formatting as it manifests in HTML
+     */
+    public static Pattern getHtmlPattern() {
         return Pattern.compile("<u(.*)>(.*)</u\\s>", Pattern.DOTALL);
     }
 
-    @Override
-    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
+    // EXTRACTORS
+    /**
+     * Extracts a {@code UnderlineFormat} object replicating the formatting of {@code text} as is specified by its
+     * HTML markup and pairs it with a copy of the marked-up text stripped of its markup.
+     *
+     * @param text the {@code MarkedUpText} to try parsing the formatting out of
+     *
+     * @return If the {@code MarkedUpText} employs HTML and contains a valid instance of underline formatting, a
+     * {@code FormattingMakedText} instance containing the original {@code text} stripped of its markup coupled with an
+     * instance of {@code UnderlineFormat} representing the formatting that markup called for.
+     */
+    public static FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        // Don't bother trying to parse the text if it doesn't employ any HTML
+        if (text.getMarkupLanguages().contains(Html.class)) {
+            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
+        }
+        
         // Attempt to parse out the content
         try {
             return Html.extractContentFromElement(text, UnderlineFormat.getInstance(), "u");
-        } catch (IllegalStateException e) {
-            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        } catch (ParseException e) {
+            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
         }
+    }
+
+    // OVERRIDES
+    @Override
+    public MarkedUpText applyAsHtmlTo(String text) {
+        return new MarkedUpText("<u>" + text + "</u>", Html.class);
     }
 
     @Override
     public Function<String, MarkedUpText> getMarkupLangApplierFor(Class<? extends MarkupLanguage> markupLang) {
         if (markupLang.equals(Html.class)) {
-            return this::applyHtml;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
-        if (markupLang.equals(Html.class)) {
-            return this.getHtmlPattern();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
-            Class<? extends MarkupLanguage> markupLang) {
-        if (markupLang.equals(Html.class)) {
-            return this::extractFromHtml;
+            return this::applyAsHtmlTo;
         } else {
             return null;
         }

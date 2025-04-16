@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+// TODO add outputLangs[] field?
 /**
  * A mapping of {@link TextFormatting}s to the {@link Function}s that consume them and {@link FormattingMarkedText} to
  * produce {@link MarkedUpText}.
