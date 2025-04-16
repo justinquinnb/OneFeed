@@ -11,13 +11,6 @@ import java.util.HashMap;
  * defined {@link MarkupLanguage}.
  */
 public class FormattingRulesetGenerator {
-    // TODO Go about adding the required regex and string to FormattingMarkedText-converting function
-    //  getters to the MarkupLanguage interface and all implementors. Remember, for each MarkupLanguage a
-    //  TextFormatting type implements, it should need to provide Regex to represent it in each language and a method
-    //  to take Strings matching that regex and extract a TextFormatting and unformatted text string from it
-    //  (FormattingMarkedText). Specify a default method that ensures the strings passed to the extractFrom___
-    //  methods match the regex specified by the TextFormatting type, throwing an exception if not.
-
     // What's best about the caching approach is that Content Sources can choose to either define a markup language
     // class OR just provide a ruleset. If a markup language is used to generate a ruleset, then it gets cached as
     // soon as that content source gets called upon at OneFeed's initialization-- the prime time to load them all up.

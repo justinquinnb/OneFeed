@@ -3,32 +3,49 @@ package com.justinquinnb.onefeed.customization.textstyle.formattings;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
+import java.text.ParseException;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A markup language such as HTML or Markdown. Implementors specify the generation of {@link MarkedUpText} using their
- * type of {@code MarkupLanguage} provided some text.
+ * A markup language such as HTML or Markdown. Implementors specify the generation and interpretation of
+ * {@link MarkedUpText} using their type of {@code MarkupLanguage}, provided some text.
  *
- * @implNote Intended use is for {@link TextFormatting} types to implement children of this interface to indicate their
- * ability to be represented in various markup languages through methods they, themselves, contain.
+ * @implNote This intention is for {@link TextFormatting} types to implement children of this interface to indicate
+ * their ability to be represented in various markup languages through methods they, themselves, contain.
  * @implSpec <b>Defining New Languages and Their Supersets</b><br>
  * As there is no good way to represent the concept of set theory required to mimic the concept of markup language
  * supersets, all supersets or extensions of a language should be defined as separate interfaces extending
- * {@code MarkupLanguage}.
- * <br><br><b>Encouraged Method Prototypes</b><br>
- * While not required, it is strongly encouraged to prototype {@code apply___()}, {@code get___Pattern()}, and
- * {@code extractFrom___()} methods (where {@code ___} equals an abbreviation of the language name) for consistency’s
- * sake. The {@code apply___()} method should mimic the functionality of {@link #apply(String, Class)}; the {@code
- * get___Pattern()} method should mimic the functionality of {@link #getMarkupPatternFor(Class)}; and the {@code
- * extractFrom()} method should mimic the functionality of {@link #extract(String, Class)}.
+ * {@code MarkupLanguage}. Developers must permit their new language in this class' signature.
+ * <br><br>
+ * <b>Implementing & Registering a Type of {@code MarkupLanguage}</b><br>
+ * Most of the functionality that an implementor of a {@code MarkupLanguage} type must perform is static. For this
+ * reason, developers must, in the static body of their implementing type, use
+ * {@link TextFormattingRegistry#registerForLanguage} for each implemented language for the {@code TextFormatting} and
+ * its various {@code MarkupLanguage} type-specific implementations to be recognized by OneFeed. It is advised to
+ * create static methods titled {@code extractFrom___}, {@code apply___}, and {@code get___Pattern} methods that are
+ * passed as lambdas to the {@code registerForLanguage} function for consistency's sake, but any means of providing a
+ * valid function as an argument is acceptable.
+ * <br><br>
+ * In addition to the static methods, each interface will mandate the implementation of some instance methods.
+ * <br><br>
+ * <b>Encouraged Method Prototypes for Direct Children of {@code MarkupLanguage}</b><br>
+ * While not required, it is strongly encouraged to prototype an {@code apply___()} method (where {@code ___} equals an
+ * abbreviation of the language name) for consistency’s sake. The {@code apply___()} method should mimic the
+ * functionality of {@link #applyTo(String, Class)}.
  * <br><br>
  * The motivation for this is requiring {@code TextFormatting}s that implement a {@code MarkupLanguage} to
  * individually implement and distinguish the requirements of each language.
  */
-public interface MarkupLanguage {
-    // MARKING UP TEXT IN DIFFERENT MARKUP LANGUAGES
+public sealed interface MarkupLanguage permits ExtendedMarkdown, Html, Markdown {
+    /**
+     * A standard fallback process that can be invoked when a {@link MarkedUpText} object cannot be interpreted as
+     * desired.
+     */
+    public static final Function<MarkedUpText, FormattingMarkedText> EXTRACTOR_FALLBACK_PROCESS =
+            MarkupLanguage::interpretAsDefault;
+
     /**
      * Provides a {@code Function} capable of marking up a {@code String} into {@link MarkedUpText} employing
      * {@link MarkupLanguage} {@code markupLang}.
@@ -90,7 +107,7 @@ public interface MarkupLanguage {
      * @throws NoSuchMethodException when an applier method could not be found in {@code this} type's implementor for
      *     the target {@code markupLang}
      */
-    public default MarkedUpText apply(String text, Class<? extends MarkupLanguage> markupLang) throws
+    public default MarkedUpText applyTo(String text, Class<? extends MarkupLanguage> markupLang) throws
             NoSuchMethodException {
         Function<String, MarkedUpText> applier = this.findMarkupLangApplierFor(markupLang);
         return applier.apply(text);
@@ -108,10 +125,10 @@ public interface MarkupLanguage {
      *               to extract
      *
      * @return the content contained within the element delimited by the provided {@code startBound} and {@code endBound}
-     * @throws IllegalStateException if the provided tags cannot be found in {@code rawText}
+     * @throws ParseException if the provided tags cannot be found in {@code rawText}
      */
     public static String parseTextBetweenBounds(String rawText, Pattern startBound, Pattern endBound)
-            throws IllegalStateException {
+            throws ParseException {
         Matcher match;
         int contentStart = -1, contentEnd = -1;
 
@@ -129,7 +146,8 @@ public interface MarkupLanguage {
 
         // If both outermost tags couldn't be found
         if (contentStart == -1 || contentEnd == -1) {
-            throw new IllegalStateException("A complete pair of boundaries could not be found in the provided String: " + rawText);
+            throw new ParseException("A complete pair of boundaries could not be found in the provided String: " +
+                    rawText, 0);
         }
 
         return rawText.substring(contentStart, contentEnd);
@@ -153,10 +171,9 @@ public interface MarkupLanguage {
      * @throws IllegalStateException if the desired element couldn't be found in the {@code text}
      */
     public static FormattingMarkedText parseFmtBetweenBounds(MarkedUpText text, Pattern startBound, Pattern endBound,
-            TextFormatting label) throws IllegalStateException {
+            TextFormatting label) throws ParseException {
         String rawText = text.getText();
 
-        // If a match can't be found, fall back to using the text's rawText labelled with the provided fallback
         String content = parseTextBetweenBounds(rawText, startBound, endBound);
         return new FormattingMarkedText(content, label);
     }
@@ -171,9 +188,9 @@ public interface MarkupLanguage {
      *
      * @return the {@code Pattern} in {@code regexes} that appears first in the {@code MarkedUpText}'s text, if a match
      * for any exists
-     * @throws IllegalStateException if none of the provided {@code regexes} have a match in the provided {@code text}
+     * @throws ParseException if none of the provided {@code regexes} have a match in the provided {@code text}
      */
-    public static Pattern findEarliestMatch(MarkedUpText text, Pattern ... regexes) throws IllegalStateException {
+    public static Pattern findEarliestMatch(MarkedUpText text, Pattern ... regexes) throws ParseException {
         String rawText = text.getText();
         int earliestMatchPos = rawText.length();
         Pattern earliestMatch = null;
@@ -189,9 +206,22 @@ public interface MarkupLanguage {
         }
 
         if (earliestMatch == null) {
-            throw new IllegalStateException("No match could be found for any provided regex in string: " + rawText);
+            throw new ParseException("No match could be found for any provided regex in string: " + rawText, 0);
         }
 
         return earliestMatch;
+    }
+
+    /**
+     * Interprets any provided {@link MarkedUpText} as possessing only the {@link DefaultFormat} applied, providing the
+     * respective {@link FormattingMarkedText} as a result.
+     *
+     * @param text the desired {@code MarkedUpText} instance to interpret as only having a {@code DefaultFormat} applied
+     *
+     * @return a {@code FormattingMarkedText} instance with the same text as {@code text} affiliated with the
+     * {@code DefaultFormat} type regardless of what that text actually contains
+     */
+    private static FormattingMarkedText interpretAsDefault(MarkedUpText text) {
+        return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
     }
 }

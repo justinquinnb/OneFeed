@@ -3,6 +3,7 @@ package com.justinquinnb.onefeed.customization.textstyle.formattings;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
+import java.text.ParseException;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -38,78 +39,96 @@ public class StrikethroughFormat extends TextFormatting implements Html, Extende
         return instance;
     }
 
-    @Override
-    public MarkedUpText applyHtml(String text) {
-        return new MarkedUpText("<s>" + text + "</s>", Html.class);
-    }
-
-    @Override
-    public Pattern getHtmlPattern() {
+    // PATTERNS
+    /**
+     * Gets the {@link Pattern} indicating how {@code this} {@code StrikethroughFormat} appears in text marked up in
+     * HTML.
+     *
+     * @return a {@code Pattern} capable of identifying strikethrough formatting as it manifests in HTML
+     */
+    public static Pattern getHtmlPattern() {
         return Pattern.compile("<s(.*)>(.*)</s\\s>", Pattern.DOTALL);
     }
 
-    @Override
-    public FormattingMarkedText extractFromHtml(MarkedUpText text) {
-        // Attempt to parse out the content
-        try {
-            return Html.extractContentFromElement(text, StrikethroughFormat.getInstance(), "s");
-        } catch (IllegalStateException e) {
-            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
-        }
-    }
-
-    @Override
-    public MarkedUpText applyExtdMd(String text) {
-        return new MarkedUpText("~~" + text + "~~", Markdown.class);
-    }
-
-    @Override
-    public Pattern getExtdMdPattern() {
+    /**
+     * Gets the {@link Pattern} indicating how {@code this} {@code StrikethroughFormat} appears in text marked up in
+     * Extended Markdown.
+     *
+     * @return a {@code Pattern} capable of identifying strikethrough formatting as it manifests in Extended Markdown
+     */
+    public static Pattern getExtdMdPattern() {
         return Pattern.compile("~~(.*)~~", Pattern.DOTALL);
     }
 
-    @Override
-    public FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
+    // EXTRACTORS
+    /**
+     * Extracts a {@code StrikethroughFormat} object replicating the formatting of {@code text} as is specified by its
+     * HTML markup and pairs it with a copy of the marked-up text stripped of its markup.
+     *
+     * @param text the {@code MarkedUpText} to try parsing the formatting out of
+     *
+     * @return If the {@code MarkedUpText} employs HTML and contains a valid instance of strikethrough formatting, a
+     * {@code FormattingMakedText} instance containing the original {@code text} stripped of its markup coupled with an
+     * instance of {@code StrikethroughFormat} representing the formatting that markup called for.
+     */
+    public static FormattingMarkedText extractFromHtml(MarkedUpText text) {
+        // Don't bother trying to parse the text if it doesn't employ any HTML
+        if (text.getMarkupLanguages().contains(Html.class)) {
+            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
+        }
+        
+        // Attempt to parse out the content
+        try {
+            return Html.extractContentFromElement(text, StrikethroughFormat.getInstance(), "s");
+        } catch (ParseException e) {
+            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
+        }
+    }
+
+    /**
+     * Extracts a {@code StrikethroughFormat} object replicating the formatting of {@code text} as is specified by its
+     * Extended Markdown and pairs it with a copy of the marked-up text stripped of its markup.
+     *
+     * @param text the {@code MarkedUpText} to try parsing the formatting out of
+     *
+     * @return If the {@code MarkedUpText} employs Extended Markdown and contains a valid instance of strikethrough
+     * formatting, a {@code FormattingMakedText} instance containing the original {@code text} stripped of its markup
+     * coupled with an instance of {@code StrikethroughFormat} representing the formatting that markup called for.
+     */
+    public static FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
+        // Don't bother trying to parse the text if it doesn't employ any MD
+        if (text.getMarkupLanguages().contains(ExtendedMarkdown.class)) {
+            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
+        }
+        
         try {
             // Find the outermost strikethrough bounds in order to determine that outermost element's content
             Pattern startTag = Pattern.compile("^(~~)");
             Pattern endTag = Pattern.compile("(~~)$");
 
             return MarkupLanguage.parseFmtBetweenBounds(text, startTag, endTag, StrikethroughFormat.getInstance());
-        } catch (IllegalStateException e) {
-            return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
+        } catch (ParseException e) {
+            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
         }
+    }
+
+    // OVERRIDES
+    @Override
+    public MarkedUpText applyAsHtmlTo(String text) {
+        return new MarkedUpText("<s>" + text + "</s>", Html.class);
+    }
+
+    @Override
+    public MarkedUpText applyAsExtdMdTo(String text) {
+        return new MarkedUpText("~~" + text + "~~", Markdown.class);
     }
 
     @Override
     public Function<String, MarkedUpText> getMarkupLangApplierFor(Class<? extends MarkupLanguage> markupLang) {
         if (markupLang.equals(Html.class)) {
-            return this::applyHtml;
+            return this::applyAsHtmlTo;
         } else if (markupLang.equals(ExtendedMarkdown.class)) {
-            return this::applyExtdMd;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Pattern getMarkupPatternFor(Class<? extends MarkupLanguage> markupLang) {
-        if (markupLang.equals(Html.class)) {
-            return this.getHtmlPattern();
-        } else if (markupLang.equals(ExtendedMarkdown.class)) {
-            return this.getExtdMdPattern();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Function<MarkedUpText, FormattingMarkedText> getFormattingExtractorFor(
-            Class<? extends MarkupLanguage> markupLang) {
-        if (markupLang.equals(Html.class)) {
-            return this::extractFromHtml;
-        } else if (markupLang.equals(ExtendedMarkdown.class)) {
-            return this::extractFromExtdMd;
+            return this::applyAsExtdMdTo;
         } else {
             return null;
         }

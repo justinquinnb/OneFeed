@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+// TODO add inputLangs[] field?
 /**
  * A {@link Set} of {@link FormatParsingRule}s in the desired order of application to {@link MarkedUpText}.
  */
