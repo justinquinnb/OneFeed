@@ -1,11 +1,9 @@
-package com.justinquinnb.onefeed.customization.textstyle.formattings;
+package com.justinquinnb.onefeed.customization.textstyle.markup;
 
 import com.justinquinnb.onefeed.content.details.Platform;
 import com.justinquinnb.onefeed.customization.source.ContentSource;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
-
-import java.util.function.Function;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMismatchException;
 
 /**
  * Some sort of text formatting, like boldface or italics.
@@ -38,5 +36,24 @@ public abstract class TextFormatting {
      */
     public final String getLabel() {
         return this.label;
+    }
+
+    /**
+     * Ensures {@code formatting} and the {@link TextFormatting} used in the {@code text} match, throwing an error if
+     * they do not and doing nothing otherwise.
+     *
+     * @param text the {@link FormattingMarkedText} whose employed {@code TextFormatting} type to check
+     * @param formatting the desired {@code TextFormatting} for the {@code text} to employ
+     *
+     * @throws FormattingMismatchException if {@code text}'s employed {@code TextFormatting} and the desired
+     * {@code formatting} do not match
+     */
+    public static void preventFormattingMismatch(FormattingMarkedText text, Class<? extends TextFormatting> formatting)
+            throws FormattingMismatchException
+    {
+        if (text.getFormatting().getClass() == formatting) {
+            throw new FormattingMismatchException("The provided text is marked with " +
+                    text.getFormatting().getClass().getSimpleName() + ", not " + formatting.getSimpleName());
+        }
     }
 }

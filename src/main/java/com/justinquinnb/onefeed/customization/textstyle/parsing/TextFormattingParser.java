@@ -1,8 +1,10 @@
 package com.justinquinnb.onefeed.customization.textstyle.parsing;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingTree;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
-import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormattingRegistry;
 
 /**
  * A type capable of parsing {@link MarkedUpText} into a {@link FormattingTree}.
@@ -21,4 +23,18 @@ public interface TextFormattingParser {
      * an empty index of formattings.
      */
     public FormattingTree parseFormattings(MarkedUpText markedUpText, FormatParsingRuleset rules);
+
+
+    /**
+     * Interprets any provided {@link MarkedUpText} as possessing only the
+     * {@link TextFormattingRegistry#DEFAULT_FORMATTING} applied, providing the respective {@link FormattingMarkedText} as a result.
+     *
+     * @param text the desired {@code MarkedUpText} instance to interpret as only having a default formatting applied
+     *
+     * @return a {@code FormattingMarkedText} instance with the same text as {@code text} affiliated with the
+     * default formatting type regardless of what that text actually contains
+     */
+    private static FormattingMarkedText useFallbackParser(MarkedUpText text) {
+        return new FormattingMarkedText(text.getText(), TextFormattingRegistry.DEFAULT_FORMATTING);
+    }
 }

@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
-import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 
 /**
  * Text accompanied by some {@link TextFormatting} indicating how it should be formatted.

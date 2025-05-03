@@ -1,6 +1,13 @@
-package com.justinquinnb.onefeed.customization.textstyle.formattings;
+package com.justinquinnb.onefeed.customization.textstyle.markup;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMismatchException;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+import com.justinquinnb.onefeed.customization.textstyle.MarkupLangMismatchException;
+import com.justinquinnb.onefeed.customization.textstyle.application.TextFormattingApplier;
+import com.justinquinnb.onefeed.customization.textstyle.parsing.TextFormattingParser;
+
+import java.text.ParseException;
 
 /**
  * A type capable of generating {@link MarkedUpText} in Markdown (plus Extended Syntax) provided some text.
@@ -20,6 +27,22 @@ import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
  * create static methods titled {@code extractFrom___}, {@code apply___}, and {@code get___Pattern} methods that are
  * passed as lambdas to the {@code registerForLanguage} function for consistency's sake, but any means of providing a
  * valid function as an argument is acceptable.
+ * <br><br>
+ * Developers are encouraged to throw the following exceptions for the following methods so their handling can be
+ * globally handled by the employed {@link TextFormattingParser} and {@link TextFormattingApplier}:
+ * <br><br>
+ * <b>{@code extractFrom___() throws }</b>
+ *     <ul>
+ *         <li><b>{@link MarkupLangMismatchException}</b> when the provided {@link MarkedUpText} does not employ the
+ *         expected {@link MarkupLanguage} type.</li>
+ *         <li><b>{@link ParseException}</b> when a {@code TextFormatting} instance cannot be parsed from the
+ *         {@code MarkedUpText}'s text.
+ *     </ul>
+ * <b>{@code apply___() throws }</b>
+ *     <ul>
+ *         <li><b>{@link FormattingMismatchException}</b> when the provided {@link FormattingMarkedText} does not
+ *         employ the expected {@code TextFormatting} type.</li>
+ *     </ul>
  * <br><br>
  * In addition to the static methods, each interface will mandate the implementation of some instance methods.
  */

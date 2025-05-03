@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
-import com.justinquinnb.onefeed.customization.textstyle.formattings.MarkupLanguage;
+import com.justinquinnb.onefeed.customization.textstyle.markup.MarkupLanguage;
 
 import java.util.ArrayList;
 import java.util.List;

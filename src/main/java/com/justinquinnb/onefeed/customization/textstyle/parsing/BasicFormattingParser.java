@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle.parsing;
 
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

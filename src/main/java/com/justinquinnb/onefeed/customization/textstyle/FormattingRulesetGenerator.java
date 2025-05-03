@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
 import com.justinquinnb.onefeed.customization.textstyle.application.FormatApplicationRuleset;
-import com.justinquinnb.onefeed.customization.textstyle.formattings.MarkupLanguage;
+import com.justinquinnb.onefeed.customization.textstyle.markup.MarkupLanguage;
 import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRuleset;
 
 import java.util.HashMap;

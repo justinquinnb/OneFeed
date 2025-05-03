@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle.application;
 
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +15,9 @@ import java.util.function.Function;
  */
 public final class BasicFormattingApplier implements TextFormattingApplier {
     private static final Logger logger = LoggerFactory.getLogger(BasicFormattingApplier.class);
+
+    // TODO: Be sure to reevaluate employed languages in the final MarkedUpText by checking the results of each
+    // applier invocation (specifically ExtdMd -> Md)
 
     @Override
     public <T extends TextFormatting> String applyFormatting(FormattingKit<T> kit, FormatApplicationRuleset<T> formattingRules) {

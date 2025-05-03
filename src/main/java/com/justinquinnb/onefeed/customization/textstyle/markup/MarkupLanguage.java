@@ -1,7 +1,11 @@
-package com.justinquinnb.onefeed.customization.textstyle.formattings;
+package com.justinquinnb.onefeed.customization.textstyle.markup;
 
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMismatchException;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+import com.justinquinnb.onefeed.customization.textstyle.MarkupLangMismatchException;
+import com.justinquinnb.onefeed.customization.textstyle.application.TextFormattingApplier;
+import com.justinquinnb.onefeed.customization.textstyle.parsing.TextFormattingParser;
 
 import java.text.ParseException;
 import java.util.function.Function;
@@ -28,6 +32,22 @@ import java.util.regex.Pattern;
  * passed as lambdas to the {@code registerForLanguage} function for consistency's sake, but any means of providing a
  * valid function as an argument is acceptable.
  * <br><br>
+ * Developers are encouraged to throw the following exceptions for the following methods so their handling can be
+ * globally handled by the employed {@link TextFormattingParser} and {@link TextFormattingApplier}:
+ * <br><br>
+ * <b>{@code extractFrom___() throws }</b>
+ *     <ul>
+ *         <li><b>{@link MarkupLangMismatchException}</b> when the provided {@link MarkedUpText} does not employ the
+ *         expected {@link MarkupLanguage} type.</li>
+ *         <li><b>{@link ParseException}</b> when a {@code TextFormatting} instance cannot be parsed from the
+ *         {@code MarkedUpText}'s text.
+ *     </ul>
+ * <b>{@code apply___() throws }</b>
+ *     <ul>
+ *         <li><b>{@link FormattingMismatchException}</b> when the provided {@link FormattingMarkedText} does not
+ *         employ the expected {@code TextFormatting} type.</li>
+ *     </ul>
+ * <br><br>
  * In addition to the static methods, each interface will mandate the implementation of some instance methods.
  * <br><br>
  * <b>Encouraged Method Prototypes for Direct Children of {@code MarkupLanguage}</b><br>
@@ -38,14 +58,8 @@ import java.util.regex.Pattern;
  * The motivation for this is requiring {@code TextFormatting}s that implement a {@code MarkupLanguage} to
  * individually implement and distinguish the requirements of each language.
  */
-public sealed interface MarkupLanguage permits ExtendedMarkdown, Html, Markdown {
-    /**
-     * A standard fallback process that can be invoked when a {@link MarkedUpText} object cannot be interpreted as
-     * desired.
-     */
-    public static final Function<MarkedUpText, FormattingMarkedText> EXTRACTOR_FALLBACK_PROCESS =
-            MarkupLanguage::interpretAsDefault;
-
+public sealed interface MarkupLanguage permits ExtendedMarkdown, Html, Markdown, PlainText {
+    // APPLIER LOCATORS
     /**
      * Provides a {@code Function} capable of marking up a {@code String} into {@link MarkedUpText} employing
      * {@link MarkupLanguage} {@code markupLang}.
@@ -111,6 +125,52 @@ public sealed interface MarkupLanguage permits ExtendedMarkdown, Html, Markdown 
             NoSuchMethodException {
         Function<String, MarkedUpText> applier = this.findMarkupLangApplierFor(markupLang);
         return applier.apply(text);
+    }
+
+    // EXTRACTION HELPERS
+
+    /**
+     * Checks for the existence of and (if found) throws a {@link MarkupLangMismatchException} with a context-aware
+     * message.
+     *
+     * @param text the {@link MarkedUpText} whose employed {@link MarkupLanguage}s to check
+     * @param formattingName the natural name of the {@link TextFormatting} being searched for in the {@code String},
+     * including its article (e.g. "The provided text does not contain ___ in ...")
+     * @param validLangs the {@code MarkupLanguage}(s) that the {@code text} is desired to employ
+     *
+     * @throws MarkupLangMismatchException if {@code text}'s employed {@code MarkupLanguage}s list contains none of the
+     * {@code validLangs}
+     */
+    @SafeVarargs
+    public static void preventMarkupLangMismatch(
+            MarkedUpText text, String formattingName, Class<? extends MarkupLanguage>... validLangs)
+            throws MarkupLangMismatchException
+    {
+        boolean employsValidLang = false;
+        int i = 0;
+
+        // Check for the existence of any valid lang in the MarkedUpText's employed languages list
+        while (!employsValidLang) {
+            employsValidLang = text.getMarkupLanguages().contains(validLangs[i]);
+            i++;
+        }
+
+        // Only do anything (throw an exception) if there is a markup language mismatch present (as detected by above)
+        if (!employsValidLang) {
+            // Create a human-readable list of the validLangs array
+            String langsString = validLangs[0].getSimpleName();
+            if (validLangs.length > 2) {
+                for (i = 1; i < (validLangs.length - 1); i++) {
+                    langsString += ", " + validLangs[i].getSimpleName();
+                }
+                langsString += ", or " + validLangs[validLangs.length - 1].getSimpleName();
+            } else if (validLangs.length == 1) {
+                langsString += " or " + validLangs[1].getSimpleName();
+            }
+
+            throw new MarkupLangMismatchException("The provided text does not contain " + formattingName + " in " +
+                    langsString);
+        }
     }
 
     /**
@@ -210,18 +270,5 @@ public sealed interface MarkupLanguage permits ExtendedMarkdown, Html, Markdown 
         }
 
         return earliestMatch;
-    }
-
-    /**
-     * Interprets any provided {@link MarkedUpText} as possessing only the {@link DefaultFormat} applied, providing the
-     * respective {@link FormattingMarkedText} as a result.
-     *
-     * @param text the desired {@code MarkedUpText} instance to interpret as only having a {@code DefaultFormat} applied
-     *
-     * @return a {@code FormattingMarkedText} instance with the same text as {@code text} affiliated with the
-     * {@code DefaultFormat} type regardless of what that text actually contains
-     */
-    private static FormattingMarkedText interpretAsDefault(MarkedUpText text) {
-        return new FormattingMarkedText(text.getText(), DefaultFormat.getInstance());
     }
 }

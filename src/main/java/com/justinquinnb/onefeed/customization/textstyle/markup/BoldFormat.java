@@ -1,7 +1,9 @@
-package com.justinquinnb.onefeed.customization.textstyle.formattings;
+package com.justinquinnb.onefeed.customization.textstyle.markup;
 
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingMismatchException;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+import com.justinquinnb.onefeed.customization.textstyle.MarkupLangMismatchException;
 
 import java.text.ParseException;
 import java.util.function.Function;
@@ -12,6 +14,19 @@ import java.util.regex.Pattern;
  */
 public class BoldFormat extends TextFormatting implements Html, Markdown, ExtendedMarkdown {
     private static volatile BoldFormat instance = null;
+
+    // Register the format as Html, Markdown, and Extended Markdown compatible
+    static {
+        TextFormattingRegistry.registerForLanguage(
+                BoldFormat.class, Html.class, getHtmlPattern(),
+                BoldFormat::extractFromHtml, BoldFormat::applyAsHtml);
+        TextFormattingRegistry.registerForLanguage(
+                BoldFormat.class, Markdown.class, getMdPattern(),
+                BoldFormat::extractFromMd, BoldFormat::applyAsMd);
+        TextFormattingRegistry.registerForLanguage(
+                BoldFormat.class, ExtendedMarkdown.class, getMdPattern(),
+                BoldFormat::extractFromMd, BoldFormat::applyAsMd);
+    }
 
     /**
      * Creates an instance of bold formatting.
@@ -81,19 +96,18 @@ public class BoldFormat extends TextFormatting implements Html, Markdown, Extend
      * @return If the {@code MarkedUpText} employs HTML and contains a valid instance of bold formatting, a
      * {@code FormattingMakedText} instance containing the original {@code text} stripped of its markup coupled with an
      * instance of {@code BoldFormat} representing the formatting that markup called for.
+     *
+     * @throws MarkupLangMismatchException if the {@code MarkedUpText} does not employ HTML
+     * @throws ParseException if HTML boldface could not be parsed from the {@code text}
      */
-    public static FormattingMarkedText extractFromHtml(MarkedUpText text) {
+    public static FormattingMarkedText extractFromHtml(MarkedUpText text)
+            throws MarkupLangMismatchException, ParseException
+    {
         // Don't bother trying to parse the text if it doesn't employ any HTML
-        if (text.getMarkupLanguages().contains(Html.class)) {
-            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
-        }
+        MarkupLanguage.preventMarkupLangMismatch(text, "boldface", Html.class);
 
         // Attempt to parse out the content
-        try {
-            return Html.extractContentFromElement(text, BoldFormat.getInstance(), "b", "strong");
-        } catch (ParseException e) {
-            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
-        }
+        return Html.extractContentFromElement(text, BoldFormat.getInstance(), "b", "strong");
     }
 
     /**
@@ -105,23 +119,21 @@ public class BoldFormat extends TextFormatting implements Html, Markdown, Extend
      * @return If the {@code MarkedUpText} employs Markdown and contains a valid instance of bold formatting, a
      * {@code FormattingMakedText} instance containing the original {@code text} stripped of its markup coupled with an
      * instance of {@code BoldFormat} representing the formatting that markup called for.
+     *
+     * @throws MarkupLangMismatchException if the {@code MarkedUpText} does not employ Markdown
+     * @throws ParseException if boldface Markdown could not be parsed from the {@code text}
      */
-    public static FormattingMarkedText extractFromMd(MarkedUpText text) {
+    public static FormattingMarkedText extractFromMd(MarkedUpText text)
+            throws MarkupLangMismatchException, ParseException
+    {
         // Don't bother trying to parse the text if it doesn't employ any MD
-        if (text.getMarkupLanguages().contains(Markdown.class) ||
-                text.getMarkupLanguages().contains(ExtendedMarkdown.class)
-        ) {
-            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
-        }
+        MarkupLanguage.preventMarkupLangMismatch(text, "boldface", Markdown.class,
+                ExtendedMarkdown.class);
 
-        try {
-            // Find the outermost boldface bounds in order to determine that outermost element's content
-            Pattern startBound = Pattern.compile("^((\\*\\*[^\\*])|(__[^_]))");
-            Pattern endBound = Pattern.compile("(([^_]__)|([^\\*]\\*\\*))$");
-            return MarkupLanguage.parseFmtBetweenBounds(text, startBound, endBound, BoldFormat.getInstance());
-        } catch (ParseException e) {
-            return MarkupLanguage.EXTRACTOR_FALLBACK_PROCESS.apply(text);
-        }
+        // Find the outermost boldface bounds in order to determine that outermost element's content
+        Pattern startBound = Pattern.compile("^((\\*\\*[^\\*])|(__[^_]))");
+        Pattern endBound = Pattern.compile("(([^_]__)|([^\\*]\\*\\*))$");
+        return MarkupLanguage.parseFmtBetweenBounds(text, startBound, endBound, BoldFormat.getInstance());
     }
 
     /**
@@ -134,26 +146,86 @@ public class BoldFormat extends TextFormatting implements Html, Markdown, Extend
      * formatting, a {@code FormattingMakedText} instance containing the original {@code text} stripped of its markup
      * coupled with an instance of {@code BoldFormat} representing the formatting that markup called for.
      *
+     * @throws MarkupLangMismatchException if the {@code MarkedUpText} does not employ Markdown/Extended Markdown
+     * @throws ParseException if boldface Markdown could not be parsed from the {@code text}
+     *
      * @see #extractFromMd
      */
-    public static FormattingMarkedText extractFromExtdMd(MarkedUpText text) {
+    public static FormattingMarkedText extractFromExtdMd(MarkedUpText text)
+            throws MarkupLangMismatchException, ParseException
+    {
         return extractFromMd(text);
+    }
+
+    // APPLIERS
+    /**
+     * Marks up the provided {@code text}'s raw text in HTML.
+     *
+     * @param text the {@code FormattingMarkedText} to apply boldface formatting to in HTML
+     *
+     * @return the raw text of {@code text} marked up as to indicate boldface in HTML
+     * @throws FormattingMismatchException if the {@code text} does not call for boldface formatting
+     */
+    public static MarkedUpText applyAsHtml(FormattingMarkedText text) throws FormattingMismatchException {
+        // Don't bother trying to apply the formatting to text that doesn't call for it
+        TextFormatting.preventFormattingMismatch(text, BoldFormat.class);
+
+        return new MarkedUpText("<b>" + text.getText() + "</b>", Html.class);
+    }
+
+    /**
+     * Marks up the provided {@code text}'s raw text in Markdown / Extended Markdown.
+     *
+     * @param text the {@code FormattingMarkedText} to apply boldface formatting to in Markdown / Extended Markdown
+     *
+     * @return the raw text of {@code text} marked up as to indicate boldface in Markdown / Extended Markdown
+     * @throws FormattingMismatchException if the {@code text} does not call for boldface formatting
+     */
+    public static MarkedUpText applyAsMd(FormattingMarkedText text) throws FormattingMismatchException {
+        // Don't bother trying to apply the formatting to text that doesn't call for it
+        TextFormatting.preventFormattingMismatch(text, BoldFormat.class);
+
+        return new MarkedUpText("**" + text.getText() + "**", Markdown.class);
     }
 
     // OVERRIDES
     @Override
     public MarkedUpText applyAsHtmlTo(String text) {
-        return new MarkedUpText("<b>" + text + "</b>", Html.class);
+        try {
+            return applyAsHtml(new FormattingMarkedText(text, BoldFormat.getInstance()));
+        } catch (FormattingMismatchException e) {
+            /* So long as the static function employs the correct definition of a FormattingMismatchException (as would
+            be the case with it using TextFormatting's preventFormattingMismatch() function), this clause should NEVER
+            be executed.
+             */
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public MarkedUpText applyAsMdTo(String text) {
-        return new MarkedUpText("**" + text + "**", Markdown.class);
+        try {
+            return applyAsMd(new FormattingMarkedText(text, BoldFormat.getInstance()));
+        } catch (FormattingMismatchException e) {
+            /* So long as the static function employs the correct definition of a FormattingMismatchException (as would
+            be the case with it using TextFormatting's preventFormattingMismatch() function), this clause should NEVER
+            be executed.
+             */
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public MarkedUpText applyAsExtdMdTo(String text) {
-        return new MarkedUpText("**" + text + "**", ExtendedMarkdown.class);
+        try {
+            return applyAsMd(new FormattingMarkedText(text, BoldFormat.getInstance()));
+        } catch (FormattingMismatchException e) {
+            /* So long as the static function employs the correct definition of a FormattingMismatchException (as would
+            be the case with it using TextFormatting's preventFormattingMismatch() function), this clause should NEVER
+            be executed.
+             */
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
