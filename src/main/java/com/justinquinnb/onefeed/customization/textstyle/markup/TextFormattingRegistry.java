@@ -1,20 +1,36 @@
-package com.justinquinnb.onefeed.customization.textstyle.formattings;
+package com.justinquinnb.onefeed.customization.textstyle.markup;
 
 import com.justinquinnb.onefeed.customization.textstyle.ComplementaryFormatRulePair;
-import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 import com.justinquinnb.onefeed.customization.textstyle.application.FormatApplicationRule;
+import com.justinquinnb.onefeed.customization.textstyle.application.FormattingApplierFunction;
 import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRule;
+import com.justinquinnb.onefeed.customization.textstyle.parsing.FormattingParserFunction;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
  * Holds all known {@link TextFormatting} types alongside their markup extraction and application rules.
  */
 public class TextFormattingRegistry {
+    /**
+     * The default type of {@link TextFormatting} that all text has.
+     */
+    public static final TextFormatting DEFAULT_FORMATTING = DefaultFormat.getInstance();
+
+    /**
+     * The default type of {@link MarkupLanguage} that all text employs. This must provide
+     */
+    public static final Class<? extends MarkupLanguage> DEFAULT_MARKUP_LANGUAGE = PlainText.class;
+
+    /**
+     * The default formatting rules that interpret any text, language and formatting type agnostic.
+     */
+    public static final ComplementaryFormatRulePair DEFAULT_FORMATTING_LOOP = new ComplementaryFormatRulePair(
+            new FormatParsingRule(PlainText.getPlainTextPattern(), PlainText::extractFromPlainText),
+            new FormatApplicationRule(DefaultFormat.class, PlainText::applyAsPlainText)
+    );
+
     /**
      * A mapping of {@link TextFormatting} types to all the {@link MarkupLanguage}s they are defined in, where each
      * language subsequently maps to the {@link ComplementaryFormatRulePair} that defines its interpretation.
@@ -57,8 +73,8 @@ public class TextFormattingRegistry {
      */
     public static void registerForLanguage(
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language, Pattern markupRegex,
-            Function<MarkedUpText, FormattingMarkedText> formattingParser,
-            Function<FormattingMarkedText, MarkedUpText> formattingApplier
+            FormattingParserFunction formattingParser,
+            FormattingApplierFunction formattingApplier
     ) {
         // TODO continue making other formatting methods in TextFormatting classes static, removing ExtdMd methods,
         // and implementing the static {} register calls

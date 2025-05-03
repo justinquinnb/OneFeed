@@ -1,6 +1,6 @@
 package com.justinquinnb.onefeed.customization.textstyle;
 
-import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 
 /**
  * A {@code String} of text with its formatting specified by a tree of parent {@code FormattingMarkedText} nodes with

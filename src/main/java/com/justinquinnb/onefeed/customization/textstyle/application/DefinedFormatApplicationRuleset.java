@@ -2,7 +2,7 @@ package com.justinquinnb.onefeed.customization.textstyle.application;
 
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
-import com.justinquinnb.onefeed.customization.textstyle.formattings.TextFormatting;
+import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 
 import java.util.HashMap;
 import java.util.Set;
