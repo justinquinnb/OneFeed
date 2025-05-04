@@ -1,6 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle.markup;
 
 import com.justinquinnb.onefeed.customization.textstyle.ComplementaryFormatRulePair;
+import com.justinquinnb.onefeed.customization.textstyle.UnknownTextStyleEntityException;
 import com.justinquinnb.onefeed.customization.textstyle.application.FormatApplicationRule;
 import com.justinquinnb.onefeed.customization.textstyle.application.FormattingApplierFunction;
 import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRule;
@@ -59,7 +60,8 @@ public class TextFormattingRegistry {
     /**
      * Registers all the methods necessary to interpret a {@code type} of {@link TextFormatting} as it exists in a
      * {@link MarkupLanguage} ({@code language}). Registration enables OneFeed to translate text between markup
-     * languages, remove markup, and generate language-agnostic formatting trees.
+     * languages, remove markup, and generate language-agnostic formatting trees.  If a rule pair has already been
+     * registered for the formatting and language, it is overridden by the arguments provided here.
      *
      * @param formatting the type of {@code TextFormatting} to register {@code language}-specific markup methods for
      * @param language the type of {@code MarkupLanguage} that the {@code markupRegex} and {@code formattingParser}
@@ -76,8 +78,6 @@ public class TextFormattingRegistry {
             FormattingParserFunction formattingParser,
             FormattingApplierFunction formattingApplier
     ) {
-        // TODO continue making other formatting methods in TextFormatting classes static, removing ExtdMd methods,
-        // and implementing the static {} register calls
         FormatParsingRule parsingRule = new FormatParsingRule(markupRegex, formattingParser);
         FormatApplicationRule applicationRule = new FormatApplicationRule(formatting, formattingApplier);
         registerForLanguage(formatting, language, parsingRule, applicationRule);
@@ -86,7 +86,8 @@ public class TextFormattingRegistry {
     /**
      * Registers all the rules necessary to interpret a {@code type} of {@link TextFormatting} as it exists in a
      * {@link MarkupLanguage} ({@code language}). Registration enables OneFeed to translate text between markup
-     * languages, remove markup, and generate language-agnostic formatting trees.
+     * languages, remove markup, and generate language-agnostic formatting trees. If a rule pair has already been
+     * registered for the formatting and language, it is overridden by the arguments provided here.
      *
      * @param formatting the type of {@code TextFormatting} to register {@code language}-specific markup methods for
      * @param language the type of {@code MarkupLanguage} that the parsing and application rules work in
@@ -107,7 +108,8 @@ public class TextFormattingRegistry {
     /**
      * Registers all the rules necessary to interpret a {@code type} of {@link TextFormatting} as it exists in a
      * {@link MarkupLanguage} ({@code language}). Registration enables OneFeed to translate text between markup
-     * languages, remove markup, and generate language-agnostic formatting trees.
+     * languages, remove markup, and generate language-agnostic formatting trees. If a rule pair has already been
+     * registered for the formatting and language, it is overridden by the arguments provided here.
      *
      * @param formatting the type of {@code TextFormatting} to register {@code language}-specific markup methods for
      * @param language the type of {@code MarkupLanguage} that the parsing and application rules work in
@@ -118,10 +120,15 @@ public class TextFormattingRegistry {
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language,
             ComplementaryFormatRulePair rulePair
     ) {
-        formattingsByType.computeIfAbsent(formatting, t ->
-                new HashMap<>()).put(language, rulePair);
-        formattingsByLang.computeIfAbsent(language, t ->
-                new HashMap<>()).put(formatting, rulePair);
+        if (!formattingsByType.containsKey(formatting)) {
+            formattingsByType.put(formatting, new HashMap<>());
+        }
+        formattingsByType.get(formatting).put(language, rulePair);
+
+        if (!formattingsByLang.containsKey(language)) {
+            formattingsByLang.put(language, new HashMap<>());
+        }
+        formattingsByLang.get(language).put(formatting, rulePair);
     }
 
     /**
@@ -132,15 +139,15 @@ public class TextFormattingRegistry {
      *
      * @param formatting the type of {@link TextFormatting} to remove from the registry
      *
-     * @throws IllegalStateException if the provided type of formatting, {@code formatting}, does not exist in the
-     * registry at the time of invocation
+     * @throws UnknownTextStyleEntityException if the provided {@code markupLang} does not exist in the
+     * {@link TextFormattingRegistry}
      */
     public static void removeFormatting(Class<? extends TextFormatting> formatting)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         // Ensure the formatting type actually exists
         if (!formattingsByType.containsKey(formatting)) {
-            throw new IllegalStateException(
+            throw new UnknownTextStyleEntityException(
                 "The desired TextFormatting type \"" + formatting.getSimpleName() +
                 "\" cannot be removed from the registry as it does not exist in it.");
         }
@@ -163,15 +170,15 @@ public class TextFormattingRegistry {
      *
      * @param language the type of {@link MarkupLanguage} to remove from the registry
      *
-     * @throws IllegalStateException if the provided type of formatting, {@code formatting}, does not exist in the
-     * registry at the time of invocation
+     * @throws UnknownTextStyleEntityException if the provided {@code markupLang} does not exist in the
+     * {@link TextFormattingRegistry}
      */
     public static void forgetLanguage(Class<? extends MarkupLanguage> language)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         // Ensure the markup language type actually exists
         if (!formattingsByLang.containsKey(language)) {
-            throw new IllegalStateException(
+            throw new UnknownTextStyleEntityException(
                     "The desired MarkupLanguage type \"" + language.getSimpleName() +
                     "\" cannot be removed from the registry as it does not exist in it.");
         }
@@ -191,20 +198,15 @@ public class TextFormattingRegistry {
      * @param language the type of {@code MarkupLanguage} whose rules to remove for the provided type of
      * {@code formatting}
      *
-     * @throws IllegalStateException if rules for the provided {@code formatting} in language {@code language} do not
-     * exist in the registry
+     * @throws UnknownTextStyleEntityException if rules for the provided {@code formatting} in language
+     * {@code language} do not exist in the registry
      */
     public static void removeRulesFor(
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
-        // Ensure the entry actually exists
-        if (!formattingsByLang.containsKey(language) || !formattingsByType.containsKey(formatting)) {
-            throw new IllegalStateException(
-                    "Formatting rules for \"" + formatting.getSimpleName() +
-                    "\" in language \"" + language.getSimpleName() +
-                    "\" cannot be removed from the registry as they do not exist in it.");
-        }
+        // Ensure both types actually exist in the registry
+        throwExceptionIfEntryDne(formatting, language);
 
         formattingsByLang.get(language).remove(formatting);
         formattingsByType.get(formatting).remove(language);
@@ -244,15 +246,16 @@ public class TextFormattingRegistry {
      * @param formatting the type of {@link TextFormatting} whose supported {@code MarkupLanguage} types to get
      *
      * @return an unordered array of the {@code MarkupLanguage} types supported by the provided {@code formatting}
-     * @throws IllegalStateException if the provided {@code formatting} type does not exist in the registry
+     * @throws UnknownTextStyleEntityException if the provided {@code markupLang} does not exist in the
+     * {@link TextFormattingRegistry}
      */
     @SuppressWarnings("unchecked")
     public static Class<? extends MarkupLanguage>[] getLanguagesSupportedBy(Class<? extends TextFormatting> formatting)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         // Ensure the formatting type is actually registered
         if (!formattingsByLang.containsKey(formatting)) {
-            throw new IllegalStateException("The specified TextFormatting, \"" + formatting.getSimpleName()
+            throw new UnknownTextStyleEntityException("The specified TextFormatting, \"" + formatting.getSimpleName()
                 + "\", has not been registered to OneFeed");
         }
 
@@ -265,15 +268,16 @@ public class TextFormattingRegistry {
      * @param language the type of {@link MarkupLanguage} whose supported {@code TextFormatting} types to get
      *
      * @return an unordered array of the {@code TextFormatting} types supported by the provided {@code language}
-     * @throws IllegalStateException if the provided {@code language} type does not exist in the registry (is unknown)
+     * @throws UnknownTextStyleEntityException if the provided {@code markupLang} does not exist in the
+     * {@link TextFormattingRegistry}
      */
     @SuppressWarnings("unchecked")
     public static Class<? extends TextFormatting>[] getFormattingsSupportedBy(Class<? extends MarkupLanguage> language)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         // Ensure the markup language type is actually known
         if (!formattingsByLang.containsKey(language)) {
-            throw new IllegalStateException("The specified MarkupLanguage, \"" + language.getSimpleName()
+            throw new UnknownTextStyleEntityException("The specified MarkupLanguage, \"" + language.getSimpleName()
                     + "\", has not been registered to OneFeed");
         }
         return (Class<? extends TextFormatting>[])formattingsByLang.get(language).keySet().toArray(new Class[0]);
@@ -290,12 +294,12 @@ public class TextFormattingRegistry {
      *
      * @return the {@code FormatParsingRule} for extracting {@code formatting}-type {@code TextFormatting} instances
      * from texted marked up with the formatting as it manifests in the markup {@code language}
-     * @throws IllegalStateException if either the {@code formatting} or {@code language} type cannot be found in the
-     * registry, indicating the absence of an entry matching the specifications
+     * @throws UnknownTextStyleEntityException  if either the {@code formatting} or {@code language} type cannot be
+     * found in the registry, indicating the absence of an entry matching the specifications
      */
     public static FormatParsingRule getParsingRuleFor(
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         // Ensure both types actually exist in the registry
         throwExceptionIfEntryDne(formatting, language);
@@ -314,12 +318,12 @@ public class TextFormattingRegistry {
      *
      * @return the {@code FormatApplicationRule} for applying {@code formatting}-type {@code TextFormatting} instances
      * to text using {@code language}-type markup
-     * @throws IllegalStateException if either the {@code formatting} or {@code language} type cannot be found in the
-     * registry, indicating the absence of an entry matching the specifications
+     * @throws UnknownTextStyleEntityException  if either the {@code formatting} or {@code language} type cannot be
+     * found in the registry, indicating the absence of an entry matching the specifications
      */
     public static FormatApplicationRule getApplicationRuleFor(
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         // Ensure both types actually exist in the registry
         throwExceptionIfEntryDne(formatting, language);
@@ -338,12 +342,12 @@ public class TextFormattingRegistry {
      *
      * @return the {@code ComplementaryFormatRulePair} for applying {@code formatting}-type {@code TextFormatting}
      * instances to text using {@code language}-type markup
-     * @throws IllegalStateException if either the {@code formatting} or {@code language} type cannot be found in the
-     * registry, indicating the absence of an entry matching the specifications
+     * @throws UnknownTextStyleEntityException if either the {@code formatting} or {@code language} type cannot be
+     * found in the registry, indicating the absence of an entry matching the specifications
      */
     public static ComplementaryFormatRulePair getComplementaryRulePairFor(
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         // Ensure both types actually exist in the registry
         throwExceptionIfEntryDne(formatting, language);
@@ -358,20 +362,21 @@ public class TextFormattingRegistry {
      * @param formatting the type of {@link TextFormatting} whose existence to check for in the registry
      * @param language the type of {@link MarkupLanguage} whose existence to check for in the registry
      *
-     * @throws IllegalStateException if either the {@code formatting} or {@code language} do not exist in the registry
+     * @throws UnknownTextStyleEntityException if either the {@code formatting} or {@code language} could not be found
+     * in the registry
      */
     private static void throwExceptionIfEntryDne(
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language)
-            throws IllegalStateException
+            throws UnknownTextStyleEntityException
     {
         if (!formattingsByLang.containsKey(language) && !formattingsByType.containsKey(formatting)) {
-            throw new IllegalStateException("The specified TextFormatting, \"" + formatting.getSimpleName() +
+            throw new UnknownTextStyleEntityException("The specified TextFormatting, \"" + formatting.getSimpleName() +
                     "\", and MarkupLanguage, \"" + language.getSimpleName() + "\", do not exist in the registry.");
         } else if (!formattingsByLang.containsKey(language)) {
-            throw new IllegalStateException("The specified TextFormatting, \"" + formatting.getSimpleName() +
+            throw new UnknownTextStyleEntityException("The specified TextFormatting, \"" + formatting.getSimpleName() +
                     "\" does not exist in the registry for MarkupLanguage \"" + language.getSimpleName() + "\"");
         } else if (!formattingsByType.containsKey(formatting)) {
-            throw new IllegalStateException("The specified MarkupLanguage, \"" + formatting.getSimpleName() +
+            throw new UnknownTextStyleEntityException("The specified MarkupLanguage, \"" + formatting.getSimpleName() +
                     "\" does not exist in the registry for TextFormatting \"" + language.getSimpleName() + "\"");
         }
     }

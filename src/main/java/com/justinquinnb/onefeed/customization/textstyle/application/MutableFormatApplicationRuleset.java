@@ -20,8 +20,7 @@ public abstract non-sealed class MutableFormatApplicationRuleset extends Defined
      * {@code this} type's base ruleset.
      */
     private final HashMap<
-            Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>
-            > modifiedRules = new HashMap<>(MASTER_RULES);
+            Class<? extends TextFormatting>, FormattingApplierFunction> modifiedRules = new HashMap<>(MASTER_RULES);
 
     /**
      * The name given to an instance of this {@code MutableFormatApplicationRuleset} type, if provided during
@@ -56,7 +55,7 @@ public abstract non-sealed class MutableFormatApplicationRuleset extends Defined
         super();
         this.name = name;
         rulesToAdd.forEach(rule ->
-                this.modifiedRules.put(rule.getFormatting(), rule.getProcess()));
+                this.modifiedRules.put(rule.getFormatting(), rule.getApplierFunction()));
         rulesToRemove.forEach(this.modifiedRules::remove);
     }
 
@@ -82,10 +81,10 @@ public abstract non-sealed class MutableFormatApplicationRuleset extends Defined
         return this.name;
     }
 
-    public final Function<FormattingMarkedText, MarkedUpText> getRuleFor(
+    public final FormattingApplierFunction getApplierFor(
             Class<? extends TextFormatting> formatting) throws NoSuchElementException
     {
-        Function<FormattingMarkedText, MarkedUpText> rule = this.modifiedRules.get(formatting);
+        FormattingApplierFunction rule = this.modifiedRules.get(formatting);
 
         if (rule == null) {
             throw new NoSuchElementException("No rule found for \"" + formatting.getName() + "\"-type formatting in " +
@@ -94,7 +93,7 @@ public abstract non-sealed class MutableFormatApplicationRuleset extends Defined
         return this.modifiedRules.get(formatting);
     }
 
-    public final HashMap<Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>> getRules() {
+    public final HashMap<Class<? extends TextFormatting>, FormattingApplierFunction> getApplierMap() {
         return new HashMap<>(this.modifiedRules);
     }
 }

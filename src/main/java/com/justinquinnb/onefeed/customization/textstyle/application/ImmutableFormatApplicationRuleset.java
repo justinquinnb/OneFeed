@@ -35,17 +35,16 @@ public abstract non-sealed class ImmutableFormatApplicationRuleset extends Defin
         return this.getClass().getSimpleName();
     }
 
-    public final HashMap<
-            Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>> getRules()
+    public final HashMap<Class<? extends TextFormatting>, FormattingApplierFunction> getApplierMap()
     {
         return new HashMap<>(MASTER_RULES);
     }
 
-    public final Function<FormattingMarkedText, MarkedUpText> getRuleFor(
+    public final FormattingApplierFunction getApplierFor(
             Class<? extends TextFormatting> formatting) throws NoSuchElementException
     {
 
-        Function<FormattingMarkedText, MarkedUpText> rule = MASTER_RULES.get(formatting);
+        FormattingApplierFunction rule = MASTER_RULES.get(formatting);
 
         if (rule == null) {
             throw new NoSuchElementException("No rule found for \"" + formatting.getName() + "\"-type formatting in ruleset \"" + this.getName() + "\"");
