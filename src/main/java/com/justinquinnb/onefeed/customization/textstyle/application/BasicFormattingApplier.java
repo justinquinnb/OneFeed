@@ -46,7 +46,7 @@ public final class BasicFormattingApplier implements TextFormattingApplier {
             // type
             try {
                 logger.trace("Rule found for desired formatting in provided ruleset");
-                rule = formattingRules.getRuleFor(formatting.getClass());
+                rule = formattingRules.getApplierFor(formatting.getClass());
 
                 // Apply the formatting rule specified by the TextFormatting in the instruction, providing that
                 // TextFormatting instance as the (possibly) necessary context

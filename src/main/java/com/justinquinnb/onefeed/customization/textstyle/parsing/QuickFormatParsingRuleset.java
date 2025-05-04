@@ -44,7 +44,7 @@ public final class QuickFormatParsingRuleset extends FormatParsingRuleset {
         return name;
     }
 
-    public LinkedHashSet<FormatParsingRule> getRules() {
+    public LinkedHashSet<FormatParsingRule> getParsingRules() {
         return new LinkedHashSet<>(this.rules); // TODO make this actually a deep copy(?)
     }
 }

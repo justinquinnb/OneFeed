@@ -31,7 +31,7 @@ public non-sealed abstract class ImmutableFormatParsingRuleset extends DefinedFo
         return this.getClass().getSimpleName();
     }
 
-    public final LinkedHashSet<FormatParsingRule> getRules() {
+    public final LinkedHashSet<FormatParsingRule> getParsingRules() {
         return new LinkedHashSet<>(MASTER_RULES);
     }
 }

@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-// TODO add inputLangs[] field?
 /**
  * A {@link Set} of {@link FormatParsingRule}s in the desired order of application to {@link MarkedUpText}.
  */
@@ -20,23 +19,29 @@ public abstract sealed class FormatParsingRuleset implements Iterable<FormatPars
      */
     public abstract String getName();
 
+    /*
+     * Rules are not decomposed here like they are in FormatApplicationRulesets because easy-to-use, consistent
+     * ordering is the most important trait of the parsing rules in a ruleset context.
+     *
+     * Order is relevant here as the parsing out of one formatting type can affect later parsing procedures.
+     */
     /**
      * Gets {@code this} {@code FormatParsingRuleset}'s rules.
      *
      * @return a deep copy of {@code this} {@code FormatParsingRuleset}'s rules
      */
-    public abstract LinkedHashSet<FormatParsingRule> getRules();
+    public abstract LinkedHashSet<FormatParsingRule> getParsingRules();
 
     /**
      * Provides an iterator for {@code this} {@link FormatParsingRuleset}s rules.
      *
      * @return an iterator for {@code this} {@code FormatParsingRuleset}s rules
      *
-     * @see #getRules()
+     * @see #getParsingRules()
      */
     @Override
     public final Iterator<FormatParsingRule> iterator() {
-        return this.getRules().iterator();
+        return this.getParsingRules().iterator();
     }
 
     @Override

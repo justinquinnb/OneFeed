@@ -61,7 +61,7 @@ public class ItalicFormat extends TextFormatting implements Html, Markdown, Exte
      * @return a {@code Pattern} capable of identifying italic formatting as it manifests in HTML
      */
     public static Pattern getHtmlPattern() {
-        return Pattern.compile("<i(.*)>(.*)</i\\s>", Pattern.DOTALL);
+        return Pattern.compile("(<i(.*)>(.*)</i\\s>)|(<em(.*)>(.*)</em\s>)", Pattern.DOTALL);
     }
 
     /**
@@ -108,7 +108,7 @@ public class ItalicFormat extends TextFormatting implements Html, Markdown, Exte
         MarkupLanguage.preventMarkupLangMismatch(text, "italics", Html.class);
         
         // Attempt to parse out the content
-        return Html.extractContentFromElement(text, ItalicFormat.getInstance(), "i");
+        return Html.extractContentFromElement(text, ItalicFormat.getInstance(), "i", "em");
     }
 
     /**

@@ -23,8 +23,8 @@ public abstract sealed class DefinedFormatApplicationRuleset extends FormatAppli
     /**
      * The pre-defined rules that serve as {@code this} ruleset's master copy.
      */
-    protected static final HashMap<Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>
-            > MASTER_RULES = new HashMap<>();
+    protected static final HashMap<Class<? extends TextFormatting>, FormattingApplierFunction> MASTER_RULES =
+            new HashMap<>();
 
     /**
      * Initialize the rules of {@code this} ruleset.
@@ -48,7 +48,7 @@ public abstract sealed class DefinedFormatApplicationRuleset extends FormatAppli
      * @param rule the {@link FormatApplicationRule} to add to the master ruleset
      */
     protected static void addMasterRule(FormatApplicationRule rule) {
-        MASTER_RULES.put(rule.getFormatting(), rule.getProcess());
+        MASTER_RULES.put(rule.getFormatting(), rule.getApplierFunction());
     }
 
     /**
@@ -86,7 +86,7 @@ public abstract sealed class DefinedFormatApplicationRuleset extends FormatAppli
      * @return a deep copy of {@code this} {@code DefinedFormatApplicationRuleset}'s {@link #MASTER_RULES}.
      */
     public static HashMap<
-            Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>
+            Class<? extends TextFormatting>, FormattingApplierFunction
             > getMasterRules()
     {
         return new HashMap<>(MASTER_RULES);
@@ -97,14 +97,16 @@ public abstract sealed class DefinedFormatApplicationRuleset extends FormatAppli
      * more concise means of constructing rules to add when defining a {@link DefinedFormatApplicationRuleset}.
      *
      * @param formatting the type of {@link TextFormatting} that the process should be invoked to generate
-     * @param process the {@code Function} that can apply the specified type of {@code formatting} to text
+     * @param applierFunction the {@link FormattingApplierFunction} that can apply the specified type of
+     * {@code formatting} to text
+     *
      * @return a {@code FormatApplicationRule} with the desired {@code formatting} and {@code process}
      *
      * @see FormatApplicationRule
      */
     protected static FormatApplicationRule ruleOf(
-            Class<? extends TextFormatting> formatting, Function<FormattingMarkedText, MarkedUpText> process
+            Class<? extends TextFormatting> formatting, FormattingApplierFunction applierFunction
     ) {
-        return new FormatApplicationRule(formatting, process);
+        return new FormatApplicationRule(formatting, applierFunction);
     }
 }

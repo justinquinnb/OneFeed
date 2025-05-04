@@ -7,12 +7,10 @@ import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 
 import java.util.HashMap;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
 
-// TODO add outputLangs[] field?
 /**
- * A mapping of {@link TextFormatting}s to the {@link Function}s that consume them and {@link FormattingMarkedText} to
- * produce {@link MarkedUpText}.
+ * A mapping of {@link TextFormatting}s to the {@link FormattingApplierFunction}s that consume them and
+ * {@link FormattingMarkedText} to produce {@link MarkedUpText}.
  */
 public abstract sealed class FormatApplicationRuleset
         permits DefinedFormatApplicationRuleset, QuickFormatApplicationRuleset {
@@ -24,25 +22,31 @@ public abstract sealed class FormatApplicationRuleset
      */
     public abstract String getName();
 
+    /*
+     * Rules are decomposed into KV pairs as they are only ever used in that manner when they're part of a ruleset.
+     *
+     * Order is irrelevant as the application of one formatting type has no effect on later application procedures like
+     * parsing does.
+     */
     /**
      * Gets {@code this} {@code FormatApplicationRuleset}'s rules.
      *
      * @return a deep copy of {@code this} {@code FormatApplicationRuleset}'s rules
      */
-    public abstract HashMap<Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>> getRules();
+    public abstract HashMap<Class<? extends TextFormatting>, FormattingApplierFunction> getApplierMap();
 
     /**
-     * Gets the {@link Function} that specifies how to mark up text with {@link TextFormatting} of type
-     * {@code formatting}.
+     * Gets the {@link FormattingApplierFunction} that specifies how to mark up text with {@link TextFormatting} of
+     * type {@code formatting}.
      *
      * @param formatting the type of {@code Formatting} whose markup function to retrieve from {@code this} ruleset
      *
      * @return the {@code Function} that specifies how to mark up text with {@code TextFormatting} of type
      * {@code formatting}, if such function exists in {@code this} ruleset
-     * @throws NoSuchElementException if a {@code Function} couldn't be found for the provided {@code formatting} in
+     * @throws NoSuchElementException if a {@code FormattingApplierFunction} couldn't be found for the provided {@code formatting} in
      * {@code this} ruleset
      */
-    public abstract Function<FormattingMarkedText, MarkedUpText> getRuleFor(Class<? extends TextFormatting> formatting)
+    public abstract FormattingApplierFunction getApplierFor(Class<? extends TextFormatting> formatting)
             throws NoSuchElementException;
 
     @Override

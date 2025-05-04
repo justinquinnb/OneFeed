@@ -27,7 +27,7 @@ public final class QuickFormatApplicationRuleset extends FormatApplicationRulese
      * @see FormatApplicationRule
      */
     private final HashMap<
-            Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>> rules = new HashMap<>();
+            Class<? extends TextFormatting>, FormattingApplierFunction> rules = new HashMap<>();
 
     /**
      * Constructs a {@link QuickFormatApplicationRuleset} with the provided {@code name} and {@link #rules}, {@code rules}.
@@ -39,7 +39,7 @@ public final class QuickFormatApplicationRuleset extends FormatApplicationRulese
         this.name = name;
 
         for (FormatApplicationRule rule : rules) {
-            this.rules.put(rule.getFormatting(), rule.getProcess());
+            this.rules.put(rule.getFormatting(), rule.getApplierFunction());
         }
     }
 
@@ -52,13 +52,13 @@ public final class QuickFormatApplicationRuleset extends FormatApplicationRulese
         return name;
     }
 
-    public HashMap<Class<? extends TextFormatting>, Function<FormattingMarkedText, MarkedUpText>> getRules() {
+    public HashMap<Class<? extends TextFormatting>, FormattingApplierFunction> getApplierMap() {
         return new HashMap<>(this.rules); // TODO make this actually a deep copy(?)
     }
 
-    public final Function<FormattingMarkedText, MarkedUpText> getRuleFor(Class<? extends TextFormatting> formatting)
+    public final FormattingApplierFunction getApplierFor(Class<? extends TextFormatting> formatting)
             throws NoSuchElementException {
-        Function<FormattingMarkedText, MarkedUpText> rule = this.rules.get(formatting);
+        FormattingApplierFunction rule = this.rules.get(formatting);
 
         if (rule == null) {
             throw new NoSuchElementException("No rule found for \"" + formatting.getName() + "\"-type formatting in ruleset \"" + name + "\"");
