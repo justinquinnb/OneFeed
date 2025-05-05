@@ -1,19 +1,26 @@
 package com.justinquinnb.onefeed.customization.textstyle.markup;
 
+import com.justinquinnb.onefeed.api.endpoints.content.ContentController;
 import com.justinquinnb.onefeed.customization.textstyle.ComplementaryFormatRulePair;
+import com.justinquinnb.onefeed.customization.textstyle.FormattingRulesetGenerator;
 import com.justinquinnb.onefeed.customization.textstyle.UnknownTextStyleEntityException;
 import com.justinquinnb.onefeed.customization.textstyle.application.FormatApplicationRule;
 import com.justinquinnb.onefeed.customization.textstyle.application.FormattingApplierFunction;
 import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRule;
 import com.justinquinnb.onefeed.customization.textstyle.parsing.FormattingParserFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
  * Holds all known {@link TextFormatting} types alongside their markup extraction and application rules.
  */
 public class TextFormattingRegistry {
+    private static final Logger logger = LoggerFactory.getLogger(TextFormattingRegistry.class);
+
     /**
      * The default type of {@link TextFormatting} that all text has.
      */
@@ -31,6 +38,11 @@ public class TextFormattingRegistry {
             new FormatParsingRule(PlainText.getPlainTextPattern(), PlainText::extractFromPlainText),
             new FormatApplicationRule(DefaultFormat.class, PlainText::applyAsPlainText)
     );
+
+    /**
+     * The method to invoke after every registry-mutating operation.
+     */
+    private static final Runnable ON_REGISTRY_UPDATE = FormattingRulesetGenerator::smartCacheRefresh;
 
     /**
      * A mapping of {@link TextFormatting} types to all the {@link MarkupLanguage}s they are defined in, where each
@@ -78,6 +90,15 @@ public class TextFormattingRegistry {
             FormattingParserFunction formattingParser,
             FormattingApplierFunction formattingApplier
     ) {
+        // Require all params to be filled
+        logger.trace("Validating non-nullness of arguments");
+        Objects.requireNonNull(formatting);
+        Objects.requireNonNull(language);
+        Objects.requireNonNull(markupRegex);
+        Objects.requireNonNull(formattingParser);
+        Objects.requireNonNull(formattingApplier);
+
+        logger.trace("Creating rules from provided regex and functions");
         FormatParsingRule parsingRule = new FormatParsingRule(markupRegex, formattingParser);
         FormatApplicationRule applicationRule = new FormatApplicationRule(formatting, formattingApplier);
         registerForLanguage(formatting, language, parsingRule, applicationRule);
@@ -101,6 +122,14 @@ public class TextFormattingRegistry {
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language,
             FormatParsingRule parsingRule, FormatApplicationRule applicationRule
     ) {
+        // Require all params to be filled
+        logger.trace("Validating non-nullness of arguments");
+        Objects.requireNonNull(formatting);
+        Objects.requireNonNull(language);
+        Objects.requireNonNull(parsingRule);
+        Objects.requireNonNull(applicationRule);
+
+        logger.trace("Creating rule pair from provided rules");
         ComplementaryFormatRulePair rulePair = new ComplementaryFormatRulePair(parsingRule, applicationRule);
         registerForLanguage(formatting, language, rulePair);
     }
@@ -120,6 +149,13 @@ public class TextFormattingRegistry {
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language,
             ComplementaryFormatRulePair rulePair
     ) {
+        // Require all params to be filled
+        logger.trace("Validating non-nullness of arguments");
+        Objects.requireNonNull(formatting);
+        Objects.requireNonNull(language);
+        Objects.requireNonNull(rulePair);
+
+        logger.debug("Registering rules for {} in {}", formatting.getSimpleName(), language.getSimpleName());
         if (!formattingsByType.containsKey(formatting)) {
             formattingsByType.put(formatting, new HashMap<>());
         }
@@ -129,6 +165,10 @@ public class TextFormattingRegistry {
             formattingsByLang.put(language, new HashMap<>());
         }
         formattingsByLang.get(language).put(formatting, rulePair);
+
+        logger.debug("Registered rules for {} in {}", formatting.getSimpleName(), language.getSimpleName());
+        logger.debug("Running ON_REGISTRY_UPDATE ()");
+        ON_REGISTRY_UPDATE.run();
     }
 
     /**
@@ -147,16 +187,23 @@ public class TextFormattingRegistry {
     {
         // Ensure the formatting type actually exists
         if (!formattingsByType.containsKey(formatting)) {
+            logger.warn("Attempted to remove a TextFormatting that does not exist in the registry: {}",
+                    formatting.getSimpleName());
             throw new UnknownTextStyleEntityException(
                 "The desired TextFormatting type \"" + formatting.getSimpleName() +
                 "\" cannot be removed from the registry as it does not exist in it.");
         }
 
         // Remove all instances of the formatting as it appears in the registry
+        logger.debug("Removing {} formatting from the registry", formatting.getSimpleName());
         formattingsByType.remove(formatting);
         for (Class<? extends MarkupLanguage> language : formattingsByLang.keySet()) {
             formattingsByLang.get(language).remove(formatting);
         }
+        logger.debug("Removed {} formatting from the registry", formatting.getSimpleName());
+
+        logger.trace("Running ON_REGISTRY_UPDATE ()");
+        ON_REGISTRY_UPDATE.run();
     }
 
     /**
@@ -178,16 +225,23 @@ public class TextFormattingRegistry {
     {
         // Ensure the markup language type actually exists
         if (!formattingsByLang.containsKey(language)) {
+            logger.warn("Attempted to forget a MarkupLanguage that does not exist in the registry: {}",
+                    language.getSimpleName());
             throw new UnknownTextStyleEntityException(
                     "The desired MarkupLanguage type \"" + language.getSimpleName() +
                     "\" cannot be removed from the registry as it does not exist in it.");
         }
 
         // Remove all instances of the markup language as it appears in the registry
+        logger.debug("Removing all rules for language {} from the registry", language.getSimpleName());
         formattingsByLang.remove(language);
         for (Class<? extends TextFormatting> formatting : formattingsByType.keySet()) {
             formattingsByType.get(formatting).remove(language);
         }
+        logger.debug("Removed all rules for language {} from the registry", language.getSimpleName());
+
+        logger.trace("Running ON_REGISTRY_UPDATE ()");
+        ON_REGISTRY_UPDATE.run();
     }
 
     /**
@@ -208,16 +262,28 @@ public class TextFormattingRegistry {
         // Ensure both types actually exist in the registry
         throwExceptionIfEntryDne(formatting, language);
 
+        logger.debug("Removing parsing and application rules for {} {} from the registry",
+                language.getSimpleName(), formatting.getSimpleName());
         formattingsByLang.get(language).remove(formatting);
         formattingsByType.get(formatting).remove(language);
+
+        logger.debug("Removing parsing and application rules for {} {} from the registry",
+                language.getSimpleName(), formatting.getSimpleName());
+        logger.trace("Running ON_REGISTRY_UPDATE ()");
+        ON_REGISTRY_UPDATE.run();
     }
 
     /**
      * Clears the entire registry.
      */
     public static void clearRegistry() {
+        logger.debug("Clearing registry");
         formattingsByType.clear();
         formattingsByLang.clear();
+        logger.debug("Registry cleared");
+
+        logger.trace("Running ON_REGISTRY_UPDATE ()");
+        ON_REGISTRY_UPDATE.run();
     }
 
     /**
@@ -227,6 +293,7 @@ public class TextFormattingRegistry {
      */
     @SuppressWarnings("unchecked")
     public static Class<? extends MarkupLanguage>[] getKnownLanguages() {
+        logger.trace("Getting known languages");
         return (Class<? extends MarkupLanguage>[])formattingsByLang.keySet().toArray(new Class[0]);
     }
 
@@ -237,6 +304,7 @@ public class TextFormattingRegistry {
      */
     @SuppressWarnings("unchecked")
     public static Class<? extends TextFormatting>[] getRegisteredFormattings() {
+        logger.trace("Getting registered formattings");
         return (Class<? extends TextFormatting>[])formattingsByType.keySet().toArray(new Class[0]);
     }
 
@@ -255,10 +323,13 @@ public class TextFormattingRegistry {
     {
         // Ensure the formatting type is actually registered
         if (!formattingsByLang.containsKey(formatting)) {
+            logger.warn("Attempted to get the supported MarkupLanguages of a TextFormatting that does not exist in " +
+                    "the registry: {}", formatting.getSimpleName());
             throw new UnknownTextStyleEntityException("The specified TextFormatting, \"" + formatting.getSimpleName()
                 + "\", has not been registered to OneFeed");
         }
 
+        logger.debug("Getting the languages supported by {}", formatting.getSimpleName());
         return (Class<? extends MarkupLanguage>[])formattingsByType.get(formatting).keySet().toArray(new Class[0]);
     }
 
@@ -277,9 +348,13 @@ public class TextFormattingRegistry {
     {
         // Ensure the markup language type is actually known
         if (!formattingsByLang.containsKey(language)) {
+            logger.warn("Attempted to get the supported TextFormattings of a MarkupLanguage that does not exist in " +
+                    "the registry: {}", language.getSimpleName());
             throw new UnknownTextStyleEntityException("The specified MarkupLanguage, \"" + language.getSimpleName()
                     + "\", has not been registered to OneFeed");
         }
+
+        logger.debug("Getting the formattings supported by {}", language.getSimpleName());
         return (Class<? extends TextFormatting>[])formattingsByLang.get(language).keySet().toArray(new Class[0]);
     }
 
@@ -304,6 +379,7 @@ public class TextFormattingRegistry {
         // Ensure both types actually exist in the registry
         throwExceptionIfEntryDne(formatting, language);
 
+        logger.debug("Getting the parsing rule for {} from the registry", formatting.getSimpleName());
         return formattingsByType.get(formatting).get(language).getParsingRule();
     }
 
@@ -328,6 +404,7 @@ public class TextFormattingRegistry {
         // Ensure both types actually exist in the registry
         throwExceptionIfEntryDne(formatting, language);
 
+        logger.debug("Getting the application rule for {} from the registry", formatting.getSimpleName());
         return formattingsByType.get(formatting).get(language).getApplicationRule();
     }
 
@@ -352,6 +429,7 @@ public class TextFormattingRegistry {
         // Ensure both types actually exist in the registry
         throwExceptionIfEntryDne(formatting, language);
 
+        logger.debug("Getting the complementary rule pair for {} from the registry", formatting.getSimpleName());
         return formattingsByType.get(formatting).get(language);
     }
 
@@ -369,13 +447,21 @@ public class TextFormattingRegistry {
             Class<? extends TextFormatting> formatting, Class<? extends MarkupLanguage> language)
             throws UnknownTextStyleEntityException
     {
+        logger.trace("Checking whether a registry entry exists for the {} {} formatting",
+                language.getSimpleName(), formatting.getSimpleName());
         if (!formattingsByLang.containsKey(language) && !formattingsByType.containsKey(formatting)) {
+            logger.warn("The specified TextFormatting and MarkupLanguage do not exist in the registry: {} {}",
+                    language.getSimpleName(), formatting.getSimpleName());
             throw new UnknownTextStyleEntityException("The specified TextFormatting, \"" + formatting.getSimpleName() +
                     "\", and MarkupLanguage, \"" + language.getSimpleName() + "\", do not exist in the registry.");
         } else if (!formattingsByLang.containsKey(language)) {
+            logger.warn("The specified TextFormatting does not exist in the registry for language {}: {}",
+                    language.getSimpleName(), formatting.getSimpleName());
             throw new UnknownTextStyleEntityException("The specified TextFormatting, \"" + formatting.getSimpleName() +
                     "\" does not exist in the registry for MarkupLanguage \"" + language.getSimpleName() + "\"");
         } else if (!formattingsByType.containsKey(formatting)) {
+            logger.warn("The specified MarkupLanguage is not recognized by the registry as supporting {}: {}",
+                    formatting.getSimpleName(), language.getSimpleName());
             throw new UnknownTextStyleEntityException("The specified MarkupLanguage, \"" + formatting.getSimpleName() +
                     "\" does not exist in the registry for TextFormatting \"" + language.getSimpleName() + "\"");
         }
