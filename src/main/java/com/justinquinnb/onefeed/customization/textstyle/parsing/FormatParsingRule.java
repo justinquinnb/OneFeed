@@ -50,7 +50,7 @@ public class FormatParsingRule {
      *
      * @return the {@link Function} to run on {@link #regex} matches and generate {@code FormattingMarkedText} with
      */
-    public FormattingParserFunction getProcess() {
+    public FormattingParserFunction getParserFunction() {
         return this.formattingParser;
     }
 

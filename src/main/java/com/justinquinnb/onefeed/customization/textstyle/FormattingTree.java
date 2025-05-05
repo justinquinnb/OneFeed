@@ -17,7 +17,7 @@ public class FormattingTree extends FormattedText {
      * The substrings of the {@link #root} that contain their own unique {@link TextFormatting}s and (possibly)
      * formatted substrings.
      */
-    private final FormattingTree[] children;
+    private FormattingTree[] children = new FormattingTree[0];
 
     /**
      * Constructs a {@code FormattingTree} with root {@code root} and child {@code FormattingTree}s {@code children}.
@@ -31,6 +31,17 @@ public class FormattingTree extends FormattedText {
         super(root.getText());
         this.root = root;
         this.children = children;
+    }
+
+    /**
+     * Constructs a {@code FormattingTree} with root {@code root} and no children.
+     *
+     * @param root the "base" {@code String} of formatted (or unformatted) text from which all child
+     *             ({@link #children}) {@link FormattingMarkedText} substrings are derived from
+     */
+    public FormattingTree(FormattingMarkedText root) {
+        super(root.getText());
+        this.root = root;
     }
 
     /**
