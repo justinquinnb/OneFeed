@@ -96,21 +96,23 @@ public abstract sealed class DefinedFormatParsingRuleset extends FormatParsingRu
      *
      * @see FormatParsingRule
      */
-    protected static FormatParsingRule ruleOf(Pattern regex, Function<MarkedUpText, FormattingMarkedText> process) {
-        return new FormatParsingRule(regex, process);
+    protected static FormatParsingRule ruleOf(Pattern regex, FormattingParserFunction parserFunction) {
+        return new FormatParsingRule(regex, parserFunction);
     }
 
     /**
-     * Constructs a {@link FormatParsingRule} with regex {@code regex} and process {@code process}. A 
+     * Constructs a {@link FormatParsingRule} with regex {@code regex} and process {@code parserFunction}. A
      * more concise means of constructing rules to add when defining a {@link DefinedFormatParsingRuleset}.
      *
      * @param regex a regex {@link Pattern} specifying what to search for in the {@link MarkedUpText}
-     * @param process the desired {@code Function} to run on matches to generate {@code FormattingMarkedText}
+     * @param parserFunction the desired {@link FormattingParserFunction} to run on matches to generate
+     * {@code FormattingMarkedText}
+     *
      * @return a {@code FormatParsingRule} with the desired {@code regex} and {@code process}
      *
      * @see FormatParsingRule
      */
-    protected static FormatParsingRule ruleOf(String regex, Function<MarkedUpText, FormattingMarkedText> process) {
-        return new FormatParsingRule(Pattern.compile(regex), process);
+    protected static FormatParsingRule ruleOf(String regex, FormattingParserFunction parserFunction) {
+        return new FormatParsingRule(Pattern.compile(regex), parserFunction);
     }
 }
