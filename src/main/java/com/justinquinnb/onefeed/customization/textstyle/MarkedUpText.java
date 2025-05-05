@@ -3,7 +3,9 @@ package com.justinquinnb.onefeed.customization.textstyle;
 import com.justinquinnb.onefeed.customization.textstyle.markup.MarkupLanguage;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A {@code String} of text associated with the types of markup languages it employs to represent its formatting. The
@@ -13,7 +15,7 @@ public class MarkedUpText extends FormattedText {
     /**
      * The type of markup languages employed by {@code this} {@code FormattedText}.
      */
-    private final ArrayList<Class<? extends MarkupLanguage>> markupLanguages = new ArrayList<>();
+    private final LinkedHashSet<Class<? extends MarkupLanguage>> markupLanguages = new LinkedHashSet<>();
 
     /**
      * Creates an instance of {@code FormattedText} with text {@code text} employing markup language {@code markupLang}.
@@ -34,17 +36,17 @@ public class MarkedUpText extends FormattedText {
      *             belongs to
      * @param markupLangs the types of markup languages employed by the instance of {@code FormattedText} to create
      */
-    public MarkedUpText(String text, List<Class<? extends MarkupLanguage>> markupLangs) {
+    public MarkedUpText(String text, Set<Class<? extends MarkupLanguage>> markupLangs) {
         super(text);
-        this.markupLanguages.addAll(markupLanguages);
+        this.markupLanguages.addAll(markupLangs);
     }
 
     /**
      * Gets the types of markup languages employed by the text of {@code this} {@code MarkedUpText} instance.
      *
-     * @return the type of markup language employed by the text of {@code this} {@code MarkedUpText} instance
+     * @return the types of markup language employed by the text of {@code this} {@code MarkedUpText} instance
      */
-    public ArrayList<Class<? extends MarkupLanguage>> getMarkupLanguages() {
+    public LinkedHashSet<Class<? extends MarkupLanguage>> getMarkupLanguages() {
         return this.markupLanguages;
     }
 
