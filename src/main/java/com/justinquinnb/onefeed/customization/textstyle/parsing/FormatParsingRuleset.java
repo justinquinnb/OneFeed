@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle.parsing;
 
-import com.justinquinnb.onefeed.JsonToString;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
+import com.justinquinnb.onefeed.utils.JsonToString;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;

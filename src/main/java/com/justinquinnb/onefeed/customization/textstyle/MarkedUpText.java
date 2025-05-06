@@ -2,9 +2,7 @@ package com.justinquinnb.onefeed.customization.textstyle;
 
 import com.justinquinnb.onefeed.customization.textstyle.markup.MarkupLanguage;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

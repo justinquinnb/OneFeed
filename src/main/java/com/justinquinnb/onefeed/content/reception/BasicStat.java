@@ -2,7 +2,7 @@ package com.justinquinnb.onefeed.content.reception;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.JsonToString;
+import com.justinquinnb.onefeed.utils.JsonToString;
 
 /**
  * A basic implementation of a numeric value with a label to identify/describe it.

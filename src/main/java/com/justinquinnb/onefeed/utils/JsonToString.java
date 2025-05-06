@@ -1,4 +1,4 @@
-package com.justinquinnb.onefeed;
+package com.justinquinnb.onefeed.utils;
 
 import java.lang.reflect.Field;
 

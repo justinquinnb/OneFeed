@@ -12,12 +12,10 @@ import com.justinquinnb.onefeed.customization.textstyle.parsing.QuickFormatParsi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-// TODO add logging
 /**
  * A type capable of generating {@link FormatApplicationRuleset}s and {@link FormatParsingRuleset}s that represent a
  * defined {@link MarkupLanguage}.

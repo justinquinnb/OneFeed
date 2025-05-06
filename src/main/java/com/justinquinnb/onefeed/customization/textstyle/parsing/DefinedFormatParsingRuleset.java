@@ -1,11 +1,9 @@
 package com.justinquinnb.onefeed.customization.textstyle.parsing;
 
-import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**

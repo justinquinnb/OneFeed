@@ -2,7 +2,6 @@ package com.justinquinnb.onefeed.content;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.JsonToString;
 import com.justinquinnb.onefeed.content.attachments.Attachment;
 import com.justinquinnb.onefeed.content.details.ContentSourceId;
 import com.justinquinnb.onefeed.content.details.Platform;
@@ -10,6 +9,7 @@ import com.justinquinnb.onefeed.content.details.Producer;
 import com.justinquinnb.onefeed.content.reception.Comment;
 import com.justinquinnb.onefeed.content.reception.Reception;
 import com.justinquinnb.onefeed.customization.source.ContentSource;
+import com.justinquinnb.onefeed.utils.JsonToString;
 import org.springframework.lang.Nullable;
 
 import java.time.Instant;
