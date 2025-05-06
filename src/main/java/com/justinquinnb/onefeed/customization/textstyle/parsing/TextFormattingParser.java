@@ -1,7 +1,7 @@
 package com.justinquinnb.onefeed.customization.textstyle.parsing;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingKit;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.FormattingTree;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormattingRegistry;
@@ -9,7 +9,7 @@ import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormattingReg
 import java.util.function.Function;
 
 /**
- * A type capable of parsing {@link MarkedUpText} into a {@link FormattingTree}.
+ * A type capable of parsing {@link MarkedUpText} into a {@link FormattingKit}.
  */
 public interface TextFormattingParser {
     /**
@@ -20,18 +20,17 @@ public interface TextFormattingParser {
             TextFormattingParser::readAsDefault;
 
     /**
-     * Parses the markup contained in {@code markedUpText} to generate a {@link FormattingTree} specifying the desired
+     * Parses the markup contained in {@code markedUpText} to generate a {@link FormattingKit} specifying the desired
      * markup of each substring in the entire text.
      *
      * @param markedUpText plaintext marked up using some language that the {@code rules} may recognize
      * @param rules the {@link FormatParsingRuleset} specifying what markup patterns to look for in the
      * {@code markedUpText} and how to derive {@link TextFormatting} objects from them when matches are found
      *
-     * @return a {@link FormattingTree} representing the formatting breakdown of the {@code markedUpText}. If parsing
+     * @return a {@link FormattingKit} mapping substrings to their indicated {@code TextFormatting} type. If parsing
      * for any substring is unsuccessful, the fallback parsing method specified by the {@link #FALLBACK_APPROACH}.
      */
-    public FormattingTree parseFormattings(MarkedUpText markedUpText, FormatParsingRuleset rules);
-
+    public FormattingKit parseFormattings(MarkedUpText markedUpText, FormatParsingRuleset rules);
 
     /**
      * Interprets any provided {@link MarkedUpText} as having only the

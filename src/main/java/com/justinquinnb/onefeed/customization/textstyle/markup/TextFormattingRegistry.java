@@ -1,6 +1,5 @@
 package com.justinquinnb.onefeed.customization.textstyle.markup;
 
-import com.justinquinnb.onefeed.api.endpoints.content.ContentController;
 import com.justinquinnb.onefeed.customization.textstyle.ComplementaryFormatRulePair;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingRulesetGenerator;
 import com.justinquinnb.onefeed.customization.textstyle.UnknownTextStyleEntityException;

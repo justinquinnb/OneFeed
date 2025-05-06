@@ -1,8 +1,8 @@
 package com.justinquinnb.onefeed.customization.textstyle.application;
 
-import com.justinquinnb.onefeed.JsonToString;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
 import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
+import com.justinquinnb.onefeed.utils.JsonToString;
 
 import java.util.function.Function;
 

@@ -1,48 +1,48 @@
 package com.justinquinnb.onefeed.customization.textstyle.application;
 
+import com.justinquinnb.onefeed.customization.textstyle.FormattingKit;
 import com.justinquinnb.onefeed.customization.textstyle.FormattingMarkedText;
-import com.justinquinnb.onefeed.customization.textstyle.FormattingTree;
 import com.justinquinnb.onefeed.customization.textstyle.MarkedUpText;
 import com.justinquinnb.onefeed.customization.textstyle.markup.MarkupLanguage;
 import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormatting;
 import com.justinquinnb.onefeed.customization.textstyle.markup.TextFormattingRegistry;
-import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRuleset;
-import com.justinquinnb.onefeed.customization.textstyle.parsing.FormattingParserFunction;
-import com.justinquinnb.onefeed.customization.textstyle.parsing.TextFormattingParser;
+
+import java.util.function.Function;
 
 /**
- * A type capable of marking up text in some {@link MarkupLanguage}, provided a {@link FormattingTree}.
+ * A type capable of marking up text in some {@link MarkupLanguage}, provided a {@link FormattingKit}.
  */
 public interface TextFormattingApplier {
     /**
-     * The {@link FormattingApplierFunction} providing a means of handling instances where a {@link FormattingTree}'s
+     * The {@link FormattingApplierFunction} providing a means of handling instances where a {@link FormattingKit}'s
      * specified {@link TextFormatting} cannot be applied to the text as desired.
      */
-    public static final FormattingApplierFunction FALLBACK_APPROACH = TextFormattingApplier::markAsDefault;
+    public static final Function<FormattingMarkedText, MarkedUpText> FALLBACK_APPROACH =
+            TextFormattingApplier::markAsDefault;
     
     /**
-     * Applies the {@link TextFormatting}s specified in the {@code tree} to the {@code tree}'s text to generate
+     * Applies the {@link TextFormatting}s specified in the {@code kit} to the {@code kit}'s text to generate
      * {@link MarkedUpText} in the {@code targetLang}.
      *
-     * @param tree the hierarchy of substrings and their {@code TextFormatting}s in a given {@code String}
+     * @param kit the hierarchy of substrings and their {@code TextFormatting}s in a given {@code String}
      * @param
      *
-     * @return the formatted text represented by the {@code tree} represented in the {@code targetLang}, bundled with
+     * @return the formatted text represented by the {@code kit} represented in the {@code targetLang}, bundled with
      * that {@code targetLang} in a {@code MarkedUpText} object. If a conversion process to the {@code targetLang} isn't
-     * specified for any of the {@code tree}'s {@code TextFormatting}s, the target substring will remain as-is.
+     * specified for any of the {@code kit}'s {@code TextFormatting}s, the target substring will remain as-is.
      */
     /**
-     * Applies the {@link TextFormatting}s specified in the {@code tree} to the {@code tree}'s text to generate
+     * Applies the {@link TextFormatting}s specified in the {@code kit} to the {@code kit}'s text to generate
      * {@link MarkedUpText}.
      *
-     * @param tree the hierarchy of substrings and their {@code TextFormatting}s in a given string of marked-up text
+     * @param kit the hierarchy of substrings and their {@code TextFormatting}s in a given string of marked-up text
      * @param rules the {@link FormatApplicationRuleset} specifying how each {@code TextFormatting} called for by the 
-     * {@code tree} should appear as markup in the final {@code MarkedUpText}
+     * {@code kit} should appear as markup in the final {@code MarkedUpText}
      *
      * @return a complete string of {@code MarkedUpText} derived from applying each of the markup {@code rules} to the 
-     * {@code tree}'s substring
+     * {@code kit}'s substring
      */
-    public MarkedUpText applyFormattings(FormattingTree tree, FormatApplicationRuleset rules);
+    public MarkedUpText applyFormattings(FormattingKit kit, FormatApplicationRuleset rules);
 
     /**
      * Interprets any provided {@link FormattingMarkedText} as having only the

@@ -2,7 +2,7 @@ package com.justinquinnb.onefeed.content.details;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justinquinnb.onefeed.JsonToString;
+import com.justinquinnb.onefeed.utils.JsonToString;
 
 /**
  * A basic implementation of information about an entity producing digital media.
