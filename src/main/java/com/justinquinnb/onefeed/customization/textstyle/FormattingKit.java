@@ -151,24 +151,16 @@ public class FormattingKit {
             throw new IllegalArgumentException("String operations cannot occur before index 0");
         }
 
-        // Determine the inflection point
-        /* For substring deletion, the inflection point will be the index of the character after the substring being
-        removed (where the String will collapse). For insertion, the location will be the index before the origin
-        (where the String will expand). Since markup cannot intersect, no logic is needed for partial displacements
-        (instances where a delimeter falls before only some of the added or removed text)
-        */
-        int inflectionPoint = (amount < 0) ? (origin + (-1 * amount)) : origin;
-
         // For each instruction, get the associated substring location and shift whichever indices come on or after the
         // inflection point
         for (FormattingInstruction instruction : instructions) {
             SubstringLocation originalLocation = instruction.getLocation();
 
-            // Only shift indices on or after the inflection point
-            if (originalLocation.getFirst() >= inflectionPoint) {
+            // Only shift indices after the inflection point
+            if (originalLocation.getFirst() > origin) {
                 originalLocation.shiftStart(amount);
             }
-            if (originalLocation.getSecond() >= inflectionPoint) {
+            if (originalLocation.getSecond() > origin) {
                 originalLocation.shiftEnd(amount);
             }
         }

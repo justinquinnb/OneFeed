@@ -77,8 +77,12 @@ public final class BasicFormattingApplier implements TextFormattingApplier {
             instructionsCopy.remove(instruction);
 
             // Make the appropriate shifts to the workspace, now that the length of the text has changed
-            logger.trace("Shifting workspace to account for replacement: \"{}\" -> \"{}\" (shift of {})",
-                    ogSubstr, newSubstr, newSubstr.length() - ogSubstr.length());
+            int applicationDisplacement = newSubstr.length() - ogSubstr.length();
+            int netDisplacement = applicationDisplacement + instruction.getParsingDisplacement();
+
+            logger.trace("Shifting workspace to account for replacement: \"{}\" -> \"{}\" (shift of {}, " +
+                            "net from parsing {})", ogSubstr, newSubstr, applicationDisplacement, netDisplacement);
+
             FormattingKit.shiftWorkspaceForReplacement(instructionsCopy, ogSubstr, newSubstr, location.getFirst());
         }
 

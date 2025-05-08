@@ -55,7 +55,7 @@ public class FormattingRulesetGenerator {
      * @throws UnknownTextStyleEntityException if the provided {@code markupLang} does not exist in the
      * {@link TextFormattingRegistry}
      */
-    public static FormatApplicationRuleset getApplicationRuleset(Class<? extends MarkupLanguage> markupLang)
+    public static FormatApplicationRuleset getApplicationRulesetFor(Class<? extends MarkupLanguage> markupLang)
             throws UnknownTextStyleEntityException
     {
         logger.debug("Getting the application ruleset for {}", markupLang.getSimpleName());
