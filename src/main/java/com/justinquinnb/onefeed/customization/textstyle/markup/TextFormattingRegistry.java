@@ -9,14 +9,19 @@ import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRul
 import com.justinquinnb.onefeed.customization.textstyle.parsing.FormattingParserFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
  * Holds all known {@link TextFormatting} types alongside their markup extraction and application rules.
  */
+@Component
 public class TextFormattingRegistry {
     private static final Logger logger = LoggerFactory.getLogger(TextFormattingRegistry.class);
 
@@ -42,6 +47,20 @@ public class TextFormattingRegistry {
      * The method to invoke after every registry-mutating operation.
      */
     private static final Runnable ON_REGISTRY_UPDATE = FormattingRulesetGenerator::smartCacheRefresh;
+
+    /**
+     *
+     */
+    private Set<TextFormatting> KNOWN_FORMATTINGS = new HashSet<>();
+
+    /**
+     * TODO
+     * @param knownFormattings
+     */
+    @Autowired
+    private TextFormattingRegistry(Set<TextFormatting> knownFormattings) {
+        KNOWN_FORMATTINGS.addAll(knownFormattings);
+    }
 
     /**
      * A mapping of {@link TextFormatting} types to all the {@link MarkupLanguage}s they are defined in, where each
@@ -430,6 +449,15 @@ public class TextFormattingRegistry {
 
         logger.debug("Getting the complementary rule pair for {} from the registry", formatting.getSimpleName());
         return formattingsByType.get(formatting).get(language);
+    }
+
+    /**
+     * TODO
+     */
+    public void initTextFormattings() {
+        for (TextFormatting knownFormatting : this.KNOWN_FORMATTINGS) {
+            knownFormatting.initializeFormatting();
+        }
     }
 
     /**

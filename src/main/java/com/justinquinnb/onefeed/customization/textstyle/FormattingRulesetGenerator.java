@@ -11,6 +11,8 @@ import com.justinquinnb.onefeed.customization.textstyle.parsing.FormatParsingRul
 import com.justinquinnb.onefeed.customization.textstyle.parsing.QuickFormatParsingRuleset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -20,6 +22,7 @@ import java.util.Set;
  * A type capable of generating {@link FormatApplicationRuleset}s and {@link FormatParsingRuleset}s that represent a
  * defined {@link MarkupLanguage}.
  */
+@Component
 public class FormattingRulesetGenerator {
     /*
     What's best about the caching approach is that Content Sources can choose to either define a markup language
@@ -34,8 +37,8 @@ public class FormattingRulesetGenerator {
      * A mapping of each {@link MarkupLanguage} type to its respective {@link FormatApplicationRuleset} so that ruleset
      * retrieval does not entail building (what should be) an unchanging ruleset each time.
      */
-    private static final HashMap<Class<? extends MarkupLanguage>, FormatApplicationRuleset> CACHED_APPLICATION_RULESETS =
-            new HashMap<>();
+    private static final HashMap<Class<? extends MarkupLanguage>, FormatApplicationRuleset>
+            CACHED_APPLICATION_RULESETS = new HashMap<>();
 
     /**
      * A mapping of each {@link MarkupLanguage} type to its respective {@link FormatApplicationRuleset} so that ruleset
@@ -43,6 +46,20 @@ public class FormattingRulesetGenerator {
      */
     private static final HashMap<Class<? extends MarkupLanguage>, FormatParsingRuleset> CACHED_PARSING_RULESETS =
             new HashMap<>();
+
+    /**
+     * TODO
+     */
+    private TextFormattingRegistry formattingRegistry;
+
+    /**
+     * TODO
+     * @param formattingRegistry
+     */
+    @Autowired
+    private FormattingRulesetGenerator(TextFormattingRegistry formattingRegistry) {
+        this.formattingRegistry = formattingRegistry;
+    }
 
     /**
      * Gets last-cached {@link FormatApplicationRuleset} for the desired {@code markupLang}. If no ruleset exists in

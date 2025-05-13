@@ -39,6 +39,11 @@ public abstract class TextFormatting {
     }
 
     /**
+     * TODO also change class documentations to reflect this change for markup langs
+     */
+    public abstract void initializeFormatting();
+
+    /**
      * Ensures {@code formatting} and the {@link TextFormatting} used in the {@code text} match, throwing an error if
      * they do not and doing nothing otherwise.
      *
