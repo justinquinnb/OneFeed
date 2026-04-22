@@ -1,5 +1,0 @@
-<config xmlns="https://www.onefeed.justinquinnb.com/onefeed-config.xsd">
-    <meta>
-        <api-key>${ONEFEED_API_KEY}</api-key>
-    </meta>
-</config>
