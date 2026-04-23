@@ -27,7 +27,7 @@ public class ProviderResponse<Out extends RawContent> {
      * The {@link ContentFilter}s that were used to derive the {@link #content}
      */
     @NonNull
-    private List<ContentFilter> appliedFilters;
+    private List<ContentFilter<?>> appliedFilters;
 
     /**
      * The time at which {@code this} respones was generated

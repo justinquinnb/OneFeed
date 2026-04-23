@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.content.pipeline;
 
-import dev.jqb.onefeed.content.model.ContentSource;
+import dev.jqb.onefeed.content.model.Feed;
 import dev.jqb.onefeed.content.model.NormalizedContent;
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +15,13 @@ public interface Aggregator {
      * the given {@code filters} applied.
      *
      * @param amount the target amount of content to return after all filters have been applied
-     * @param sources the sources to aggregate content from
+     * @param feeds the feeds to aggregate content from
      * @param filters the filters to apply to the aggregated content, limiting the results
      * @param config a map of configuration options for the provider to use, containing info like
      *               API keys
      *
      * @return a list of all content that was retrieved, in descending order of creation timestamp
      */
-    List<NormalizedContent> aggregate(int amount, List<ContentSource> sources,
-        List<ContentFilter> filters, HashMap<String, String> config);
+    List<NormalizedContent> aggregate(int amount, List<Feed<?>> feeds,
+        List<ContentFilter<?>> filters, HashMap<String, String> config);
 }

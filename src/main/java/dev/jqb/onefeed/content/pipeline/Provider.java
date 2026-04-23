@@ -1,7 +1,7 @@
 package dev.jqb.onefeed.content.pipeline;
 
 import dev.jqb.onefeed.content.model.Platform;
-import dev.jqb.onefeed.defaults.OneFeedContent;
+import dev.jqb.onefeed.OneFeedContent;
 import dev.jqb.onefeed.content.model.ProviderResponse;
 import dev.jqb.onefeed.content.model.RawContent;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public interface Provider<Out extends RawContent> extends ExtensionPoint {
     Mono<ProviderResponse<Out>> getContent(
         String author,
         int amount,
-        List<ContentFilter> filters,
+        List<ContentFilter<?>> filters,
         HashMap<String, String> config
     );
 
@@ -43,8 +43,8 @@ public interface Provider<Out extends RawContent> extends ExtensionPoint {
     Normalizer<Out, OneFeedContent> getNormalizer();
 
     /**
-     * Gets the info about this provider's content source.
-     * @return info about the source of this provider's content
+     * Gets info about this provider's source platform.
+     * @return info about the source platform of this provider's content
      */
-    Platform getSourceInfo();
+    Platform getPlatformInfo();
 }

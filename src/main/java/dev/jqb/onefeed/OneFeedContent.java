@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.defaults;
+package dev.jqb.onefeed;
 
 import dev.jqb.onefeed.content.model.NormalizedContent;
 

@@ -1,21 +1,11 @@
 package dev.jqb.onefeed.content.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Information about a content source, like Instagram
+ *
+ * @param name The name of the content source
+ * @param url  The main page of the content source
  */
-@Getter @Setter
-public class Platform {
-
-    /**
-     * The name of the content source
-     */
-    private String name;
-
-    /**
-     * The main page of the content source
-     */
-    private String url;
+public record Platform(String name, String url) {
+    // Intentionally empty...
 }
