@@ -1,9 +1,9 @@
-package dev.jqb.onefeed.content.pipeline;
+package dev.jqb.onefeed.model.pipeline;
 
-import dev.jqb.onefeed.content.model.Platform;
-import dev.jqb.onefeed.OneFeedContent;
-import dev.jqb.onefeed.content.model.ProviderResponse;
-import dev.jqb.onefeed.content.model.RawContent;
+import dev.jqb.onefeed.model.data.Platform;
+import dev.jqb.onefeed.impl.OneFeedContent;
+import dev.jqb.onefeed.model.data.ProviderResponse;
+import dev.jqb.onefeed.model.data.RawContent;
 import java.util.HashMap;
 import java.util.List;
 import org.pf4j.ExtensionPoint;

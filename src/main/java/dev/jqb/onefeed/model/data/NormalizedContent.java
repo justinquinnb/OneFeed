@@ -1,6 +1,6 @@
-package dev.jqb.onefeed.content.model;
+package dev.jqb.onefeed.model.data;
 
-import dev.jqb.onefeed.content.pipeline.Provider;
+import dev.jqb.onefeed.model.pipeline.Provider;
 import java.time.Instant;
 import lombok.Getter;
 
@@ -13,7 +13,7 @@ public abstract class NormalizedContent implements ContentInfo {
     /**
      * Info identifying the origin of the content piece
      */
-    private FeedInfo source;
+    private SourceInfo source;
 
     /**
      * The time at which the content was published
