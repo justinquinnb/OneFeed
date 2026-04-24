@@ -1,7 +1,6 @@
-package dev.jqb.onefeed.content.model;
+package dev.jqb.onefeed.model.data;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A single source/stream of content, defined by an {@link Author} of the content and the

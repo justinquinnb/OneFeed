@@ -1,6 +1,6 @@
-package dev.jqb.onefeed.content.model;
+package dev.jqb.onefeed.model.data;
 
-import dev.jqb.onefeed.content.pipeline.Provider;
+import dev.jqb.onefeed.model.pipeline.Provider;
 
 /**
  * A marker class for {@link Provider}-specific content DTO types

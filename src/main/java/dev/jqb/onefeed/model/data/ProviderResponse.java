@@ -1,7 +1,7 @@
-package dev.jqb.onefeed.content.model;
+package dev.jqb.onefeed.model.data;
 
-import dev.jqb.onefeed.content.pipeline.ContentFilter;
-import dev.jqb.onefeed.content.pipeline.Provider;
+import dev.jqb.onefeed.model.pipeline.ContentFilter;
+import dev.jqb.onefeed.model.pipeline.Provider;
 import java.time.Instant;
 import java.util.List;
 import lombok.Getter;

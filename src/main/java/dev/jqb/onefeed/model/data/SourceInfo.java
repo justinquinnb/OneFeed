@@ -1,7 +1,6 @@
-package dev.jqb.onefeed.content.model;
+package dev.jqb.onefeed.model.data;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Information about a unit of content's source

@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.content.model;
+package dev.jqb.onefeed.model.data;
 
 /**
  * Information about a content source, like Instagram
