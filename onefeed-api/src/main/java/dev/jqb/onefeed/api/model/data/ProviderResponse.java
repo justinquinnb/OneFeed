@@ -15,22 +15,10 @@ import lombok.Setter;
  * @param <Out> the type of {@link RawContent} contained in this response
  */
 @Getter @Setter
-public class ProviderResponse<Out extends RawContent> {
-
+public class ProviderResponse<Out extends RawContent> extends ContentPackage<Out> {
     /**
-     * The requested content, normalized and ready for distribution
-     */
-    @NonNull
-    private List<Out> content;
-
-    /**
-     * The {@link ContentFilter}s that were used to derive the {@link #content}
+     * The {@link ContentFilter}s that were used to derive the content
      */
     @NonNull
     private List<ContentFilter<?>> appliedFilters;
-
-    /**
-     * The time at which {@code this} respones was generated
-     */
-    private Instant generated;
 }
