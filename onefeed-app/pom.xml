@@ -73,8 +73,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>dev.jqb</groupId>
-            <artifactId>onefeed-api</artifactId>
+            <groupId>dev.jqb.onefeed</groupId>
+            <artifactId>api</artifactId>
             <version>0.0.2</version>
             <scope>compile</scope>
         </dependency>

@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>dev.jqb</groupId>
-  <artifactId>OneFeed</artifactId>
-  <version>0.0.2</version>
+  <artifactId>onefeed</artifactId>
+  <version>0.0.2-SNAPSHOT</version>
   <name>OneFeed</name>
   <description>OneFeed</description>
   <url>https://github.com/justinquinnb/OneFeed</url>
