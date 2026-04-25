@@ -33,4 +33,4 @@ build/
 .vscode/
 
 # Plugins directory for testing
-plugins/
+onefeed-app/plugins/
