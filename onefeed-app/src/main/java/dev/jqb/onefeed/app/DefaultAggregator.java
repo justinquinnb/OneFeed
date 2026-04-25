@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OneFeedAggregator implements Aggregator {
+public class DefaultAggregator implements Aggregator {
     @Override
     public List<NormalizedContent> aggregate(int amount, List<Feed<?>> feeds,
         List<ContentFilter<?>> filters, HashMap<String, String> config) {
