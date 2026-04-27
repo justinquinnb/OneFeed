@@ -7,7 +7,7 @@
     <parent>
         <groupId>dev.jqb</groupId>
         <artifactId>onefeed</artifactId>
-        <version>0.0.2</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>onefeed-api</artifactId>
@@ -19,18 +19,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.44</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.pf4j</groupId>
-            <artifactId>pf4j</artifactId>
-            <version>3.15.0</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
