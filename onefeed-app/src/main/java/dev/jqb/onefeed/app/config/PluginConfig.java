@@ -17,6 +17,11 @@ public class PluginConfig {
 
     @Bean
     PluginManager pluginManager() {
+        if (directory == null || directory.isBlank()) {
+            throw new IllegalStateException(
+                "Missing required configuration property: onefeed.plugins.directory"
+            );
+        }
         return new DefaultPluginManager(Paths.get(directory));
     }
 }
