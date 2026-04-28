@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.api.model.data;
+package dev.jqb.onefeed.api.model.data.plugin;
 
 import lombok.Getter;
 import lombok.Setter;

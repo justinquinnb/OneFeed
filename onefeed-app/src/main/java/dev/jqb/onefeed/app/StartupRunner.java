@@ -1,10 +1,10 @@
 package dev.jqb.onefeed.app;
 
-import dev.jqb.onefeed.api.model.data.CronTask;
-import dev.jqb.onefeed.api.model.data.FixedDelayTask;
-import dev.jqb.onefeed.api.model.data.ScheduledTask;
-import dev.jqb.onefeed.api.model.pipeline.Provider;
+import dev.jqb.onefeed.api.model.data.plugin.CronTask;
+import dev.jqb.onefeed.api.model.data.plugin.FixedDelayTask;
+import dev.jqb.onefeed.api.model.data.plugin.ScheduledTask;
 import dev.jqb.onefeed.api.model.pipeline.ScheduledTasks;
+import dev.jqb.onefeed.app.util.OneFeedPluginManager;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +27,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class StartupRunner implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(StartupRunner.class);
-    private PluginManager pluginManager;
+    private OneFeedPluginManager oneFeedPluginManager;
     private ThreadPoolTaskScheduler pluginThreadPoolTaskScheduler;
 
     @Autowired
     public StartupRunner(
-        PluginManager pluginManager,
+        OneFeedPluginManager oneFeedPluginManager,
         ThreadPoolTaskScheduler pluginThreadPoolTaskScheduler
     ) {
-        this.pluginManager = pluginManager;
+        this.oneFeedPluginManager = oneFeedPluginManager;
         this.pluginThreadPoolTaskScheduler = pluginThreadPoolTaskScheduler;
     }
 
@@ -48,29 +48,29 @@ public class StartupRunner implements ApplicationRunner {
      * Initialize plugins from the configured plugin directory.
      */
     private void initPlugins() {
-        logger.info("Loading plugins from {}", pluginManager.getPluginsRoots());
-        pluginManager.loadPlugins();
-        String loadedPluginsList = pluginManager.getPlugins().stream().map(plugin ->
+        logger.info("Loading plugins from {}", oneFeedPluginManager.getPluginsRoots());
+        oneFeedPluginManager.loadPlugins();
+        String loadedPluginsList = oneFeedPluginManager.getPlugins().stream().map(plugin ->
             "\n\t" + plugin.getPluginId() +
                 " (v" + plugin.getDescriptor().getVersion() + ") by "
                 + plugin.getDescriptor().getProvider()
         ).collect(Collectors.joining());
 
-        if (pluginManager.getPlugins().isEmpty()) {
+        if (oneFeedPluginManager.getPlugins().isEmpty()) {
             logger.warn("No plugins found");
             return;
         }
 
-        logger.info("{} plugins loaded", pluginManager.getPlugins().size());
+        logger.info("{} plugins loaded", oneFeedPluginManager.getPlugins().size());
         logger.debug("Loaded plugins: {}", loadedPluginsList);
 
         logger.info("Starting plugins up...");
-        pluginManager.startPlugins();
+        oneFeedPluginManager.startPlugins();
         logger.info("All plugins started.");
 
         // Find all scheduled tasks
         logger.info("Initializing scheduled plugin tasks...");
-        List<ScheduledTask> discoveredTasks = findScheduledPluginTasks(this.pluginManager);
+        List<ScheduledTask> discoveredTasks = findScheduledPluginTasks(this.oneFeedPluginManager);
 
         // Schedule all the tasks
         scheduleTasks(pluginThreadPoolTaskScheduler, discoveredTasks);
@@ -80,17 +80,17 @@ public class StartupRunner implements ApplicationRunner {
     }
 
     /**
-     * Finds all scheduled tasks from plugins the {@code pluginManager} has loaded
-     * @param pluginManager the plugin manager to search plugins with
+     * Finds all scheduled tasks from plugins the {@code oneFeedPluginManager} has loaded
+     * @param oneFeedPluginManager the plugin manager to search plugins with
      *
      * @return a list of all the tasks plugins desire scheduling for
      */
-    private List<ScheduledTask> findScheduledPluginTasks(PluginManager pluginManager) {
+    private List<ScheduledTask> findScheduledPluginTasks(PluginManager oneFeedPluginManager) {
         logger.debug("Finding plugin tasks to schedule...");
         List<ScheduledTask> collectedTasks = new ArrayList<>();
 
         // Find all plugins implementing scheduled tasks
-        for (PluginWrapper pluginWrapper : pluginManager.getPlugins()) {
+        for (PluginWrapper pluginWrapper : oneFeedPluginManager.getPlugins()) {
             Plugin plugin = pluginWrapper.getPlugin();
             if (plugin instanceof ScheduledTasks) {
                 List<ScheduledTask> pluginTasks = ((ScheduledTasks) plugin).getScheduledTasks();
@@ -117,7 +117,7 @@ public class StartupRunner implements ApplicationRunner {
      * @param tasks the tasks to hand over to the {@code scheduler}
      */
     private void scheduleTasks(ThreadPoolTaskScheduler scheduler, List<ScheduledTask> tasks) {
-        logger.info("Scheduling {} tasks...", tasks.size());
+        logger.debug("Scheduling {} tasks...", tasks.size());
         // Now schedule the tasks for that plugin
         for (ScheduledTask task : tasks) {
             // Determine the type of scheduling it requires
