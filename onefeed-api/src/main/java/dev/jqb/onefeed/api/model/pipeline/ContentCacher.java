@@ -1,8 +1,8 @@
 package dev.jqb.onefeed.api.model.pipeline;
 
-import dev.jqb.onefeed.api.model.data.Author;
-import dev.jqb.onefeed.api.model.data.NormalizedContent;
-import dev.jqb.onefeed.api.model.data.Platform;
+import dev.jqb.onefeed.api.model.data.content.Author;
+import dev.jqb.onefeed.api.model.data.content.NormalizedContent;
+import dev.jqb.onefeed.api.model.data.content.Platform;
 import java.time.Instant;
 import java.util.List;
 import org.pf4j.ExtensionPoint;

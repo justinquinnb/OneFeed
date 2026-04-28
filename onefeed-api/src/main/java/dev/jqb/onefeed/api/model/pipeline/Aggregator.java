@@ -1,7 +1,7 @@
 package dev.jqb.onefeed.api.model.pipeline;
 
-import dev.jqb.onefeed.api.model.data.Feed;
-import dev.jqb.onefeed.api.model.data.NormalizedContent;
+import dev.jqb.onefeed.api.model.data.content.Feed;
+import dev.jqb.onefeed.api.model.data.content.NormalizedContent;
 import java.util.HashMap;
 import java.util.List;
 

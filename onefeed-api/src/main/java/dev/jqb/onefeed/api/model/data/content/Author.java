@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.api.model.data;
+package dev.jqb.onefeed.api.model.data.content;
 
 /**
  * Information about a piece of content's author
