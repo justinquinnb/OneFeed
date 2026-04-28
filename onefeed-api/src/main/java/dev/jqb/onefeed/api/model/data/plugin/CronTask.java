@@ -1,8 +1,7 @@
-package dev.jqb.onefeed.api.model.data;
+package dev.jqb.onefeed.api.model.data.plugin;
 
 import java.time.Duration;
 import lombok.Getter;
-import org.pf4j.PluginWrapper;
 
 /**
  * A task to perform on a cron schedule

@@ -1,8 +1,7 @@
-package dev.jqb.onefeed.api.model.data;
+package dev.jqb.onefeed.api.model.data.content;
 
 import dev.jqb.onefeed.api.model.pipeline.Provider;
 import java.time.Instant;
-import lombok.Getter;
 
 /**
  * {@link Provider}-generated content that has since been normalized,

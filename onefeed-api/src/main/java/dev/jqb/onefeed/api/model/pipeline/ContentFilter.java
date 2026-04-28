@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.api.model.pipeline;
 
-import dev.jqb.onefeed.api.model.data.ContentInfo;
+import dev.jqb.onefeed.api.model.data.content.ContentInfo;
 import java.util.List;
 
 /**

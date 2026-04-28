@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.api.model.data;
+package dev.jqb.onefeed.api.model.data.content;
 
 import java.time.Instant;
 import java.util.List;
