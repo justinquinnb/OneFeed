@@ -34,3 +34,5 @@ build/
 
 # Plugins directory for testing
 onefeed-app/plugins/
+plugin-env.yaml
+.env

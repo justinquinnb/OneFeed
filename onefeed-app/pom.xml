@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.5</version>
-        <relativePath/>
+        <groupId>dev.jqb</groupId>
+        <artifactId>onefeed</artifactId>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
+    <groupId>dev.jqb</groupId>
     <artifactId>onefeed-app</artifactId>
 
     <properties>
@@ -62,21 +62,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.pf4j</groupId>
-            <artifactId>pf4j</artifactId>
-            <version>3.15.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.44</version>
+            <groupId>dev.jqb</groupId>
+            <artifactId>onefeed-api</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>dev.jqb.onefeed</groupId>
-            <artifactId>api</artifactId>
-            <version>0.0.2</version>
-            <scope>compile</scope>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
 
