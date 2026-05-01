@@ -10,6 +10,8 @@ import reactor.core.publisher.Mono;
 
 /**
  * A provider of feed content via APIs
+ *
+ * @param <Out> the type of DTO that the provider produces
  */
 public interface Provider<Out extends RawContent> extends ExtensionPoint {
 

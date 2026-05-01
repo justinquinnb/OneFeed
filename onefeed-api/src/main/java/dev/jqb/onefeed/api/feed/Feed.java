@@ -11,6 +11,8 @@ import reactor.core.publisher.Mono;
 
 /**
  * A single feed of content
+ *
+ * @param <Out> the DTO type that the feed produces
  */
 @Getter
 public class Feed<Out extends RawContent> {
@@ -28,17 +30,18 @@ public class Feed<Out extends RawContent> {
     /**
      * This feed's metadata
      */
-    private final FeedInfo info;
+    private final FeedInfo<? extends Author> info;
 
     /**
-     * Creates a new {@link Feed} for the given {@code provider} and {@code author}.
+     * Creates a new {@code Feed} for the given {@code provider} and {@code author}.
+     *
      * @param provider the provider of content on the target platform
      * @param author the author of the feed on the platform
      */
     public Feed(Provider<Out> provider, Author author) {
         this.provider = provider;
         this.author = author;
-        this.info = new FeedInfo(provider.getPlatformInfo(), author);
+        this.info = new FeedInfo<>(provider.getPlatformInfo(), author);
     }
 
     /**

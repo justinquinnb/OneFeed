@@ -10,7 +10,8 @@ import lombok.Setter;
  *
  * @param <Out> the type of {@link RawContent} contained in this response
  */
-@Getter @Setter
+@Getter
+@Setter
 public class ContentPackage<Out extends RawContent> {
     /**
      * The requested content, normalized and ready for distribution
@@ -18,7 +19,19 @@ public class ContentPackage<Out extends RawContent> {
     private List<Out> content;
 
     /**
-     * The time at which {@code this}  was generated
+     * The time at which {@code this} package was generated
      */
     private Instant generated;
+
+    /**
+     * Constructs a {@code ContentPackage} from the given {@code content}, generated at the provided
+     * timestamp.
+     *
+     * @param content the batch of content generated at the given timestamp
+     * @param generated the timestamp the {@code content} was generated at
+     */
+    public ContentPackage(List<Out> content, Instant generated) {
+        this.content = content;
+        this.generated = generated;
+    }
 }

@@ -1,13 +1,15 @@
 package dev.jqb.onefeed.api.feed;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Information about a piece of content's author
  */
 @Getter
-@AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class Author {
 
     /**
@@ -20,4 +22,16 @@ public class Author {
      * The URL of the author's feed on the content's platform
      */
     private String feedUrl;
+
+    /**
+     * Constructs a piece of {@code Author} info.
+     *
+     * @param username the username of the author on the source's platform, devoid of any
+     *                 platform-specific prefixes like {@code @}
+     * @param feedUrl the URL of the author's feed on the source's platform
+     */
+    public Author(String username, String feedUrl) {
+        this.username = username;
+        this.feedUrl = feedUrl;
+    }
 }

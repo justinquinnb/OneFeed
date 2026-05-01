@@ -19,7 +19,6 @@ import org.yaml.snakeyaml.Yaml;
 
 @Configuration
 @ConfigurationProperties("onefeed.plugins")
-@Getter @Setter
 public class PluginConfig {
     private String directoryPath;
     private String envMapPath;

@@ -2,9 +2,7 @@ package dev.jqb.onefeed.api.pipeline;
 
 import dev.jqb.onefeed.api.caching.CacheEntry;
 import dev.jqb.onefeed.api.content.NormalizedContent;
-import dev.jqb.onefeed.api.feed.Author;
 import dev.jqb.onefeed.api.feed.FeedInfo;
-import dev.jqb.onefeed.api.feed.Platform;
 import java.time.Instant;
 import java.util.List;
 import org.pf4j.ExtensionPoint;
@@ -44,7 +42,7 @@ public interface ContentCacher<T extends NormalizedContent> extends ExtensionPoi
      *
      * @param content the content to cache
      *
-     * @implSpec If the cache already contains a piece of content, update any changed fields
+     * @implNote the cache already contains a piece of content, update any changed fields
      * and its last updated timestamp
      */
     void cache(List<CacheEntry<T>> content);

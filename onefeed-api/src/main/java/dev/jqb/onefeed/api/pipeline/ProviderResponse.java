@@ -2,9 +2,9 @@ package dev.jqb.onefeed.api.pipeline;
 
 import dev.jqb.onefeed.api.content.ContentPackage;
 import dev.jqb.onefeed.api.content.RawContent;
+import java.time.Instant;
 import java.util.List;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -13,11 +13,30 @@ import lombok.Setter;
  *
  * @param <Out> the type of {@link RawContent} contained in this response
  */
-@Getter @Setter
+@Getter
+@Setter
 public class ProviderResponse<Out extends RawContent> extends ContentPackage<Out> {
     /**
      * The {@link ContentFilter}s that were used to derive the content
      */
-    @NonNull
-    private List<ContentFilter<?>> appliedFilters;
+    private List<ContentFilter<Out>> appliedFilters;
+
+    /**
+     * Constructs a {@code ProviderResponse} with the provided {@code content}, the timestamp it was
+     * generated at, and the filters that were applied to derive the enclosed list of
+     * {@code content}.
+     *
+     * @param content the content returned by the provider after having been filtered by the
+     *                {@code appliedFilters}
+     * @param generated the timestamp the {@code content} was generated at
+     * @param appliedFilters the {@link ContentFilter}s that were used to derive that final list of
+     *                       {@code content}
+     */
+    public ProviderResponse(List<Out> content, Instant generated,
+        List<ContentFilter<Out>> appliedFilters
+    ) {
+        super(content, generated);
+        this.appliedFilters = appliedFilters;
+    }
+
 }

@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.api.feed;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class FeedInfo<T extends Author> {
 
     /**
@@ -24,7 +26,8 @@ public class FeedInfo<T extends Author> {
     private T author;
 
     /**
-     * Creates a new {@link FeedInfo} object with the given {@code author} and {@code platform}.
+     * Creates a new {@code FeedInfo} object with the given {@code author} and {@code platform}.
+     *
      * @param platform the platform the content is hosted on/comes from/has been posted to
      * @param author the author of the content
      */
