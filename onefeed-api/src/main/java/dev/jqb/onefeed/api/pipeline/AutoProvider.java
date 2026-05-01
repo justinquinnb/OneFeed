@@ -1,7 +1,7 @@
-package dev.jqb.onefeed.api.model.pipeline;
+package dev.jqb.onefeed.api.pipeline;
 
-import dev.jqb.onefeed.api.model.data.content.ContentPackage;
-import dev.jqb.onefeed.api.model.data.content.RawContent;
+import dev.jqb.onefeed.api.content.ContentPackage;
+import dev.jqb.onefeed.api.content.RawContent;
 
 /**
  * Denotes a {@link Provider} capable of notifying OneFeed when a feed has been updated via webhooks

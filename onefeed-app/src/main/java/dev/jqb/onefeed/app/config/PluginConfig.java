@@ -1,17 +1,15 @@
 package dev.jqb.onefeed.app.config;
 
-import dev.jqb.onefeed.api.model.data.plugin.PluginEnv;
-import dev.jqb.onefeed.api.model.data.plugin.PluginEnvMap;
+import dev.jqb.onefeed.api.plugin.PluginEnv;
+import dev.jqb.onefeed.api.plugin.PluginEnvMap;
 import dev.jqb.onefeed.app.util.OneFeedPluginManager;
 import io.github.cdimascio.dotenv.Dotenv;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
-import org.pf4j.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;

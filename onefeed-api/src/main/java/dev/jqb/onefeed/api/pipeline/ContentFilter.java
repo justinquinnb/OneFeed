@@ -1,14 +1,14 @@
-package dev.jqb.onefeed.api.model.pipeline;
+package dev.jqb.onefeed.api.pipeline;
 
-import dev.jqb.onefeed.api.model.data.content.ContentInfo;
+import dev.jqb.onefeed.api.content.Content;
 import java.util.List;
 
 /**
  * A means of filtering provider content post-retrieval
  *
- * @param <T> the type of {@link ContentInfo} to filter
+ * @param <T> the type of {@link Content} to filter
  */
-public interface ContentFilter<T extends ContentInfo> {
+public interface ContentFilter<T extends Content> {
 
     /**
      * Filters the given {@code content}.

@@ -1,6 +1,6 @@
-package dev.jqb.onefeed.api.model.pipeline;
+package dev.jqb.onefeed.api.pipeline;
 
-import dev.jqb.onefeed.api.model.data.content.NormalizedContent;
+import dev.jqb.onefeed.api.content.NormalizedContent;
 import org.pf4j.ExtensionPoint;
 
 /**
