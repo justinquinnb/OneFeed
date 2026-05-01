@@ -1,7 +1,9 @@
-package dev.jqb.onefeed.api.model.data.content;
+package dev.jqb.onefeed.api.feed;
 
-import dev.jqb.onefeed.api.model.pipeline.ContentFilter;
-import dev.jqb.onefeed.api.model.pipeline.Provider;
+import dev.jqb.onefeed.api.content.RawContent;
+import dev.jqb.onefeed.api.pipeline.ContentFilter;
+import dev.jqb.onefeed.api.pipeline.Provider;
+import dev.jqb.onefeed.api.pipeline.ProviderResponse;
 import java.util.HashMap;
 import java.util.List;
 import lombok.Getter;
@@ -56,6 +58,6 @@ public class Feed<Out extends RawContent> {
         List<ContentFilter<?>> filters,
         HashMap<String, String> config
     ) {
-        return provider.getContent(author.username(), amount, filters, config);
+        return provider.getContent(author.getUsername(), amount, filters, config);
     }
 }

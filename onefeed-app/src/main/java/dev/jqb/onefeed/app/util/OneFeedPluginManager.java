@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.app.util;
 
-import dev.jqb.onefeed.api.model.data.plugin.PluginEnvMap;
+import dev.jqb.onefeed.api.plugin.PluginEnvMap;
 import java.nio.file.Path;
 import java.util.Objects;
 import org.pf4j.DefaultPluginManager;

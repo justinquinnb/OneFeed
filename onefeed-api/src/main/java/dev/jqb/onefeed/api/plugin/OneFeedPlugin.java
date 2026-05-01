@@ -1,6 +1,6 @@
-package dev.jqb.onefeed.api.model.data.plugin;
+package dev.jqb.onefeed.api.plugin;
 
-import dev.jqb.onefeed.api.model.pipeline.Provider;
+import dev.jqb.onefeed.api.pipeline.Provider;
 import lombok.Getter;
 import lombok.Setter;
 import org.pf4j.Plugin;

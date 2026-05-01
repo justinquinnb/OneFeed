@@ -1,9 +1,8 @@
 package dev.jqb.onefeed.app.util;
 
-import dev.jqb.onefeed.api.model.data.plugin.PluginEnv;
-import dev.jqb.onefeed.api.model.data.plugin.PluginEnvMap;
+import dev.jqb.onefeed.api.plugin.PluginEnv;
+import dev.jqb.onefeed.api.plugin.PluginEnvMap;
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import org.pf4j.DefaultPluginFactory;
 import org.pf4j.Plugin;
 import org.pf4j.PluginWrapper;
