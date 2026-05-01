@@ -12,7 +12,7 @@ public final class FixedDelayTask extends ScheduledTask {
     /**
      * The delay between each execution of the task
      */
-    private Duration delay;
+    private final Duration delay;
 
     /**
      * Creates a new runnable task to execute at the given, fixed {@code delay}.

@@ -19,9 +19,9 @@ public final class CronTask extends ScheduledTask {
      *
      * @param task the task to execute
      * @param name the human-friendly name of the task
-     * @param delay the delay between each execution of the task
+     * @param cronExpression the cron schedule to run the task on
      */
-    public CronTask(Runnable task, String name, String cronExpression, Duration delay) {
+    public CronTask(Runnable task, String name, String cronExpression) {
         super(task, name);
         this.cronExpression = cronExpression;
     }

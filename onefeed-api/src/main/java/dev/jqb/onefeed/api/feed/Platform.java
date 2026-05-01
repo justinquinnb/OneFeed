@@ -1,11 +1,35 @@
 package dev.jqb.onefeed.api.feed;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Information about a content source, like Instagram
- *
- * @param name The name of the content source
- * @param url  The main page of the content source
  */
-public record Platform(String name, String url) {
-    // Intentionally empty...
+@Getter
+@Setter
+@NoArgsConstructor
+public class Platform {
+
+    /**
+     * The name of the platform, like Instagram
+     */
+    private String name;
+
+    /**
+     * The URL of the platform's homepage
+     */
+    private String homepageUrl;
+
+    /**
+     * Constructs a piece of {@code Platform} info.
+     *
+     * @param name the name of the platform, like Instagram
+     * @param homepageUrl a URL to the platform's homepage
+     */
+    public Platform(String name, String homepageUrl) {
+        this.name = name;
+        this.homepageUrl = homepageUrl;
+    }
 }

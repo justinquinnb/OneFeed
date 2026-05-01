@@ -13,13 +13,13 @@ import lombok.Setter;
 /**
  * The default implementation of {@link NormalizedContent}
  */
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class OneFeedContent extends NormalizedContent {
 
     /**
-     * The title of the content, using CommonMark-Flavored Markdown for any light formatting.
+     * The title of the content, using CommonMark-Flavored Markdown for any formatting.
      *
      * @see <a href="https://spec.commonmark.org/0.31.2/">CommonMark Spec</a>
      */
@@ -27,7 +27,7 @@ public class OneFeedContent extends NormalizedContent {
     private String title;
 
     /**
-     * The primary, textual content, using CommonMark-Flavored Markdown for any light formatting.
+     * The primary textual content, using CommonMark-Flavored Markdown for any formatting
      *
      * @see <a href="https://spec.commonmark.org/0.31.2/">CommonMark Spec</a>
      */
@@ -48,8 +48,46 @@ public class OneFeedContent extends NormalizedContent {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int primaryReactionCount;
 
-    public OneFeedContent(String text, List<Media> media, int primaryReactionCount,
-        SourceInfo<Profile> source, Instant published) {
+    /**
+     * Constructs a piece of {@code OneFeedContent}, containing just body text. All other fields may
+     * be set with setters.
+     *
+     * @param body the primary textual content, using CommonMark-Flavored Markdown for any
+     *             formatting
+     * @param source the origin of the {@code Content}
+     * @param published the time the {@code Content} was published on its {@code source}
+     */
+    public OneFeedContent(String body, SourceInfo<Profile> source, Instant published) {
+        super(source, published);
+    }
+
+    /**
+     * Constructs a piece of {@code OneFeedContent}, containing just media. All other fields may be
+     * set with setters.
+     *
+     * @param media any attached media, such as links, videos, images, or files, in their desired
+     *              order of presentation or priority (high/first to low/last)
+     * @param source the origin of the {@code Content}
+     * @param published the time the {@code Content} was published on its {@code source}
+     */
+    public OneFeedContent(List<Media> media, SourceInfo<Profile> source, Instant published) {
+        super(source, published);
+    }
+
+    /**
+     * Constructs a piece of {@code OneFeedContent}, containing both body text and media. All other
+     * fields may be set with setters.
+     *
+     * @param body the primary textual content, using CommonMark-Flavored Markdown for any
+     *             formatting
+     * @param media any attached media, such as links, videos, images, or files, in their desired
+     *              order of presentation or priority (high/first to low/last)
+     * @param source the origin of the {@code Content}
+     * @param published the time the {@code Content} was published on its {@code source}
+     */
+    public OneFeedContent(String body, List<Media> media, SourceInfo<Profile> source,
+        Instant published
+    ) {
         super(source, published);
     }
 }
