@@ -16,18 +16,18 @@ import reactor.core.publisher.Mono;
 public interface Provider<Out extends RawContent> extends ExtensionPoint {
 
     /**
-     * Attempts to retrieve the given {@code amount} of content from this provider's content source.
+     * Fetches the given {@code amount} of most recently published content from {@code this}
+     * provider's content source for the given {@code author}.
      * 
      * @param author the author of the content to retrieve
      * @param amount the target amount of content to retrieve
      * @param filters the filters to try applying if supported by the API or best performed on the 
      *                {@link Out} content itself
-     * @param config a map of configuration options for the provider to use, containing info like 
-     *               API keys
+     * @param config a map of configuration options for this specific request
      *               
-     * @return a {@link Mono} for the {@link ProviderResponse} containing the retrieved content
+     * @return a {@link Mono} that emits a {@link ProviderResponse} containing the retrieved content
      */
-    Mono<ProviderResponse<Out>> getContent(
+    Mono<ProviderResponse<Out>> fetchRecentContent(
         String author,
         int amount,
         List<ContentFilter<?>> filters,
