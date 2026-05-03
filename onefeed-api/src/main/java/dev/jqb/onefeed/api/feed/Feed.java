@@ -45,22 +45,20 @@ public class Feed<Out extends RawContent> {
     }
 
     /**
-     * Attempts to get the desired {@code amount} of content from the {@link #author} on
-     * {@link #provider} with the given {@code filters} applied.
+     * Fetches the given {@code amount} of most recently published content from {@code this} feed.
      *
      * @param amount the target amount of content to retrieve
      * @param filters the filters to try applying if supported by the API or best performed on the
      *                {@link Out} content itself
-     * @param config a map of configuration options for the provider to use, containing info like
-     *               API keys
+     * @param config a map of configuration options for this specific request
      *
-     * @return a {@link Mono} for the {@link ProviderResponse} containing the retrieved content
+     * @return a {@link Mono} that emits a {@link ProviderResponse} containing the retrieved content
      */
     public Mono<ProviderResponse<Out>> getContent(
         int amount,
         List<ContentFilter<?>> filters,
         HashMap<String, String> config
     ) {
-        return provider.getContent(author.getUsername(), amount, filters, config);
+        return provider.fetchRecentContent(author.getUsername(), amount, filters, config);
     }
 }
