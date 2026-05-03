@@ -17,7 +17,7 @@ public class PluginEnv {
     private HashMap<String, String> pluginVars;
 
     /**
-     * A mapping of feed author names to arbitrary author/feed-specific KVPs
+     * A mapping of feed names to arbitrary feed-specific KVPs
      */
     private HashMap<String, HashMap<String, String>> feeds;
 
@@ -28,7 +28,7 @@ public class PluginEnv {
      *
      * @param pluginVars arbitrarily keyed plugin-specific environment variables, representing
      *                   plugin-wide data
-     * @param feeds a mapping of feed author names to arbitrary author/feed-specific KVPs
+     * @param feeds a mapping of feed names to arbitrary feed-specific KVPs
      */
     public PluginEnv(HashMap<String, String> pluginVars,
         HashMap<String, HashMap<String, String>> feeds

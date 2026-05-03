@@ -25,23 +25,17 @@ public class Feed<Out extends RawContent> {
     /**
      * The author of the content in this feed
      */
-    private final Author author;
+    private final String name;
 
     /**
-     * This feed's metadata
-     */
-    private final FeedInfo<? extends Author> info;
-
-    /**
-     * Creates a new {@code Feed} for the given {@code provider} and {@code author}.
+     * Creates a new {@code Feed} for the given {@code provider} and feed {@code name}.
      *
      * @param provider the provider of content on the target platform
-     * @param author the author of the feed on the platform
+     * @param name the name of the feed
      */
-    public Feed(Provider<Out> provider, Author author) {
+    public Feed(Provider<Out> provider, String name) {
         this.provider = provider;
-        this.author = author;
-        this.info = new FeedInfo<>(provider.getPlatformInfo(), author);
+        this.name = name;
     }
 
     /**
@@ -54,11 +48,11 @@ public class Feed<Out extends RawContent> {
      *
      * @return a {@link Mono} that emits a {@link ProviderResponse} containing the retrieved content
      */
-    public Mono<ProviderResponse<Out>> getContent(
+    public Mono<ProviderResponse<Out>> fetchRecentContent(
         int amount,
         List<ContentFilter<?>> filters,
         HashMap<String, String> config
     ) {
-        return provider.fetchRecentContent(author.getUsername(), amount, filters, config);
+        return provider.fetchRecentContent(name, amount, filters, config);
     }
 }
