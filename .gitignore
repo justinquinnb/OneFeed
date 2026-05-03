@@ -36,3 +36,4 @@ build/
 onefeed-app/plugins/
 plugin-env.yaml
 .env
+*.sh

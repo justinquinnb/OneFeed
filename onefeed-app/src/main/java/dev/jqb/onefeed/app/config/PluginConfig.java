@@ -69,10 +69,10 @@ public class PluginConfig {
             replaceEnvReferences(pluginVars, dotEnv);
 
             // Replace feed values
-            HashMap<String, HashMap<String, String>> feedVars = pluginEnv.getFeeds();
-            for (String author : feedVars.keySet()) {
-                HashMap<String, String> authorVars = feedVars.get(author);
-                replaceEnvReferences(authorVars, dotEnv);
+            HashMap<String, HashMap<String, String>> feedsMap = pluginEnv.getFeeds();
+            for (String feedName : feedsMap.keySet()) {
+                HashMap<String, String> feedVars = feedsMap.get(feedName);
+                replaceEnvReferences(feedVars, dotEnv);
             }
         }
     }

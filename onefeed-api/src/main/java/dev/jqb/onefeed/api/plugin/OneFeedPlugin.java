@@ -13,11 +13,8 @@ import org.pf4j.Plugin;
 public abstract class OneFeedPlugin extends Plugin {
 
     /**
-     * The environment variables specific to this plugin, as specified in OneFeed's {@code .env}
-     * file, with their plugin-ID prefix removed from the keys.
-     *
-     * @implNote Keys for accessing the content of specific authors are prefixed by the author's
-     * name, normalized to uppercase with spaces replaced by underscores.
+     * The environment variables specific to this plugin, as specified in OneFeed's
+     * {@code plugin-env.yaml} and {@code .env} files.
      */
     protected PluginEnv pluginEnv;
 

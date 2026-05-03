@@ -17,9 +17,9 @@ public interface Provider<Out extends RawContent> extends ExtensionPoint {
 
     /**
      * Fetches the given {@code amount} of most recently published content from {@code this}
-     * provider's content source for the given {@code author}.
+     * provider's content source for the given feed {@code name}.
      * 
-     * @param author the author of the content to retrieve
+     * @param name the name of the feed whose content to retrieve
      * @param amount the target amount of content to retrieve
      * @param filters the filters to try applying if supported by the API or best performed on the 
      *                {@link Out} content itself
@@ -28,7 +28,7 @@ public interface Provider<Out extends RawContent> extends ExtensionPoint {
      * @return a {@link Mono} that emits a {@link ProviderResponse} containing the retrieved content
      */
     Mono<ProviderResponse<Out>> fetchRecentContent(
-        String author,
+        String name,
         int amount,
         List<ContentFilter<?>> filters,
         HashMap<String, String> config
