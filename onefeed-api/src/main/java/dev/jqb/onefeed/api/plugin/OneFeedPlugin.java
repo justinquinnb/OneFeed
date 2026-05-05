@@ -11,21 +11,5 @@ import org.pf4j.Plugin;
 @Getter
 @Setter
 public abstract class OneFeedPlugin extends Plugin {
-
-    /**
-     * The environment variables specific to this plugin, as specified in OneFeed's
-     * {@code plugin-env.yaml} and {@code .env} files.
-     */
-    protected PluginEnv pluginEnv;
-
-    /**
-     * Constructs a new {@link OneFeedPlugin} with the given {@code pluginEnv}.
-     * @param pluginEnv the environment variables specific to this plugin
-     *
-     * @see #pluginEnv
-     */
-    protected OneFeedPlugin(PluginEnv pluginEnv) {
-        super();
-        this.pluginEnv = pluginEnv;
-    }
+    // Nothing yet...
 }

@@ -5,7 +5,6 @@ import dev.jqb.onefeed.api.feed.Platform;
 import dev.jqb.onefeed.api.impl.OneFeedContent;
 import java.util.HashMap;
 import java.util.List;
-import org.pf4j.ExtensionPoint;
 import reactor.core.publisher.Mono;
 
 /**
@@ -13,7 +12,7 @@ import reactor.core.publisher.Mono;
  *
  * @param <Out> the type of DTO that the provider produces
  */
-public interface Provider<Out extends RawContent> extends ExtensionPoint {
+public interface Provider<Out extends RawContent> {
 
     /**
      * Fetches the given {@code amount} of most recently published content from {@code this}
