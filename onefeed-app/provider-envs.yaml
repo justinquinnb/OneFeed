@@ -1,0 +1,8 @@
+provider-envs:
+  onefeed-instagram-plugin:
+    pluginVars:
+      domain: "graph.facebook.com"
+    feeds:
+      "justinquinnb":
+        accessToken: "${INSTA_ACCESS_TOKEN}"
+        isLongLived: "TRUE"

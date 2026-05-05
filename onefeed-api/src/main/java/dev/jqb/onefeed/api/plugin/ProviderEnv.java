@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A plugin's specific environment variables, including those specific to any of its feeds
+ * A provider plugin's specific environment variables, including those specific to any of its feeds
  */
 @Getter
 @Setter
-public class PluginEnv {
+public class ProviderEnv {
 
     /**
      * Arbitrarily keyed plugin-specific environment variables. Represents plugin-wide data.
@@ -21,16 +21,16 @@ public class PluginEnv {
      */
     private HashMap<String, HashMap<String, String>> feeds;
 
-    public PluginEnv() {}
+    public ProviderEnv() {}
 
     /**
-     * Creates a new {@link PluginEnv} object with the given {@code pluginVars} and {@code feedVars}
+     * Creates a new {@link ProviderEnv} object with the given {@code pluginVars} and {@code feedVars}
      *
      * @param pluginVars arbitrarily keyed plugin-specific environment variables, representing
      *                   plugin-wide data
      * @param feeds a mapping of feed names to arbitrary feed-specific KVPs
      */
-    public PluginEnv(HashMap<String, String> pluginVars,
+    public ProviderEnv(HashMap<String, String> pluginVars,
         HashMap<String, HashMap<String, String>> feeds
     ) {
         this.pluginVars = pluginVars;

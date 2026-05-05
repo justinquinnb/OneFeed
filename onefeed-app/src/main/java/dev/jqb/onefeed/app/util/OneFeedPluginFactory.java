@@ -1,7 +1,8 @@
 package dev.jqb.onefeed.app.util;
 
-import dev.jqb.onefeed.api.plugin.PluginEnv;
-import dev.jqb.onefeed.api.plugin.PluginEnvMap;
+import dev.jqb.onefeed.api.plugin.OneFeedProviderPlugin;
+import dev.jqb.onefeed.api.plugin.ProviderEnv;
+import dev.jqb.onefeed.api.plugin.ProviderEnvsFile;
 import java.lang.reflect.Constructor;
 import org.pf4j.DefaultPluginFactory;
 import org.pf4j.Plugin;
@@ -19,19 +20,27 @@ public class OneFeedPluginFactory extends DefaultPluginFactory {
     /**
      * The complete set of environment variables OneFeed has been started with,
      */
-    private PluginEnvMap envMap;
+    private final ProviderEnvsFile providerEnvsFile;
 
-    public OneFeedPluginFactory(PluginEnvMap envMap) {
+    public OneFeedPluginFactory(ProviderEnvsFile providerEnvsFile) {
         super();
-        this.envMap = envMap;
+        this.providerEnvsFile = providerEnvsFile;
     }
 
     @Override
     protected Plugin createInstance(Class<?> pluginClass, PluginWrapper pluginWrapper) {
-        PluginEnv pluginEnv = envMap.getPlugins().get(pluginWrapper.getPluginId());
         try {
-            Constructor<?> constructor = pluginClass.getConstructor(PluginEnv.class);
-            return (Plugin) constructor.newInstance(pluginEnv);
+            // Pass the provider env map to the class if it's a plugin provider
+            if (OneFeedProviderPlugin.class.isAssignableFrom(pluginClass)) {
+                ProviderEnv pluginEnv = providerEnvsFile.getProviderEnvs()
+                    .get(pluginWrapper.getPluginId());
+
+                Constructor<?> constructor = pluginClass.getConstructor(ProviderEnv.class);
+                return (Plugin) constructor.newInstance(pluginEnv);
+            }
+
+            Constructor<?> constructor = pluginClass.getConstructor();
+            return (Plugin) constructor.newInstance();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
