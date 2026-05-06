@@ -12,26 +12,26 @@ import lombok.Setter;
 public class ProviderEnv {
 
     /**
-     * Arbitrarily keyed plugin-specific environment variables. Represents plugin-wide data.
+     * Plugin-specific configuration of arbitrary shape
      */
-    private HashMap<String, String> pluginVars;
+    private HashMap<String, Object> pluginVars;
 
     /**
-     * A mapping of feed names to arbitrary feed-specific KVPs
+     * A mapping of arbitrary feed names to arbitrarily shaped, feed-specific configuration data
      */
-    private HashMap<String, HashMap<String, String>> feeds;
+    private HashMap<String, HashMap<String, Object>> feeds;
 
     public ProviderEnv() {}
 
     /**
      * Creates a new {@link ProviderEnv} object with the given {@code pluginVars} and {@code feedVars}
      *
-     * @param pluginVars arbitrarily keyed plugin-specific environment variables, representing
-     *                   plugin-wide data
-     * @param feeds a mapping of feed names to arbitrary feed-specific KVPs
+     * @param pluginVars plugin-specific configuration of arbitrary shape
+     * @param feeds a mapping of arbitrary feed names to arbitrarily shaped, feed-specific
+     *              configuration data
      */
-    public ProviderEnv(HashMap<String, String> pluginVars,
-        HashMap<String, HashMap<String, String>> feeds
+    public ProviderEnv(HashMap<String, Object> pluginVars,
+        HashMap<String, HashMap<String, Object>> feeds
     ) {
         this.pluginVars = pluginVars;
         this.feeds = feeds;
