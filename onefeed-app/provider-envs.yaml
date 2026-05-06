@@ -1,8 +1,10 @@
 provider-envs:
   onefeed-instagram-plugin:
     pluginVars:
-      domain: "graph.facebook.com"
     feeds:
       "justinquinnb":
-        accessToken: "${INSTA_ACCESS_TOKEN}"
-        isLongLived: "TRUE"
+        loginType: "facebook"
+        accessToken:
+          value: "${FB_ACCESS_TOKEN}"
+          isLongLived: "TRUE"
+          autoRefresh: "TRUE"
