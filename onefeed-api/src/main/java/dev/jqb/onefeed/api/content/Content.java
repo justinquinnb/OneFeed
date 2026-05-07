@@ -1,7 +1,6 @@
 package dev.jqb.onefeed.api.content;
 
-import dev.jqb.onefeed.api.feed.Author;
-import dev.jqb.onefeed.api.feed.SourceInfo;
+import dev.jqb.onefeed.api.feed.Source;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,7 @@ public abstract class Content {
     /**
      * Gets information about the source of the content.
      */
-    protected SourceInfo<? extends Author> source;
+    protected Source source;
 
     /**
      * Gets time at which the content was published.
@@ -34,7 +33,7 @@ public abstract class Content {
      * @param source the origin of the {@code Content}
      * @param published the time the {@code Content} was published on its {@code source}
      */
-    public Content(SourceInfo<? extends Author> source, Instant published) {
+    public Content(Source source, Instant published) {
         this.source = source;
         this.published = published;
     }

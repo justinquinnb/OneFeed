@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.api.plugin;
 
-import java.time.Duration;
 import lombok.Getter;
 
 /**

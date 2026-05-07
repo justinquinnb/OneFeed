@@ -1,58 +1,48 @@
 package dev.jqb.onefeed.api.feed;
 
-import dev.jqb.onefeed.api.content.RawContent;
-import dev.jqb.onefeed.api.pipeline.ContentFilter;
-import dev.jqb.onefeed.api.pipeline.Provider;
-import dev.jqb.onefeed.api.pipeline.ProviderResponse;
-import java.util.HashMap;
-import java.util.List;
 import lombok.Getter;
-import reactor.core.publisher.Mono;
+import lombok.Setter;
 
 /**
- * A single feed of content
+ * Information about a single feed of content
  *
- * @param <Out> the DTO type that the feed produces
  */
 @Getter
-public class Feed<Out extends RawContent> {
+@Setter
+public class Feed {
 
     /**
-     * The provider that this feed is sourced from
+     * The unique identifier of the provider exposing the feed
      */
-    private final Provider<Out> provider;
+    private String providerId;
 
     /**
-     * The author of the content in this feed
+     * The name of the feed
      */
-    private final String name;
+    private String name;
+
+    /**
+     * The platform that the content is hosted on/comes from/has been posted to
+     */
+    private Platform platform;
+
+    /**
+     * The author of the content
+     */
+    private Author author;
 
     /**
      * Creates a new {@code Feed} for the given {@code provider} and feed {@code name}.
      *
-     * @param provider the provider of content on the target platform
+     * @param providerId the unique identifier of the provider exposing the feed
      * @param name the name of the feed
+     * @param platform the platform the content is hosted on/comes from/has been posted to
+     * @param author the author of the content
      */
-    public Feed(Provider<Out> provider, String name) {
-        this.provider = provider;
+    public Feed(String providerId, String name, Platform platform, Author author) {
+        this.providerId = providerId;
         this.name = name;
-    }
-
-    /**
-     * Fetches the given {@code amount} of most recently published content from {@code this} feed.
-     *
-     * @param amount the target amount of content to retrieve
-     * @param filters the filters to try applying if supported by the API or best performed on the
-     *                {@link Out} content itself
-     * @param config a map of configuration options for this specific request
-     *
-     * @return a {@link Mono} that emits a {@link ProviderResponse} containing the retrieved content
-     */
-    public Mono<ProviderResponse<Out>> fetchRecentContent(
-        int amount,
-        List<ContentFilter<?>> filters,
-        HashMap<String, String> config
-    ) {
-        return provider.fetchRecentContent(name, amount, filters, config);
+        this.platform = platform;
+        this.author = author;
     }
 }
