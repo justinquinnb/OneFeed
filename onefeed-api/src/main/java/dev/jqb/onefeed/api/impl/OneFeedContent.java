@@ -2,8 +2,7 @@ package dev.jqb.onefeed.api.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.api.content.NormalizedContent;
-import dev.jqb.onefeed.api.feed.Profile;
-import dev.jqb.onefeed.api.feed.SourceInfo;
+import dev.jqb.onefeed.api.feed.Source;
 import java.time.Instant;
 import java.util.List;
 import lombok.Getter;
@@ -57,7 +56,7 @@ public class OneFeedContent extends NormalizedContent {
      * @param source the origin of the {@code Content}
      * @param published the time the {@code Content} was published on its {@code source}
      */
-    public OneFeedContent(String body, SourceInfo<Profile> source, Instant published) {
+    public OneFeedContent(String body, Source source, Instant published) {
         super(source, published);
     }
 
@@ -70,7 +69,7 @@ public class OneFeedContent extends NormalizedContent {
      * @param source the origin of the {@code Content}
      * @param published the time the {@code Content} was published on its {@code source}
      */
-    public OneFeedContent(List<Media> media, SourceInfo<Profile> source, Instant published) {
+    public OneFeedContent(List<Media> media, Source source, Instant published) {
         super(source, published);
     }
 
@@ -85,7 +84,7 @@ public class OneFeedContent extends NormalizedContent {
      * @param source the origin of the {@code Content}
      * @param published the time the {@code Content} was published on its {@code source}
      */
-    public OneFeedContent(String body, List<Media> media, SourceInfo<Profile> source,
+    public OneFeedContent(String body, List<Media> media, Source source,
         Instant published
     ) {
         super(source, published);

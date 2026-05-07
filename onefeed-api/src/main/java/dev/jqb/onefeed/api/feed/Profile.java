@@ -26,13 +26,16 @@ public class Profile extends Author {
      * Constructs a user {@code Profile} object, effectively a more personalized piece of
      * {@link Author} info.
      *
-     * @param username the username of the author on the source's platform, devoid of any
+     * @param id the unique, permanent identifier of the author on the source's platform
+     * @param handle the handle of the author on the source's platform, devoid of any
      *                 platform-specific prefixes like {@code @}
      * @param feedUrl the URL of the author's feed on the source's platform
      * @param name the non-unique, human name or nickname of the author
      * @param profilePicSrc a URL for their profile picture on the platform
      */
-    public Profile(String username, String feedUrl, String name, String profilePicSrc) {
-        super(username, feedUrl);
+    public Profile(String id, String handle, String feedUrl, String name, String profilePicSrc) {
+        super(id, handle, feedUrl);
+        this.name = name;
+        this.profilePicSrc = profilePicSrc;
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultAggregator implements Aggregator {
     @Override
-    public List<NormalizedContent> aggregate(int amount, List<Feed<?>> feeds,
+    public List<NormalizedContent> aggregate(int amount, List<Feed> feeds,
         List<ContentFilter<?>> filters, HashMap<String, String> config) {
         return null;
     }

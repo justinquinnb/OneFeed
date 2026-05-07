@@ -22,6 +22,6 @@ public interface Aggregator {
      *
      * @return a list of all content that was retrieved, in descending order of creation timestamp
      */
-    List<NormalizedContent> aggregate(int amount, List<Feed<?>> feeds,
+    List<NormalizedContent> aggregate(int amount, List<Feed> feeds,
         List<ContentFilter<?>> filters, HashMap<String, String> config);
 }

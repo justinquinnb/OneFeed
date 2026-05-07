@@ -13,10 +13,15 @@ import lombok.Setter;
 public class Author {
 
     /**
-     * The username of the author on the content's platform, devoid of any
+     * The unique, permanent identifier of the author on the content's platform
+     */
+    private String id;
+
+    /**
+     * The handle of the author on the content's platform, devoid of any
      * platform-specific prefixes like {@code @}
      */
-    private String username;
+    private String handle;
 
     /**
      * The URL of the author's feed on the content's platform
@@ -26,12 +31,14 @@ public class Author {
     /**
      * Constructs a piece of {@code Author} info.
      *
-     * @param username the username of the author on the source's platform, devoid of any
+     * @param id the unique, permanent identifier of the author on the source's platform
+     * @param handle the username of the author on the source's platform, devoid of any
      *                 platform-specific prefixes like {@code @}
      * @param feedUrl the URL of the author's feed on the source's platform
      */
-    public Author(String username, String feedUrl) {
-        this.username = username;
+    public Author(String id, String handle, String feedUrl) {
+        this.id = id;
+        this.handle = handle;
         this.feedUrl = feedUrl;
     }
 }

@@ -2,17 +2,16 @@ package dev.jqb.onefeed.api.pipeline;
 
 import dev.jqb.onefeed.api.caching.CacheEntry;
 import dev.jqb.onefeed.api.content.NormalizedContent;
-import dev.jqb.onefeed.api.feed.FeedInfo;
+import dev.jqb.onefeed.api.feed.Feed;
 import java.time.Instant;
 import java.util.List;
-import org.pf4j.ExtensionPoint;
 
 /**
  * Provides a means of caching and retrieving {@link NormalizedContent}
  *
  * @param <T> the type of {@link NormalizedContent} being cached
  */
-public interface ContentCacher<T extends NormalizedContent> extends ExtensionPoint {
+public interface ContentCacher<T extends NormalizedContent> {
 
     /**
      * Gets the {@code amount} most recent content from the cache.
@@ -22,7 +21,7 @@ public interface ContentCacher<T extends NormalizedContent> extends ExtensionPoi
      *
      * @return at most {@code amount} pieces of cached content from the desired feed
      */
-    List<T> getMostRecent(FeedInfo<?> feed, int amount);
+    List<T> getMostRecent(Feed feed, int amount);
 
     /**
      * Gets the refresh timestamp of the content that hasn't been refreshed in the longest amount
@@ -35,7 +34,7 @@ public interface ContentCacher<T extends NormalizedContent> extends ExtensionPoi
      *
      * @throws IllegalStateException if no content has been cached for the specified {@code feed}
      */
-    Instant getStalestRefreshTime(FeedInfo<?> feed) throws IllegalStateException;
+    Instant getStalestRefreshTime(Feed feed) throws IllegalStateException;
 
     /**
      * Caches the given {@code content}.

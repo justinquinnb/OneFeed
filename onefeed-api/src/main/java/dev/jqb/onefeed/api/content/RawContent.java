@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.api.content;
 
-import dev.jqb.onefeed.api.feed.SourceInfo;
+import dev.jqb.onefeed.api.feed.Source;
 import dev.jqb.onefeed.api.pipeline.Provider;
 import java.time.Instant;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public abstract class RawContent extends Content {
      * @param source the origin of the {@code Content}
      * @param published the time the {@code Content} was published on its {@code source}
      */
-    public RawContent(SourceInfo<?> source, Instant published) {
+    public RawContent(Source source, Instant published) {
         super(source, published);
     }
 }
