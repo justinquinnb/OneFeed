@@ -10,8 +10,8 @@
         <version>0.0.2-SNAPSHOT</version>
     </parent>
 
-    <groupId>dev.jqb</groupId>
     <artifactId>onefeed-app</artifactId>
+    <name>OneFeed App</name>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>

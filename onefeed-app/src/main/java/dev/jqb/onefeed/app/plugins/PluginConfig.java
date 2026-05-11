@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.app.plugins;
 
-import dev.jqb.onefeed.api.plugin.ProviderEnvsFile;
+import dev.jqb.onefeed.api.plugin.PluginEnvsFile;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ public class PluginConfig {
     private static final Logger logger = LoggerFactory.getLogger(PluginConfig.class);
 
     @Bean
-    public ProviderEnvsFile providerEnvsFile(Dotenv dotEnv) {
+    public PluginEnvsFile pluginEnvsFile(Dotenv dotEnv) {
         Path envMapFile = Path.of(providerEnvsPath);
 
         try {
@@ -40,7 +40,7 @@ public class PluginConfig {
 
             logger.debug("Deserializing {}'s prepared contents...", envMapFile.getFileName());
             YAMLMapper mapper = YAMLMapper.builder().build();
-            return mapper.readValue(preparedEnvMapStr, ProviderEnvsFile.class);
+            return mapper.readValue(preparedEnvMapStr, PluginEnvsFile.class);
         } catch (Exception e) {
             throw new IllegalStateException(
                 "Failed to load plugin environment map from file: " + envMapFile.getFileName(), e
@@ -49,11 +49,11 @@ public class PluginConfig {
     }
 
     @Bean
-    public OneFeedPluginManager oneFeedPluginManager(ProviderEnvsFile providerEnvsFile,
+    public OneFeedPluginManager oneFeedPluginManager(PluginEnvsFile pluginEnvsFile,
         PluginTypeRegistry pluginTypeRegistry
     ) {
         OneFeedPluginManager pluginManager = new OneFeedPluginManager(Path.of(directoryPath),
-            providerEnvsFile);
+            pluginEnvsFile);
         OneFeedPluginStateListener pluginStateListener =
             new OneFeedPluginStateListener(pluginTypeRegistry);
 

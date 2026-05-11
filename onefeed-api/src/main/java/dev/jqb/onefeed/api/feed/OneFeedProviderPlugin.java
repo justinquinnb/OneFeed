@@ -1,7 +1,7 @@
-package dev.jqb.onefeed.api.plugin;
+package dev.jqb.onefeed.api.feed;
 
 import dev.jqb.onefeed.api.content.RawContent;
-import dev.jqb.onefeed.api.pipeline.Provider;
+import dev.jqb.onefeed.api.plugin.OneFeedPlugin;
 
 /**
  * A OneFeed {@link Provider} plugin

@@ -1,9 +1,13 @@
+cacher-envs:
+
 provider-envs:
   onefeed-instagram-plugin:
     pluginVars:
     feeds:
       "justinquinnb":
         loginType: "facebook"
+        appId: "${FB_APP_ID}"
+        appSecret: "${FB_APP_SECRET}"
         accessToken:
           value: "${FB_ACCESS_TOKEN}"
           isLongLived: "TRUE"

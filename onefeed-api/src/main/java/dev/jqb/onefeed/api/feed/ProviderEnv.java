@@ -1,7 +1,8 @@
-package dev.jqb.onefeed.api.plugin;
+package dev.jqb.onefeed.api.feed;
 
 import java.util.HashMap;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProviderEnv {
 
     /**
@@ -21,10 +23,8 @@ public class ProviderEnv {
      */
     private HashMap<String, HashMap<String, Object>> feeds;
 
-    public ProviderEnv() {}
-
     /**
-     * Creates a new {@link ProviderEnv} object with the given {@code pluginVars} and {@code feedVars}
+     * Creates a new {@code ProviderEnv} object with the given {@code pluginVars} and {@code feedVars}
      *
      * @param pluginVars plugin-specific configuration of arbitrary shape
      * @param feeds a mapping of arbitrary feed names to arbitrarily shaped, feed-specific

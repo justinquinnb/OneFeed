@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.api.pipeline;
+package dev.jqb.onefeed.api.feed;
 
 import dev.jqb.onefeed.api.content.ContentPackage;
 import dev.jqb.onefeed.api.content.RawContent;
@@ -11,18 +11,12 @@ import dev.jqb.onefeed.api.content.RawContent;
 public interface AutoProvider<Out extends RawContent> extends Provider<Out> {
 
     /**
-     * Gets the slug of the {@code /api/webhooks} path to listen for updates on
-     * @return the path after {@code /api/webhooks/} to listen for updates on
-     */
-    String getWebhookSlug();
-
-    /**
      * Gets the updated content that the webhook notification is making us aware of
      *
-     * @param notifPayload the payload of the request directed to the path specified by
-     * {@link #getWebhookSlug()}
+     * @param notifPayload the payload of the request directed to the webhook path ending with
+     *                     a slug matching the ID of the plugin
      *
      * @return the updated content that the webhook notification was referring to
      */
-    ContentPackage<Out> getUpdatedContent(String notifPayload);
+    ContentPackage<Out> handleWebhookNotif(String notifPayload);
 }
