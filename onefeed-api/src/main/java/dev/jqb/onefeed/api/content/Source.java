@@ -1,6 +1,6 @@
-package dev.jqb.onefeed.api.feed;
+package dev.jqb.onefeed.api.content;
 
-import dev.jqb.onefeed.api.content.Content;
+import dev.jqb.onefeed.api.feed.Feed;
 import lombok.Getter;
 import lombok.Setter;
 
