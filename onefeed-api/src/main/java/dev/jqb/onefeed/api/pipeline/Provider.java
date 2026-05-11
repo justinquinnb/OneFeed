@@ -2,6 +2,7 @@ package dev.jqb.onefeed.api.pipeline;
 
 import dev.jqb.onefeed.api.content.RawContent;
 import dev.jqb.onefeed.api.feed.Platform;
+import dev.jqb.onefeed.api.feed.Profile;
 import dev.jqb.onefeed.api.impl.OneFeedContent;
 import java.util.HashMap;
 import java.util.List;
@@ -47,4 +48,11 @@ public interface Provider<Out extends RawContent> {
      * @return info about the source platform of this provider's content
      */
     Platform getPlatformInfo();
+
+    /**
+     * Gets the profile for the given feed.
+     * @param feedName the name of the feed whose profile to retrieve
+     * @return the profile for the given feed
+     */
+    Mono<Profile> getProfile(String feedName);
 }

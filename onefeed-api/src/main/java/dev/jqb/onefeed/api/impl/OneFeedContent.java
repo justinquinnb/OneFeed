@@ -2,7 +2,7 @@ package dev.jqb.onefeed.api.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.api.content.NormalizedContent;
-import dev.jqb.onefeed.api.feed.Source;
+import dev.jqb.onefeed.api.content.Source;
 import java.time.Instant;
 import java.util.List;
 import lombok.Getter;
