@@ -1,15 +1,22 @@
 package dev.jqb.onefeed.api.content;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tools.jackson.databind.annotation.JsonTypeIdResolver;
 
 /**
  * The minimum required data for of a piece of content. This is an interface so
  * DTOs from content providers do not have to implement specific fields when
  * deserializing API responses.
  */
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.CUSTOM,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "@type"
+)
 @Getter
 @Setter
 @NoArgsConstructor

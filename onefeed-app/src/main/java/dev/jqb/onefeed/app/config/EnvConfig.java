@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * Provides {@code .env} configurations
  */
 @Configuration
-public class Env {
+public class EnvConfig {
 
     @Bean
     Dotenv dotenv() {

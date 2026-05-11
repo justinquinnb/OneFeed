@@ -1,15 +1,9 @@
-package dev.jqb.onefeed.app.config;
+package dev.jqb.onefeed.app.plugins;
 
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import dev.jqb.onefeed.api.plugin.ProviderEnv;
 import dev.jqb.onefeed.api.plugin.ProviderEnvsFile;
-import dev.jqb.onefeed.app.util.OneFeedPluginManager;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -21,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 @Configuration
 @ConfigurationProperties("onefeed.plugins")
@@ -54,8 +49,18 @@ public class PluginConfig {
     }
 
     @Bean
-    OneFeedPluginManager oneFeedPluginManager(ProviderEnvsFile providerEnvsFile) {
-        return new OneFeedPluginManager(Path.of(directoryPath), providerEnvsFile);
+    public OneFeedPluginManager oneFeedPluginManager(ProviderEnvsFile providerEnvsFile,
+        PluginTypeRegistry pluginTypeRegistry
+    ) {
+        OneFeedPluginManager pluginManager = new OneFeedPluginManager(Path.of(directoryPath),
+            providerEnvsFile);
+        OneFeedPluginStateListener pluginStateListener =
+            new OneFeedPluginStateListener(pluginTypeRegistry);
+
+        // Register the listener with the plugin manager
+        pluginManager.addPluginStateListener(pluginStateListener);
+
+        return pluginManager;
     }
 
     /**
