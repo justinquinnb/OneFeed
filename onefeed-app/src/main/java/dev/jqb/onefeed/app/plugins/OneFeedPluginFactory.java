@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.app.util;
+package dev.jqb.onefeed.app.plugins;
 
 import dev.jqb.onefeed.api.plugin.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.plugin.ProviderEnv;

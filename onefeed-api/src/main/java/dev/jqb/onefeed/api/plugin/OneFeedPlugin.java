@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.api.plugin;
 
 import dev.jqb.onefeed.api.pipeline.Provider;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.pf4j.Plugin;
@@ -11,5 +12,14 @@ import org.pf4j.Plugin;
 @Getter
 @Setter
 public abstract class OneFeedPlugin extends Plugin {
-    // Nothing yet...
+
+    /**
+     * Gets all classes that OneFeed may need to deserialize from JSON strings.
+     *
+     * @return a list of classes that OneFeed may need to deserialize from JSON strings, such as
+     * a content or author type that will be cached
+     */
+    public List<Class<?>> getClassesToDeserialize() {
+        return List.of();
+    }
 }
