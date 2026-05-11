@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.api.plugin;
 
-import dev.jqb.onefeed.api.pipeline.Provider;
+import dev.jqb.onefeed.api.feed.Provider;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

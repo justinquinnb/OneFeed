@@ -1,7 +1,4 @@
-package dev.jqb.onefeed.api.pipeline;
-
-import dev.jqb.onefeed.api.content.NormalizedContent;
-import dev.jqb.onefeed.api.content.RawContent;
+package dev.jqb.onefeed.api.content;
 
 /**
  * A means of normalizing {@link RawContent} post-retrieval

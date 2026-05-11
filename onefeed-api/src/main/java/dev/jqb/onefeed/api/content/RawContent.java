@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.api.content;
 
-import dev.jqb.onefeed.api.pipeline.Provider;
+import dev.jqb.onefeed.api.feed.Provider;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

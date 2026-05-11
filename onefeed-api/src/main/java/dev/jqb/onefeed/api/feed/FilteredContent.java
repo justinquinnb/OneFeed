@@ -1,5 +1,7 @@
-package dev.jqb.onefeed.api.pipeline;
+package dev.jqb.onefeed.api.feed;
 
+import dev.jqb.onefeed.api.content.Content;
+import dev.jqb.onefeed.api.content.ContentFilter;
 import dev.jqb.onefeed.api.content.ContentPackage;
 import dev.jqb.onefeed.api.content.RawContent;
 import java.time.Instant;
@@ -15,7 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ProviderResponse<Out extends RawContent> extends ContentPackage<Out> {
+public class FilteredContent<Out extends Content> extends ContentPackage<Out> {
     /**
      * The {@link ContentFilter}s that were used to derive the content
      */
@@ -32,7 +34,7 @@ public class ProviderResponse<Out extends RawContent> extends ContentPackage<Out
      * @param appliedFilters the {@link ContentFilter}s that were used to derive that final list of
      *                       {@code content}
      */
-    public ProviderResponse(List<Out> content, Instant generated,
+    public FilteredContent(List<Out> content, Instant generated,
         List<ContentFilter<Out>> appliedFilters
     ) {
         super(content, generated);

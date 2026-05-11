@@ -1,8 +1,8 @@
-package dev.jqb.onefeed.api.pipeline;
+package dev.jqb.onefeed.api.feed;
 
+import dev.jqb.onefeed.api.content.ContentFilter;
+import dev.jqb.onefeed.api.content.Normalizer;
 import dev.jqb.onefeed.api.content.RawContent;
-import dev.jqb.onefeed.api.feed.Platform;
-import dev.jqb.onefeed.api.feed.Profile;
 import dev.jqb.onefeed.api.impl.OneFeedContent;
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +25,9 @@ public interface Provider<Out extends RawContent> {
      *                {@link Out} content itself
      * @param config a map of configuration options for this specific request
      *               
-     * @return a {@link Mono} that emits a {@link ProviderResponse} containing the retrieved content
+     * @return a {@link Mono} that emits a {@link FilteredContent} containing the retrieved content
      */
-    Mono<ProviderResponse<Out>> fetchRecentContent(
+    Mono<FilteredContent<Out>> fetchRecentContent(
         String name,
         int amount,
         List<ContentFilter<?>> filters,

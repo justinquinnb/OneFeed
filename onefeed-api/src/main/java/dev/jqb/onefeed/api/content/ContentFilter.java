@@ -1,6 +1,5 @@
-package dev.jqb.onefeed.api.pipeline;
+package dev.jqb.onefeed.api.content;
 
-import dev.jqb.onefeed.api.content.Content;
 import java.util.List;
 
 /**

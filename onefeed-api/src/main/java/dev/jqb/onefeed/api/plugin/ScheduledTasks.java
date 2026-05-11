@@ -1,6 +1,5 @@
-package dev.jqb.onefeed.api.pipeline;
+package dev.jqb.onefeed.api.plugin;
 
-import dev.jqb.onefeed.api.plugin.ScheduledTask;
 import java.util.List;
 
 /**

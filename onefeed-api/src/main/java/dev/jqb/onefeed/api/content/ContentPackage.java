@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ContentPackage<Out extends RawContent> {
+public class ContentPackage<Out extends Content> {
     /**
      * The requested content, normalized and ready for distribution
      */

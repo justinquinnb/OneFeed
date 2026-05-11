@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>onefeed-api</artifactId>
+    <name>OneFeed API</name>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
