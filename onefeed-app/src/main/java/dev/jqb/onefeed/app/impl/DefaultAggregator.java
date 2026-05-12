@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.app;
+package dev.jqb.onefeed.app.impl;
 
 import dev.jqb.onefeed.api.content.NormalizedContent;
 import dev.jqb.onefeed.api.feed.Feed;
