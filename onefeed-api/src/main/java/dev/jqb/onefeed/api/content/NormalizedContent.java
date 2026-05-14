@@ -5,6 +5,7 @@ import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * {@link Provider}-generated content that has since been normalized,
@@ -13,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public abstract class NormalizedContent extends Content {
 
     /**

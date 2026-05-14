@@ -3,12 +3,14 @@ package dev.jqb.onefeed.api.content;
 import dev.jqb.onefeed.api.feed.Feed;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Information about a unit of {@link Content}'s source
  */
 @Getter
 @Setter
+@ToString
 public class Source {
 
     /**

@@ -3,6 +3,7 @@ package dev.jqb.onefeed.api.feed;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A feed author's profile
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString(callSuper = true)
 public class Profile extends Author {
 
     /**
