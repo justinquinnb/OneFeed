@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The default implementation of {@link NormalizedContent}
@@ -15,6 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString(callSuper = true)
 public class OneFeedContent extends NormalizedContent {
 
     /**

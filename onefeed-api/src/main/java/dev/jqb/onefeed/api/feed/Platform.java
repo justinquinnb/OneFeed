@@ -3,6 +3,7 @@ package dev.jqb.onefeed.api.feed;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Information about a content source, like Instagram
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Platform {
 
     /**
