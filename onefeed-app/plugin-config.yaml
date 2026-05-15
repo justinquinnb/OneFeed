@@ -1,6 +1,6 @@
-cacher-envs:
+cacher-configs:
 
-provider-envs:
+provider-configs:
   onefeed-instagram-plugin:
     pluginVars:
     feeds:

@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A provider plugin's specific environment variables, including those specific to any of its feeds
+ * A provider plugin's specific configuration, including those specific to any of its feeds
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProviderEnv {
+public class ProviderConfig {
 
     /**
      * Plugin-specific configuration of arbitrary shape
@@ -30,7 +30,7 @@ public class ProviderEnv {
      * @param feeds a mapping of arbitrary feed names to arbitrarily shaped, feed-specific
      *              configuration data
      */
-    public ProviderEnv(HashMap<String, Object> pluginVars,
+    public ProviderConfig(HashMap<String, Object> pluginVars,
         HashMap<String, HashMap<String, Object>> feeds
     ) {
         this.pluginVars = pluginVars;

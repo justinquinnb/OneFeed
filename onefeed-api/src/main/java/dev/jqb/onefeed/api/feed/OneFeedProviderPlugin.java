@@ -11,17 +11,17 @@ public abstract class OneFeedProviderPlugin extends OneFeedPlugin {
      * The environment variables specific to this plugin, as specified in OneFeed's
      * {@code plugin-env.yaml} and {@code .env} files.
      */
-    protected ProviderEnv providerEnv;
+    protected ProviderConfig providerConfig;
 
     /**
      * Constructs a new {@link OneFeedPlugin} with the given {@code providerEnv}.
-     * @param providerEnv the environment variables specific to this plugin
+     * @param providerConfig the environment variables specific to this plugin
      *
-     * @see #providerEnv
+     * @see #providerConfig
      */
-    protected OneFeedProviderPlugin(ProviderEnv providerEnv) {
+    protected OneFeedProviderPlugin(ProviderConfig providerConfig) {
         super();
-        this.providerEnv = providerEnv;
+        this.providerConfig = providerConfig;
     }
 
     /**

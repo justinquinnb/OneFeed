@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.app.plugins;
 
-import dev.jqb.onefeed.api.plugin.PluginEnvsFile;
+import dev.jqb.onefeed.api.plugin.PluginConfigsFile;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,13 +23,13 @@ import tools.jackson.dataformat.yaml.YAMLMapper;
 @Setter
 public class PluginConfig {
     private String directoryPath;
-    private String providerEnvsPath;
+    private String pluginConfigPath;
 
     private static final Logger logger = LoggerFactory.getLogger(PluginConfig.class);
 
     @Bean
-    public PluginEnvsFile pluginEnvsFile(Dotenv dotEnv) {
-        Path envMapFile = Path.of(providerEnvsPath);
+    public PluginConfigsFile pluginConfigsFile(Dotenv dotEnv) {
+        Path envMapFile = Path.of(pluginConfigPath);
 
         try {
             logger.debug("Reading provider envs file: {}", envMapFile.toAbsolutePath());
@@ -40,20 +40,20 @@ public class PluginConfig {
 
             logger.debug("Deserializing {}'s prepared contents...", envMapFile.getFileName());
             YAMLMapper mapper = YAMLMapper.builder().build();
-            return mapper.readValue(preparedEnvMapStr, PluginEnvsFile.class);
+            return mapper.readValue(preparedEnvMapStr, PluginConfigsFile.class);
         } catch (Exception e) {
             throw new IllegalStateException(
-                "Failed to load plugin environment map from file: " + envMapFile.getFileName(), e
+                "Failed to load plugin configurations from file: " + envMapFile.getFileName(), e
             );
         }
     }
 
     @Bean
-    public OneFeedPluginManager oneFeedPluginManager(PluginEnvsFile pluginEnvsFile,
+    public OneFeedPluginManager oneFeedPluginManager(PluginConfigsFile pluginConfigsFile,
         PluginTypeRegistry pluginTypeRegistry
     ) {
         OneFeedPluginManager pluginManager = new OneFeedPluginManager(Path.of(directoryPath),
-            pluginEnvsFile);
+            pluginConfigsFile);
         OneFeedPluginStateListener pluginStateListener =
             new OneFeedPluginStateListener(pluginTypeRegistry);
 
@@ -67,13 +67,13 @@ public class PluginConfig {
      * Replaces all instances of {@code ${VAR_NAME}} in the given {@code envMap}'s values with
      * the corresponding value from OneFeed's environment.
      *
-     * @param providerEnvsString the raw YAML string containing {@code .env} file references
+     * @param providerConfigsString the raw YAML string containing {@code .env} file references
      * @param dotEnv the actual environment variables OneFeed is running with from {@code .env}
      */
-    private static String replaceEnvReferences(String providerEnvsString, Dotenv dotEnv) {
+    private static String replaceEnvReferences(String providerConfigsString, Dotenv dotEnv) {
         logger.debug("Replacing values of .env references in provider env map...");
         Pattern referencePattern = Pattern.compile("\\$\\{.*}");
-        Matcher matcher = referencePattern.matcher(providerEnvsString);
+        Matcher matcher = referencePattern.matcher(providerConfigsString);
         return matcher.replaceAll(match -> getEnvVarFromReference(match, dotEnv));
     }
 
