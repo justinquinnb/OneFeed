@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A cache plugin's specific environment variables
+ * A cache plugin's specific configuration
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class CacherEnv {
+public class CacherConfig {
 
     /**
      * Plugin-specific configuration of arbitrary shape
@@ -35,7 +35,7 @@ public class CacherEnv {
      * @param contentVars content caching-specific configuration of arbitrary shape
      * @param authorVars author caching-specific configuration of arbitrary shape
      */
-    public CacherEnv(HashMap<String, Object> pluginVars,
+    public CacherConfig(HashMap<String, Object> pluginVars,
         HashMap<String, Object> contentVars, HashMap<String, Object> authorVars
     ) {
         this.pluginVars = pluginVars;
