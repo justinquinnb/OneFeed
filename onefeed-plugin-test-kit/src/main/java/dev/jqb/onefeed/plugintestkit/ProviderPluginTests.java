@@ -1,13 +1,20 @@
 package dev.jqb.onefeed.plugintestkit;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import dev.jqb.onefeed.api.content.Content;
+import dev.jqb.onefeed.api.content.RawContent;
+import dev.jqb.onefeed.api.content.SourceInfo;
+import dev.jqb.onefeed.api.feed.Author;
+import dev.jqb.onefeed.api.feed.FeedIdentifier;
+import dev.jqb.onefeed.api.feed.FeedInfo;
+import dev.jqb.onefeed.api.feed.FilteredContent;
 import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
+import dev.jqb.onefeed.api.feed.Platform;
 import dev.jqb.onefeed.api.feed.Profile;
 import dev.jqb.onefeed.api.feed.Provider;
 import java.net.URI;
-import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +36,37 @@ import reactor.test.StepVerifier;
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPlugin>
-    extends OneFeedPluginTests<T>
-{
-    public Provider<?> provider;
+    extends OneFeedPluginTests<T> {
+
+    public Provider<? extends RawContent> provider;
 
     @BeforeAll
     public void getProvider() {
         this.provider = plugin.getProvider();
+    }
+
+    /**
+     * Ensure there are feeds configured for testing
+     */
+    @Test
+    public void feedsAreConfigured() {
+        assertNotNull(plugin.getFeedNames());
+    }
+
+    /**
+     * The provider returns complete platform info
+     */
+    @Test
+    public void platformInfoIsComplete() {
+        Platform platform = provider.getPlatformInfo();
+        assertNotNull(platform);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(platform.getName()).isNotEmpty()
+            .as("Platform name is specified");
+        softly.assertThat(platform.getHomepageUrl()).isNotEmpty()
+            .as("Platform homepage URL is specified");
+        softly.assertAll();
     }
 
     /**
@@ -44,12 +75,6 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
     @TestFactory
     public Stream<DynamicTest> retrieveFeedProfiles() {
         List<String> feedNames = plugin.getFeedNames();
-
-        if (feedNames == null || feedNames.isEmpty()) {
-            return Stream.of(DynamicTest.dynamicTest("Initialization check", () -> {
-                throw new IllegalStateException("Plugin reported 0 feeds. Check your initialization.");
-            }));
-        }
 
         return plugin.getFeedNames().stream().map(feedName ->
             DynamicTest.dynamicTest("Profile retrieval for: " + feedName, () -> {
@@ -87,6 +112,61 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                 softly.assertThat(profile.getId()).as("ID is not blank").isNotBlank();
 
                 softly.assertThat(profile.getName()).as("Name is not blank").isNotBlank();
+
+                softly.assertAll();
+            })
+            .verifyComplete();
+    }
+
+    /**
+     * For every feed specified for testing, try retrieving a piece of content
+     */
+    @TestFactory
+    public Stream<DynamicTest> retrieveFeedContent() {
+        List<String> feedNames = plugin.getFeedNames();
+
+        return plugin.getFeedNames().stream().map(feedName ->
+            DynamicTest.dynamicTest("Content retrieval for: " + feedName, () -> {
+                retrieveContent(feedName);
+            })
+        );
+    }
+
+    /**
+     * Test retrieval of the given feed's {@link Content}, validating a successful response and the
+     * existence of the basic {@link RawContent} fields
+     *
+     * @param feedName the name of the feed whose profile to try retrieving
+     */
+    private void retrieveContent(String feedName) {
+        Mono<? extends FilteredContent<? extends RawContent>> mono = provider
+            .fetchRecentContent(feedName, 1, List.of(), new HashMap<>());
+
+        StepVerifier.create(mono)
+            .consumeNextWith(filteredContent -> {
+                assertNotNull(filteredContent);
+                List<RawContent> allContent = (List<RawContent>) filteredContent.getContent();
+
+                assertNotNull(allContent.getFirst());
+
+                RawContent rawContent = allContent.getFirst();
+                log.debug("Retrieved raw content: {}", rawContent);
+
+                SoftAssertions softly = new SoftAssertions();
+                softly.assertThat(rawContent.getPublished()).as("Published is not null")
+                    .isNotNull();
+
+                SourceInfo source = rawContent.getSource();
+                softly.assertThat(source).as("Source is not null").isNotNull();
+                softly.assertThat(source.getIdOnPlatform())
+                    .as("ID on platform is not blank").isNotBlank();
+                softly.assertThat(source.getUrl()).as("Source URL is not blank")
+                    .isNotBlank();
+
+                FeedIdentifier feedId = source.getFeedId();
+                softly.assertThat(feedId).as("Feed ID is not null").isNotNull();
+                softly.assertThat(feedId.getProviderId()).as("Provider ID is not blank");
+                softly.assertThat(feedId.getName()).as("Feed name is not blank").isNotBlank();
 
                 softly.assertAll();
             })
