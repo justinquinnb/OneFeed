@@ -104,14 +104,15 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                     () -> URI.create(profile.getProfilePicSrc()).toURL()
                 ).as("Valid profilePicSrc URL").doesNotThrowAnyException();
 
-                softly.assertThatCode(
-                    () -> URI.create(profile.getFeedUrl()).toURL()
-                ).as("Valid feedUrl URL").doesNotThrowAnyException();
+                SourceInfo source = profile.getSource();
+                softly.assertThat(source).as("Source is not null").isNotNull();
+                softly.assertThat(source.getIdOnPlatform())
+                    .as("ID on platform is not blank").isNotBlank();
+                softly.assertThat(source.getUrl()).as("Source URL is not blank")
+                    .isNotBlank();
 
                 softly.assertThat(profile.getHandle()).as("Handle is not blank")
                     .isNotBlank();
-
-                softly.assertThat(profile.getId()).as("ID is not blank").isNotBlank();
 
                 softly.assertThat(profile.getName()).as("Name is not blank").isNotBlank();
 
