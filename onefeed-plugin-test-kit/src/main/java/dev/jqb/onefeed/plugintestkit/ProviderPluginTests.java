@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.jqb.onefeed.api.content.Content;
 import dev.jqb.onefeed.api.content.RawContent;
-import dev.jqb.onefeed.api.content.SourceInfo;
+import dev.jqb.onefeed.api.feed.SourceInfo;
 import dev.jqb.onefeed.api.feed.FeedIdentifier;
 import dev.jqb.onefeed.api.feed.FilteredContent;
 import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.feed.Platform;
-import dev.jqb.onefeed.api.feed.Profile;
+import dev.jqb.onefeed.api.impl.Profile;
 import dev.jqb.onefeed.api.feed.Provider;
 import java.net.URI;
 import java.util.HashMap;
