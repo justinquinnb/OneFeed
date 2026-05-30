@@ -3,12 +3,15 @@ package dev.jqb.onefeed.plugintestkit;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.jqb.onefeed.api.content.Content;
+import dev.jqb.onefeed.api.content.Normalizer;
 import dev.jqb.onefeed.api.content.RawContent;
 import dev.jqb.onefeed.api.feed.SourceInfo;
 import dev.jqb.onefeed.api.feed.FeedIdentifier;
 import dev.jqb.onefeed.api.feed.FilteredContent;
 import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.feed.Platform;
+import dev.jqb.onefeed.api.impl.Media;
+import dev.jqb.onefeed.api.impl.OneFeedContent;
 import dev.jqb.onefeed.api.impl.Profile;
 import dev.jqb.onefeed.api.feed.Provider;
 import java.net.URI;
@@ -38,14 +41,46 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
     public Provider<? extends RawContent> provider;
     public int contentPerPageLimit;
+    public RawContent normalizerInput;
+    public OneFeedContent expectedNormalizerOutput;
 
     @BeforeAll
     public void getProvider() {
         this.provider = plugin.getProvider();
         this.contentPerPageLimit = getContentPerPageLimit();
+        this.normalizerInput = getNormalizerInput();
+        this.expectedNormalizerOutput = getExpectedNormalizerOutput();
     }
 
+    /**
+     * Get the maximum number of content pieces that the provider will return per page.
+     *
+     * @return the maximum number of content pieces that the provider will return per page
+     */
     protected abstract int getContentPerPageLimit();
+
+    /**
+     * Gets a sample piece of content to attempt to normalize.
+     *
+     * @return a sample piece of content to attempt to normalize
+     */
+    protected abstract RawContent getNormalizerInput();
+
+    /**
+     * Gets the sample piece of content correctly normalized as a piece of {@link OneFeedContent}.
+     *
+     * @return a sample piece of content correctly normalized as a piece of {@link OneFeedContent}
+     */
+    protected abstract OneFeedContent getExpectedNormalizerOutput();
+
+    @Test
+    public void normalizerWorksAsExpected() {
+        Normalizer<RawContent, OneFeedContent> normalizer =
+            (Normalizer<RawContent, OneFeedContent>) provider.getNormalizer();
+        OneFeedContent normalizerOutput = normalizer.normalize(normalizerInput);
+
+        validateOfcEquality(normalizerOutput, expectedNormalizerOutput);
+    }
 
     /**
      * Ensure there are feeds configured for testing
@@ -156,12 +191,12 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                     log.warn("No content retrieved for feed: {}", feedName);
                 }
 
-                assert(allContent.size() <= 1);
+                assert (allContent.size() <= 1);
 
                 RawContent rawContent = allContent.getFirst();
                 log.debug("Retrieved raw content: {}", rawContent);
 
-                validateRawContent(rawContent);
+                validateContent(rawContent);
             })
             .verifyComplete();
     }
@@ -202,7 +237,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                     log.warn("No content retrieved for feed: {}", feedName);
                 }
 
-                assert(allContent.size() <= contentPerPageLimit + 1);
+                assert (allContent.size() <= contentPerPageLimit + 1);
 
                 if (allContent.size() < contentPerPageLimit + 1) {
                     log.warn("Less than expected content retrieved for: {} ({} expected)",
@@ -212,21 +247,24 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                 RawContent rawContent = allContent.getLast();
                 log.debug("Testing validity of last content piece: {}", rawContent);
 
-                validateRawContent(rawContent);
+                validateContent(rawContent);
             })
             .verifyComplete();
     }
 
     /**
-     * Validates the existence of the basic {@link RawContent} fields
-     * @param rawContent the {@link RawContent} to validate
+     * Validates the existence of the basic {@link Content} fields
+     *
+     * @param content the {@link RawContent} to validate
      */
-    private static void validateRawContent(RawContent rawContent) {
+    private static void validateContent(Content content) {
+        assertNotNull(content);
+
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(rawContent.getPublished()).as("Published is not null")
+        softly.assertThat(content.getPublished()).as("Published is not null")
             .isNotNull();
 
-        SourceInfo source = rawContent.getSource();
+        SourceInfo source = content.getSource();
         softly.assertThat(source).as("Source is not null").isNotNull();
         softly.assertThat(source.getIdOnPlatform())
             .as("ID on platform is not blank").isNotBlank();
@@ -239,5 +277,96 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         softly.assertThat(feedId.getName()).as("Feed name is not blank").isNotBlank();
 
         softly.assertAll();
+    }
+
+    /**
+     * Validates the equality of the given {@link OneFeedContent} pieces.
+     *
+     * @param actual   the piece of content to validate
+     * @param expected the piece of content to compare against
+     */
+    private static void validateOfcEquality(OneFeedContent actual, OneFeedContent expected) {
+        SoftAssertions softly = new SoftAssertions();
+        log.debug("Validating each piece's base Content data...");
+        validateContent(actual);
+        validateContent(expected);
+
+        log.debug("Validating the equality of actual content:\n{}\nagainst expected content:\n{}",
+            actual, expected);
+
+        // Base Content info
+        // Source
+        SourceInfo actualSource = actual.getSource();
+        SourceInfo expectedSource = expected.getSource();
+
+        softly.assertThat(actualSource.getIdOnPlatform()).as("Source IDs on platform match")
+            .isEqualTo(expectedSource.getIdOnPlatform());
+        softly.assertThat(actualSource.getUrl()).as("Source URLs match")
+            .isEqualTo(expectedSource.getUrl());
+
+        // All other base Content fields
+        softly.assertThat(actual.getPublished()).as("Published dates match")
+            .isEqualTo(expected.getPublished());
+
+        softly.assertThat(actual.getNextPageCursor()).as("Next page cursors match")
+            .isEqualTo(expected.getNextPageCursor());
+
+        // Primary reaction count
+        softly.assertThat(actual.getPrimaryReactionCount())
+            .as("Primary reaction counts match")
+            .isEqualTo(expected.getPrimaryReactionCount());
+
+        // Textual content
+        softly.assertThat(actual.getTitle()).as("Titles match")
+            .isEqualTo(expected.getTitle());
+
+        softly.assertThat(actual.getBody()).as("Bodies match")
+            .isEqualTo(expected.getBody());
+
+        // Media
+        boolean actualHasMedia = actual.getMedia() != null;
+        boolean expectedHasMedia = expected.getMedia() != null;
+        softly.assertThat(actualHasMedia).as("Media existence matches")
+            .isEqualTo(expectedHasMedia);
+
+        softly.assertThat(actual.getMedia().size()).as("Media count matches")
+            .isEqualTo(expected.getMedia().size());
+
+        for (int i = 0; i < actual.getMedia().size(); i++) {
+            validateMediaEquality(actual.getMedia().get(i), expected.getMedia().get(i), softly, i);
+        }
+
+        softly.assertAll();
+    }
+
+    /**
+     * Validates the equality of the given {@link Media} pieces.
+     *
+     * @param actual   the piece of media to validate
+     * @param expected the piece of media to compare against
+     */
+    private static void validateMediaEquality(Media actual, Media expected,
+        SoftAssertions softly, int mediaNum
+    ) {
+        softly.assertThat(actual.getType()).as("Media %s's types match", mediaNum)
+            .isEqualTo(expected.getType());
+
+        softly.assertThat(actual.getHref()).as("Media %s's hrefs match", mediaNum)
+            .isEqualTo(expected.getHref());
+
+        softly.assertThat(actual.getTitle()).as("Media %s's titles match", mediaNum)
+            .isEqualTo(expected.getTitle());
+
+        softly.assertThat(actual.getSrc()).as("Media %s's srcs match", mediaNum)
+            .isEqualTo(expected.getSrc());
+
+        softly.assertThat(actual.getThumbnailSrc()).as("Media %s's thumbnail srcs match", mediaNum)
+            .isEqualTo(expected.getThumbnailSrc());
+
+        softly.assertThat(actual.getCaption()).as("Media %s's captions match", mediaNum)
+            .isEqualTo(expected.getCaption());
+
+        softly.assertThat(actual.getAltText()).as("Media %s's alt texts match", mediaNum)
+            .isEqualTo(expected.getAltText());
     }
 }
