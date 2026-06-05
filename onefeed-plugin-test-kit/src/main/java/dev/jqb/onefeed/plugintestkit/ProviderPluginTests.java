@@ -178,7 +178,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      */
     private void retrieveSingleContent(String feedName) {
         Flux<? extends RawContent> flux = provider
-            .fetchRecentContent(feedName, 1, new HashMap<>());
+            .fetchRecentContent(feedName, 1);
         List<RawContent> content = (List<RawContent>) flux.collectList().block();
         assertNotNull(content);
 
@@ -217,7 +217,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      */
     private void retrieveTwoContentPages(String feedName) {
         Flux<? extends RawContent> flux = provider
-            .fetchRecentContent(feedName, contentPerPageLimit + 1, new HashMap<>());
+            .fetchRecentContent(feedName, contentPerPageLimit + 1);
         List<RawContent> content = (List<RawContent>) flux.collectList().block();
 
         assertNotNull(content);
