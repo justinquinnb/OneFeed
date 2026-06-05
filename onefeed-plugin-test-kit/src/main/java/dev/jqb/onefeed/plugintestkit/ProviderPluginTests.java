@@ -7,7 +7,6 @@ import dev.jqb.onefeed.api.content.Normalizer;
 import dev.jqb.onefeed.api.content.RawContent;
 import dev.jqb.onefeed.api.feed.SourceInfo;
 import dev.jqb.onefeed.api.feed.FeedIdentifier;
-import dev.jqb.onefeed.api.feed.FilteredContent;
 import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.feed.Platform;
 import dev.jqb.onefeed.api.impl.Media;
@@ -25,6 +24,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -177,28 +177,22 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveSingleContent(String feedName) {
-        Mono<? extends FilteredContent<? extends RawContent>> mono = provider
-            .fetchRecentContent(feedName, 1, List.of(), new HashMap<>());
+        Flux<? extends RawContent> flux = provider
+            .fetchRecentContent(feedName, 1, new HashMap<>());
+        List<RawContent> content = (List<RawContent>) flux.collectList().block();
+        assertNotNull(content);
 
-        StepVerifier.create(mono)
-            .consumeNextWith(filteredContent -> {
-                assertNotNull(filteredContent);
-                List<RawContent> allContent = (List<RawContent>) filteredContent.getContent();
-                assertNotNull(allContent);
+        // Not necessarily a fail because the feed may just have no content
+        if (content.isEmpty()) {
+            log.warn("No content retrieved for feed: {}", feedName);
+        }
 
-                // Not necessarily a fail because the feed may just have no content
-                if (allContent.isEmpty()) {
-                    log.warn("No content retrieved for feed: {}", feedName);
-                }
+        assert (content.size() <= 1);
 
-                assert (allContent.size() <= 1);
+        RawContent rawContent = content.getFirst();
+        log.debug("Retrieved raw content: {}", rawContent);
 
-                RawContent rawContent = allContent.getFirst();
-                log.debug("Retrieved raw content: {}", rawContent);
-
-                validateContent(rawContent);
-            })
-            .verifyComplete();
+        validateContent(rawContent);
     }
 
     /**
@@ -222,34 +216,28 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveTwoContentPages(String feedName) {
-        Mono<? extends FilteredContent<? extends RawContent>> mono = provider
-            .fetchRecentContent(feedName, contentPerPageLimit + 1, List.of(), new HashMap<>());
+        Flux<? extends RawContent> flux = provider
+            .fetchRecentContent(feedName, contentPerPageLimit + 1, new HashMap<>());
+        List<RawContent> content = (List<RawContent>) flux.collectList().block();
 
-        StepVerifier.create(mono)
-            .consumeNextWith(filteredContent -> {
-                assertNotNull(filteredContent);
-                List<RawContent> allContent = (List<RawContent>) filteredContent.getContent();
+        assertNotNull(content);
 
-                assertNotNull(allContent);
+        // Not necessarily a fail because the feed may just have no content
+        if (content.isEmpty()) {
+            log.warn("No content retrieved for feed: {}", feedName);
+        }
 
-                // Not necessarily a fail because the feed may just have no content
-                if (allContent.isEmpty()) {
-                    log.warn("No content retrieved for feed: {}", feedName);
-                }
+        assert (content.size() <= contentPerPageLimit + 1);
 
-                assert (allContent.size() <= contentPerPageLimit + 1);
+        if (content.size() < contentPerPageLimit + 1) {
+            log.warn("Less than expected content retrieved for: {} ({} expected)",
+                content.size(), contentPerPageLimit + 1);
+        }
 
-                if (allContent.size() < contentPerPageLimit + 1) {
-                    log.warn("Less than expected content retrieved for: {} ({} expected)",
-                        allContent.size(), contentPerPageLimit + 1);
-                }
+        RawContent rawContent = content.getLast();
+        log.debug("Testing validity of last content piece: {}", rawContent);
 
-                RawContent rawContent = allContent.getLast();
-                log.debug("Testing validity of last content piece: {}", rawContent);
-
-                validateContent(rawContent);
-            })
-            .verifyComplete();
+        validateContent(rawContent);
     }
 
     /**
