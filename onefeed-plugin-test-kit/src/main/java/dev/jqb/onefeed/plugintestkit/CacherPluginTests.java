@@ -70,8 +70,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Test
     @Order(3)
     public void fetchSampleContent() {
-        Content content = cacher.fetchContent(sampleContent.getFeedIdentifier(),
-            sampleContent.getSource().getIdOnPlatform());
+        Content content = cacher.fetchContent(sampleContent.getSource());
         assert contentMatches(sampleContent, content);
     }
 
@@ -92,8 +91,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Order(5)
     public void updateSampleContent() {
         cacher.cacheContent(List.of(updatedSampleContent));
-        Content updatedSampleContent = cacher.fetchContent(sampleContent.getFeedIdentifier(),
-            sampleContent.getSource().getIdOnPlatform());
+        Content updatedSampleContent = cacher.fetchContent(sampleContent.getSource());
         assert contentMatches(sampleContent, updatedSampleContent);
     }
 
@@ -110,8 +108,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     public void removeSampleContent() {
         cacher.removeContent(sampleContent.getFeedIdentifier(),
             sampleContent.getSource().getIdOnPlatform());
-        assertNull(cacher.fetchContent(sampleContent.getFeedIdentifier(),
-            sampleContent.getSource().getIdOnPlatform()));
+        assertNull(cacher.fetchContent(sampleContent.getSource()));
     }
 
     @Test
