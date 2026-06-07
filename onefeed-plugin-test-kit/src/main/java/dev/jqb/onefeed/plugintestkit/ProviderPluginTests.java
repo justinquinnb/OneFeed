@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.jqb.onefeed.api.content.Content;
 import dev.jqb.onefeed.api.content.Normalizer;
-import dev.jqb.onefeed.api.content.RawContent;
+import dev.jqb.onefeed.api.content.PlatformContent;
 import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.feed.Platform;
 import dev.jqb.onefeed.api.feed.Provider;
@@ -37,9 +37,9 @@ import reactor.test.StepVerifier;
 public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPlugin>
     extends OneFeedPluginTests<T> {
 
-    public Provider<? extends RawContent> provider;
+    public Provider<? extends PlatformContent> provider;
     public int contentPerPageLimit;
-    public RawContent normalizerInput;
+    public PlatformContent normalizerInput;
     public OneFeedContent expectedNormalizerOutput;
 
     @BeforeAll
@@ -62,7 +62,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      *
      * @return a sample piece of content to attempt to normalize
      */
-    protected abstract RawContent getNormalizerInput();
+    protected abstract PlatformContent getNormalizerInput();
 
     /**
      * Gets the sample piece of content correctly normalized as a piece of {@link OneFeedContent}.
@@ -73,8 +73,8 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
     @Test
     public void normalizerWorksAsExpected() {
-        Normalizer<RawContent, OneFeedContent> normalizer =
-            (Normalizer<RawContent, OneFeedContent>) provider.getNormalizer();
+        Normalizer<PlatformContent, OneFeedContent> normalizer =
+            (Normalizer<PlatformContent, OneFeedContent>) provider.getNormalizer();
         OneFeedContent normalizerOutput = normalizer.normalize(normalizerInput);
 
         validateOfcEquality(normalizerOutput, expectedNormalizerOutput);
@@ -170,14 +170,14 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
     /**
      * Test retrieval of the given feed's {@link Content}, validating a successful response and the
-     * existence of the basic {@link RawContent} fields
+     * existence of the basic {@link PlatformContent} fields
      *
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveSingleContent(String feedName) {
-        Flux<? extends RawContent> flux = provider
+        Flux<? extends PlatformContent> flux = provider
             .fetchRecentContent(feedName, 1);
-        List<RawContent> content = (List<RawContent>) flux.collectList().block();
+        List<PlatformContent> content = (List<PlatformContent>) flux.collectList().block();
         assertNotNull(content);
 
         // Not necessarily a fail because the feed may just have no content
@@ -187,10 +187,10 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
         assert (content.size() <= 1);
 
-        RawContent rawContent = content.getFirst();
-        log.debug("Retrieved raw content: {}", rawContent);
+        PlatformContent platformContent = content.getFirst();
+        log.debug("Retrieved raw content: {}", platformContent);
 
-        validateContent(rawContent);
+        validateContent(platformContent);
     }
 
     /**
@@ -209,14 +209,14 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
     /**
      * Test retrieval of two pages of the given feed's {@link Content}, validating a successful
-     * response and the existence of the basic {@link RawContent} fields
+     * response and the existence of the basic {@link PlatformContent} fields
      *
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveTwoContentPages(String feedName) {
-        Flux<? extends RawContent> flux = provider
+        Flux<? extends PlatformContent> flux = provider
             .fetchRecentContent(feedName, contentPerPageLimit + 1);
-        List<RawContent> content = (List<RawContent>) flux.collectList().block();
+        List<PlatformContent> content = (List<PlatformContent>) flux.collectList().block();
 
         assertNotNull(content);
 
@@ -232,16 +232,16 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                 content.size(), contentPerPageLimit + 1);
         }
 
-        RawContent rawContent = content.getLast();
-        log.debug("Testing validity of last content piece: {}", rawContent);
+        PlatformContent platformContent = content.getLast();
+        log.debug("Testing validity of last content piece: {}", platformContent);
 
-        validateContent(rawContent);
+        validateContent(platformContent);
     }
 
     /**
      * Validates the existence of the basic {@link Content} fields
      *
-     * @param content the {@link RawContent} to validate
+     * @param content the {@link PlatformContent} to validate
      */
     private static void validateContent(Content content) {
         assertNotNull(content);
