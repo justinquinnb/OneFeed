@@ -3,16 +3,16 @@ package dev.jqb.onefeed.plugintestkit;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.jqb.onefeed.api.content.Content;
+import dev.jqb.onefeed.api.content.Normalizer;
 import dev.jqb.onefeed.api.content.RawContent;
-import dev.jqb.onefeed.api.content.SourceInfo;
-import dev.jqb.onefeed.api.feed.FeedIdentifier;
-import dev.jqb.onefeed.api.feed.FilteredContent;
 import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.feed.Platform;
-import dev.jqb.onefeed.api.feed.Profile;
 import dev.jqb.onefeed.api.feed.Provider;
+import dev.jqb.onefeed.api.feed.SourceInfo;
+import dev.jqb.onefeed.api.impl.Media;
+import dev.jqb.onefeed.api.impl.OneFeedContent;
+import dev.jqb.onefeed.api.impl.Profile;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -38,14 +39,46 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
     public Provider<? extends RawContent> provider;
     public int contentPerPageLimit;
+    public RawContent normalizerInput;
+    public OneFeedContent expectedNormalizerOutput;
 
     @BeforeAll
     public void getProvider() {
         this.provider = plugin.getProvider();
         this.contentPerPageLimit = getContentPerPageLimit();
+        this.normalizerInput = getNormalizerInput();
+        this.expectedNormalizerOutput = getExpectedNormalizerOutput();
     }
 
+    /**
+     * Get the maximum number of content pieces that the provider will return per page.
+     *
+     * @return the maximum number of content pieces that the provider will return per page
+     */
     protected abstract int getContentPerPageLimit();
+
+    /**
+     * Gets a sample piece of content to attempt to normalize.
+     *
+     * @return a sample piece of content to attempt to normalize
+     */
+    protected abstract RawContent getNormalizerInput();
+
+    /**
+     * Gets the sample piece of content correctly normalized as a piece of {@link OneFeedContent}.
+     *
+     * @return a sample piece of content correctly normalized as a piece of {@link OneFeedContent}
+     */
+    protected abstract OneFeedContent getExpectedNormalizerOutput();
+
+    @Test
+    public void normalizerWorksAsExpected() {
+        Normalizer<RawContent, OneFeedContent> normalizer =
+            (Normalizer<RawContent, OneFeedContent>) provider.getNormalizer();
+        OneFeedContent normalizerOutput = normalizer.normalize(normalizerInput);
+
+        validateOfcEquality(normalizerOutput, expectedNormalizerOutput);
+    }
 
     /**
      * Ensure there are feeds configured for testing
@@ -104,14 +137,15 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                     () -> URI.create(profile.getProfilePicSrc()).toURL()
                 ).as("Valid profilePicSrc URL").doesNotThrowAnyException();
 
-                softly.assertThatCode(
-                    () -> URI.create(profile.getFeedUrl()).toURL()
-                ).as("Valid feedUrl URL").doesNotThrowAnyException();
+                SourceInfo source = profile.getSource();
+                softly.assertThat(source).as("Source is not null").isNotNull();
+                softly.assertThat(source.getIdOnPlatform())
+                    .as("ID on platform is not blank").isNotBlank();
+                softly.assertThat(source.getUrlOnPlatform()).as("Source URL is not blank")
+                    .isNotBlank();
 
                 softly.assertThat(profile.getHandle()).as("Handle is not blank")
                     .isNotBlank();
-
-                softly.assertThat(profile.getId()).as("ID is not blank").isNotBlank();
 
                 softly.assertThat(profile.getName()).as("Name is not blank").isNotBlank();
 
@@ -141,28 +175,22 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveSingleContent(String feedName) {
-        Mono<? extends FilteredContent<? extends RawContent>> mono = provider
-            .fetchRecentContent(feedName, 1, List.of(), new HashMap<>());
+        Flux<? extends RawContent> flux = provider
+            .fetchRecentContent(feedName, 1);
+        List<RawContent> content = (List<RawContent>) flux.collectList().block();
+        assertNotNull(content);
 
-        StepVerifier.create(mono)
-            .consumeNextWith(filteredContent -> {
-                assertNotNull(filteredContent);
-                List<RawContent> allContent = (List<RawContent>) filteredContent.getContent();
-                assertNotNull(allContent);
+        // Not necessarily a fail because the feed may just have no content
+        if (content.isEmpty()) {
+            log.warn("No content retrieved for feed: {}", feedName);
+        }
 
-                // Not necessarily a fail because the feed may just have no content
-                if (allContent.isEmpty()) {
-                    log.warn("No content retrieved for feed: {}", feedName);
-                }
+        assert (content.size() <= 1);
 
-                assert(allContent.size() <= 1);
+        RawContent rawContent = content.getFirst();
+        log.debug("Retrieved raw content: {}", rawContent);
 
-                RawContent rawContent = allContent.getFirst();
-                log.debug("Retrieved raw content: {}", rawContent);
-
-                validateRawContent(rawContent);
-            })
-            .verifyComplete();
+        validateContent(rawContent);
     }
 
     /**
@@ -186,57 +214,142 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveTwoContentPages(String feedName) {
-        Mono<? extends FilteredContent<? extends RawContent>> mono = provider
-            .fetchRecentContent(feedName, contentPerPageLimit + 1, List.of(), new HashMap<>());
+        Flux<? extends RawContent> flux = provider
+            .fetchRecentContent(feedName, contentPerPageLimit + 1);
+        List<RawContent> content = (List<RawContent>) flux.collectList().block();
 
-        StepVerifier.create(mono)
-            .consumeNextWith(filteredContent -> {
-                assertNotNull(filteredContent);
-                List<RawContent> allContent = (List<RawContent>) filteredContent.getContent();
+        assertNotNull(content);
 
-                assertNotNull(allContent);
+        // Not necessarily a fail because the feed may just have no content
+        if (content.isEmpty()) {
+            log.warn("No content retrieved for feed: {}", feedName);
+        }
 
-                // Not necessarily a fail because the feed may just have no content
-                if (allContent.isEmpty()) {
-                    log.warn("No content retrieved for feed: {}", feedName);
-                }
+        assert (content.size() <= contentPerPageLimit + 1);
 
-                assert(allContent.size() <= contentPerPageLimit + 1);
+        if (content.size() < contentPerPageLimit + 1) {
+            log.warn("Less than expected content retrieved for: {} ({} expected)",
+                content.size(), contentPerPageLimit + 1);
+        }
 
-                if (allContent.size() < contentPerPageLimit + 1) {
-                    log.warn("Less than expected content retrieved for: {} ({} expected)",
-                        allContent.size(), contentPerPageLimit + 1);
-                }
+        RawContent rawContent = content.getLast();
+        log.debug("Testing validity of last content piece: {}", rawContent);
 
-                RawContent rawContent = allContent.getLast();
-                log.debug("Testing validity of last content piece: {}", rawContent);
-
-                validateRawContent(rawContent);
-            })
-            .verifyComplete();
+        validateContent(rawContent);
     }
 
     /**
-     * Validates the existence of the basic {@link RawContent} fields
-     * @param rawContent the {@link RawContent} to validate
+     * Validates the existence of the basic {@link Content} fields
+     *
+     * @param content the {@link RawContent} to validate
      */
-    private static void validateRawContent(RawContent rawContent) {
+    private static void validateContent(Content content) {
+        assertNotNull(content);
+
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(rawContent.getPublished()).as("Published is not null")
+        softly.assertThat(content.getPublished()).as("Published is not null")
             .isNotNull();
 
-        SourceInfo source = rawContent.getSource();
+        SourceInfo source = content.getSource();
         softly.assertThat(source).as("Source is not null").isNotNull();
         softly.assertThat(source.getIdOnPlatform())
             .as("ID on platform is not blank").isNotBlank();
-        softly.assertThat(source.getUrl()).as("Source URL is not blank")
+        softly.assertThat(source.getUrlOnPlatform()).as("Source URL is not blank")
             .isNotBlank();
-
-        FeedIdentifier feedId = source.getFeedId();
-        softly.assertThat(feedId).as("Feed ID is not null").isNotNull();
-        softly.assertThat(feedId.getProviderId()).as("Provider ID is not blank");
-        softly.assertThat(feedId.getName()).as("Feed name is not blank").isNotBlank();
+        softly.assertThat(source.getProviderId()).as("Provider ID is not blank");
+        softly.assertThat(source.getFeedName()).as("Feed name is not blank").isNotBlank();
 
         softly.assertAll();
+    }
+
+    /**
+     * Validates the equality of the given {@link OneFeedContent} pieces.
+     *
+     * @param actual   the piece of content to validate
+     * @param expected the piece of content to compare against
+     */
+    private static void validateOfcEquality(OneFeedContent actual, OneFeedContent expected) {
+        SoftAssertions softly = new SoftAssertions();
+        log.debug("Validating each piece's base Content data...");
+        validateContent(actual);
+        validateContent(expected);
+
+        log.debug("Validating the equality of actual content:\n{}\nagainst expected content:\n{}",
+            actual, expected);
+
+        // Base Content info
+        // Source
+        SourceInfo actualSource = actual.getSource();
+        SourceInfo expectedSource = expected.getSource();
+
+        softly.assertThat(actualSource.getIdOnPlatform()).as("Source IDs on platform match")
+            .isEqualTo(expectedSource.getIdOnPlatform());
+        softly.assertThat(actualSource.getUrlOnPlatform()).as("Source URLs match")
+            .isEqualTo(expectedSource.getUrlOnPlatform());
+
+        // All other base Content fields
+        softly.assertThat(actual.getPublished()).as("Published dates match")
+            .isEqualTo(expected.getPublished());
+
+        softly.assertThat(actual.getNextPageCursor()).as("Next page cursors match")
+            .isEqualTo(expected.getNextPageCursor());
+
+        // Primary reaction count
+        softly.assertThat(actual.getPrimaryReactionCount())
+            .as("Primary reaction counts match")
+            .isEqualTo(expected.getPrimaryReactionCount());
+
+        // Textual content
+        softly.assertThat(actual.getTitle()).as("Titles match")
+            .isEqualTo(expected.getTitle());
+
+        softly.assertThat(actual.getBody()).as("Bodies match")
+            .isEqualTo(expected.getBody());
+
+        // Media
+        boolean actualHasMedia = actual.getMedia() != null;
+        boolean expectedHasMedia = expected.getMedia() != null;
+        softly.assertThat(actualHasMedia).as("Media existence matches")
+            .isEqualTo(expectedHasMedia);
+
+        softly.assertThat(actual.getMedia().size()).as("Media count matches")
+            .isEqualTo(expected.getMedia().size());
+
+        for (int i = 0; i < actual.getMedia().size(); i++) {
+            validateMediaEquality(actual.getMedia().get(i), expected.getMedia().get(i), softly, i);
+        }
+
+        softly.assertAll();
+    }
+
+    /**
+     * Validates the equality of the given {@link Media} pieces.
+     *
+     * @param actual   the piece of media to validate
+     * @param expected the piece of media to compare against
+     */
+    private static void validateMediaEquality(Media actual, Media expected,
+        SoftAssertions softly, int mediaNum
+    ) {
+        softly.assertThat(actual.getType()).as("Media %s's types match", mediaNum)
+            .isEqualTo(expected.getType());
+
+        softly.assertThat(actual.getHref()).as("Media %s's hrefs match", mediaNum)
+            .isEqualTo(expected.getHref());
+
+        softly.assertThat(actual.getTitle()).as("Media %s's titles match", mediaNum)
+            .isEqualTo(expected.getTitle());
+
+        softly.assertThat(actual.getSrc()).as("Media %s's srcs match", mediaNum)
+            .isEqualTo(expected.getSrc());
+
+        softly.assertThat(actual.getThumbnailSrc()).as("Media %s's thumbnail srcs match", mediaNum)
+            .isEqualTo(expected.getThumbnailSrc());
+
+        softly.assertThat(actual.getCaption()).as("Media %s's captions match", mediaNum)
+            .isEqualTo(expected.getCaption());
+
+        softly.assertThat(actual.getAltText()).as("Media %s's alt texts match", mediaNum)
+            .isEqualTo(expected.getAltText());
     }
 }
