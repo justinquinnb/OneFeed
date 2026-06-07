@@ -5,16 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import dev.jqb.onefeed.api.content.Content;
 import dev.jqb.onefeed.api.content.Normalizer;
 import dev.jqb.onefeed.api.content.RawContent;
-import dev.jqb.onefeed.api.feed.SourceInfo;
-import dev.jqb.onefeed.api.feed.FeedIdentifier;
 import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.feed.Platform;
+import dev.jqb.onefeed.api.feed.Provider;
+import dev.jqb.onefeed.api.feed.SourceInfo;
 import dev.jqb.onefeed.api.impl.Media;
 import dev.jqb.onefeed.api.impl.OneFeedContent;
 import dev.jqb.onefeed.api.impl.Profile;
-import dev.jqb.onefeed.api.feed.Provider;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -143,7 +141,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
                 softly.assertThat(source).as("Source is not null").isNotNull();
                 softly.assertThat(source.getIdOnPlatform())
                     .as("ID on platform is not blank").isNotBlank();
-                softly.assertThat(source.getUrl()).as("Source URL is not blank")
+                softly.assertThat(source.getUrlOnPlatform()).as("Source URL is not blank")
                     .isNotBlank();
 
                 softly.assertThat(profile.getHandle()).as("Handle is not blank")
@@ -256,13 +254,10 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         softly.assertThat(source).as("Source is not null").isNotNull();
         softly.assertThat(source.getIdOnPlatform())
             .as("ID on platform is not blank").isNotBlank();
-        softly.assertThat(source.getUrl()).as("Source URL is not blank")
+        softly.assertThat(source.getUrlOnPlatform()).as("Source URL is not blank")
             .isNotBlank();
-
-        FeedIdentifier feedId = source.getFeedId();
-        softly.assertThat(feedId).as("Feed ID is not null").isNotNull();
-        softly.assertThat(feedId.getProviderId()).as("Provider ID is not blank");
-        softly.assertThat(feedId.getName()).as("Feed name is not blank").isNotBlank();
+        softly.assertThat(source.getProviderId()).as("Provider ID is not blank");
+        softly.assertThat(source.getFeedName()).as("Feed name is not blank").isNotBlank();
 
         softly.assertAll();
     }
@@ -289,8 +284,8 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
         softly.assertThat(actualSource.getIdOnPlatform()).as("Source IDs on platform match")
             .isEqualTo(expectedSource.getIdOnPlatform());
-        softly.assertThat(actualSource.getUrl()).as("Source URLs match")
-            .isEqualTo(expectedSource.getUrl());
+        softly.assertThat(actualSource.getUrlOnPlatform()).as("Source URLs match")
+            .isEqualTo(expectedSource.getUrlOnPlatform());
 
         // All other base Content fields
         softly.assertThat(actual.getPublished()).as("Published dates match")
