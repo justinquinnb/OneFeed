@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import dev.jqb.onefeed.api.content.Content;
 import dev.jqb.onefeed.api.content.Normalizer;
 import dev.jqb.onefeed.api.content.PlatformContent;
-import dev.jqb.onefeed.api.feed.OneFeedProviderPlugin;
+import dev.jqb.onefeed.api.provider.OneFeedProviderPlugin;
 import dev.jqb.onefeed.api.feed.Platform;
-import dev.jqb.onefeed.api.feed.Provider;
+import dev.jqb.onefeed.api.provider.Provider;
 import dev.jqb.onefeed.api.feed.SourceInfo;
 import dev.jqb.onefeed.api.impl.Media;
 import dev.jqb.onefeed.api.impl.OneFeedContent;
@@ -28,7 +28,7 @@ import reactor.test.StepVerifier;
 
 /**
  * Tests the basic functionalities of a {@link OneFeedProviderPlugin}, particularly its provided
- * {@link dev.jqb.onefeed.api.feed.Provider} implementation
+ * {@link Provider} implementation
  *
  * @param <T> your specific {@link OneFeedProviderPlugin} implementation
  */
