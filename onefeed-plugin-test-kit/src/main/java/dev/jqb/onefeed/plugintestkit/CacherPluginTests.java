@@ -2,10 +2,12 @@ package dev.jqb.onefeed.plugintestkit;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import dev.jqb.onefeed.api.author.NormalizedAuthor;
 import dev.jqb.onefeed.api.caching.Cacher;
 import dev.jqb.onefeed.api.caching.OneFeedCacherPlugin;
 import dev.jqb.onefeed.api.content.Content;
-import dev.jqb.onefeed.api.feed.Author;
+import dev.jqb.onefeed.api.author.Author;
+import dev.jqb.onefeed.api.content.NormalizedContent;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,27 +26,27 @@ import org.junit.jupiter.api.TestInstance;
 public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin>
     extends OneFeedPluginTests<T>
 {
-    public Cacher cacher;
-    public Content sampleContent;
-    public Content updatedSampleContent;
-    public Author sampleAuthor;
-    public Author updatedSampleAuthor;
+    public Cacher<NormalizedContent, NormalizedAuthor> cacher;
+    public NormalizedContent sampleContent;
+    public NormalizedContent updatedSampleContent;
+    public NormalizedAuthor sampleAuthor;
+    public NormalizedAuthor updatedSampleAuthor;
 
     @BeforeAll
     public void getCacher() {
-        this.cacher = plugin.getCacher();
+        this.cacher = (Cacher<NormalizedContent, NormalizedAuthor>) plugin.getCacher();
         this.sampleContent = this.getSampleContent();
         this.updatedSampleContent = this.getUpdatedSampleContent();
         this.sampleAuthor = this.getSampleAuthor();
         this.updatedSampleAuthor = this.getUpdatedSampleAuthor();
     }
 
-    protected abstract Content getSampleContent();
-    protected abstract Author getSampleAuthor();
-    protected abstract Content getUpdatedSampleContent();
-    protected abstract Author getUpdatedSampleAuthor();
-    protected abstract boolean contentMatches(Content one, Content two);
-    protected abstract boolean authorsMatch(Author one, Author two);
+    protected abstract NormalizedContent getSampleContent();
+    protected abstract NormalizedAuthor getSampleAuthor();
+    protected abstract NormalizedContent getUpdatedSampleContent();
+    protected abstract NormalizedAuthor getUpdatedSampleAuthor();
+    protected abstract boolean contentMatches(NormalizedContent one, NormalizedContent two);
+    protected abstract boolean authorsMatch(NormalizedAuthor one, NormalizedAuthor two);
 
     /**
      * Test whether errors are thrown when caching content.
@@ -70,7 +72,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Test
     @Order(3)
     public void fetchSampleContent() {
-        Content content = cacher.fetchContent(sampleContent.getSource());
+        NormalizedContent content = cacher.fetchContent(sampleContent.getSource());
         assert contentMatches(sampleContent, content);
     }
 
@@ -80,7 +82,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Test
     @Order(4)
     public void fetchSampleAuthor() {
-        Author author = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
+        NormalizedAuthor author = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
         assert authorsMatch(sampleAuthor, author);
     }
 
@@ -91,7 +93,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Order(5)
     public void updateSampleContent() {
         cacher.cacheContent(List.of(updatedSampleContent));
-        Content updatedSampleContent = cacher.fetchContent(sampleContent.getSource());
+        NormalizedContent updatedSampleContent = cacher.fetchContent(sampleContent.getSource());
         assert contentMatches(sampleContent, updatedSampleContent);
     }
 
@@ -99,7 +101,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Order(6)
     public void updateSampleAuthor() {
         cacher.cacheAuthors(List.of(updatedSampleAuthor));
-        Author updatedSampleAuthor = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
+        NormalizedAuthor updatedSampleAuthor = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
         assert authorsMatch(sampleAuthor, updatedSampleAuthor);
     }
 
