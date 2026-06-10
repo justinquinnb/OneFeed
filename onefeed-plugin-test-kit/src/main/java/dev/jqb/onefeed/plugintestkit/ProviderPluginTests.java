@@ -2,17 +2,19 @@ package dev.jqb.onefeed.plugintestkit;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import dev.jqb.onefeed.api.author.Author;
+import dev.jqb.onefeed.api.author.AuthorNormalizer;
+import dev.jqb.onefeed.api.author.PlatformAuthor;
 import dev.jqb.onefeed.api.content.Content;
-import dev.jqb.onefeed.api.content.Normalizer;
+import dev.jqb.onefeed.api.content.ContentNormalizer;
 import dev.jqb.onefeed.api.content.PlatformContent;
-import dev.jqb.onefeed.api.provider.OneFeedProviderPlugin;
-import dev.jqb.onefeed.api.feed.Platform;
-import dev.jqb.onefeed.api.provider.Provider;
 import dev.jqb.onefeed.api.feed.SourceInfo;
 import dev.jqb.onefeed.api.impl.Media;
+import dev.jqb.onefeed.api.impl.OneFeedAuthor;
 import dev.jqb.onefeed.api.impl.OneFeedContent;
-import dev.jqb.onefeed.api.impl.Profile;
-import java.net.URI;
+import dev.jqb.onefeed.api.provider.OneFeedProviderPlugin;
+import dev.jqb.onefeed.api.provider.Platform;
+import dev.jqb.onefeed.api.provider.Provider;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 /**
  * Tests the basic functionalities of a {@link OneFeedProviderPlugin}, particularly its provided
@@ -37,17 +38,21 @@ import reactor.test.StepVerifier;
 public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPlugin>
     extends OneFeedPluginTests<T> {
 
-    public Provider<? extends PlatformContent> provider;
+    public Provider<PlatformContent, PlatformAuthor> provider;
     public int contentPerPageLimit;
-    public PlatformContent normalizerInput;
-    public OneFeedContent expectedNormalizerOutput;
+    public PlatformContent contentNormalizerInput;
+    public OneFeedContent expectedContentNormalizerOutput;
+    public PlatformAuthor authorNormalizerInput;
+    public OneFeedAuthor expectedAuthorNormalizerOutput;
 
     @BeforeAll
     public void getProvider() {
-        this.provider = plugin.getProvider();
+        this.provider = (Provider<PlatformContent, PlatformAuthor>) plugin.getProvider();
         this.contentPerPageLimit = getContentPerPageLimit();
-        this.normalizerInput = getNormalizerInput();
-        this.expectedNormalizerOutput = getExpectedNormalizerOutput();
+        this.contentNormalizerInput = getContentNormalizerInput();
+        this.expectedContentNormalizerOutput = getExpectedContentNormalizerOutput();
+        this.authorNormalizerInput = getAuthorNormalizerInput();
+        this.expectedAuthorNormalizerOutput = getExpectedAuthorNormalizerOutput();
     }
 
     /**
@@ -62,22 +67,45 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      *
      * @return a sample piece of content to attempt to normalize
      */
-    protected abstract PlatformContent getNormalizerInput();
+    protected abstract PlatformContent getContentNormalizerInput();
 
     /**
      * Gets the sample piece of content correctly normalized as a piece of {@link OneFeedContent}.
      *
      * @return a sample piece of content correctly normalized as a piece of {@link OneFeedContent}
      */
-    protected abstract OneFeedContent getExpectedNormalizerOutput();
+    protected abstract OneFeedContent getExpectedContentNormalizerOutput();
+
+    /**
+     * Gets a sample author to attempt to normalize.
+     *
+     * @return a sample author to attempt to normalize
+     */
+    protected abstract PlatformAuthor getAuthorNormalizerInput();
+
+    /**
+     * Gets the sample author correctly normalized as a piece of {@link OneFeedContent}.
+     *
+     * @return a sample author correctly normalized as a piece of {@link OneFeedContent}
+     */
+    protected abstract OneFeedAuthor getExpectedAuthorNormalizerOutput();
 
     @Test
-    public void normalizerWorksAsExpected() {
-        Normalizer<PlatformContent, OneFeedContent> normalizer =
-            (Normalizer<PlatformContent, OneFeedContent>) provider.getNormalizer();
-        OneFeedContent normalizerOutput = normalizer.normalize(normalizerInput);
+    public void contentNormalizerWorksAsExpected() {
+        ContentNormalizer<PlatformContent, OneFeedContent> contentNormalizer =
+            provider.getContentNormalizer();
+        OneFeedContent normalizerOutput = contentNormalizer.normalize(contentNormalizerInput);
 
-        validateOfcEquality(normalizerOutput, expectedNormalizerOutput);
+        validateOfcEquality(normalizerOutput, expectedContentNormalizerOutput);
+    }
+
+    @Test
+    public void authorNormalizerWorksAsExpected() {
+        AuthorNormalizer<PlatformAuthor, OneFeedAuthor> authorNormalizer =
+            provider.getAuthorNormalizer();
+        OneFeedAuthor normalizerOutput = authorNormalizer.normalize(authorNormalizerInput);
+
+        validateOfaEquality(normalizerOutput, expectedAuthorNormalizerOutput);
     }
 
     /**
@@ -108,50 +136,25 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * For every feed specified for testing, try retrieving its profile
      */
     @TestFactory
-    public Stream<DynamicTest> retrieveFeedProfiles() {
+    public Stream<DynamicTest> retrieveFeedAuthor() {
         List<String> feedNames = plugin.getFeedNames();
 
         return plugin.getFeedNames().stream().map(feedName ->
-            DynamicTest.dynamicTest("Profile retrieval for: " + feedName, () -> {
-                retrieveFeedProfile(feedName);
+            DynamicTest.dynamicTest("Author retrieval for: " + feedName, () -> {
+                retrieveFeedAuthor(feedName);
             })
         );
     }
 
     /**
-     * Test retrieval of the given feed's {@link Profile}, validating a successful response and the
+     * Test retrieval of the given feed's {@link OneFeedAuthor}, validating a successful response and the
      * existence of the profile and its fields
      *
      * @param feedName the name of the feed whose profile to try retrieving
      */
-    private void retrieveFeedProfile(String feedName) {
-        Mono<Profile> mono = provider.fetchProfile(feedName);
-
-        StepVerifier.create(mono)
-            .consumeNextWith(profile -> {
-                assertNotNull(profile);
-                log.debug("Retrieved profile: {}", profile);
-
-                SoftAssertions softly = new SoftAssertions();
-                softly.assertThatCode(
-                    () -> URI.create(profile.getProfilePicSrc()).toURL()
-                ).as("Valid profilePicSrc URL").doesNotThrowAnyException();
-
-                SourceInfo source = profile.getSource();
-                softly.assertThat(source).as("Source is not null").isNotNull();
-                softly.assertThat(source.getIdOnPlatform())
-                    .as("ID on platform is not blank").isNotBlank();
-                softly.assertThat(source.getUrlOnPlatform()).as("Source URL is not blank")
-                    .isNotBlank();
-
-                softly.assertThat(profile.getHandle()).as("Handle is not blank")
-                    .isNotBlank();
-
-                softly.assertThat(profile.getName()).as("Name is not blank").isNotBlank();
-
-                softly.assertAll();
-            })
-            .verifyComplete();
+    private void retrieveFeedAuthor(String feedName) {
+        PlatformAuthor author = provider.fetchAuthor(feedName).block();
+        log.debug("Retrieved platform author: {}", author);
     }
 
     /**
@@ -175,9 +178,9 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveSingleContent(String feedName) {
-        Flux<? extends PlatformContent> flux = provider
+        Flux<PlatformContent> flux = provider
             .fetchRecentContent(feedName, 1);
-        List<PlatformContent> content = (List<PlatformContent>) flux.collectList().block();
+        List<PlatformContent> content = flux.collectList().block();
         assertNotNull(content);
 
         // Not necessarily a fail because the feed may just have no content
@@ -188,7 +191,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         assert (content.size() <= 1);
 
         PlatformContent platformContent = content.getFirst();
-        log.debug("Retrieved raw content: {}", platformContent);
+        log.debug("Retrieved platform content: {}", platformContent);
 
         validateContent(platformContent);
     }
@@ -214,9 +217,9 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveTwoContentPages(String feedName) {
-        Flux<? extends PlatformContent> flux = provider
+        Flux<PlatformContent> flux = provider
             .fetchRecentContent(feedName, contentPerPageLimit + 1);
-        List<PlatformContent> content = (List<PlatformContent>) flux.collectList().block();
+        List<PlatformContent> content = flux.collectList().block();
 
         assertNotNull(content);
 
@@ -249,15 +252,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(content.getPublished()).as("Published is not null")
             .isNotNull();
-
-        SourceInfo source = content.getSource();
-        softly.assertThat(source).as("Source is not null").isNotNull();
-        softly.assertThat(source.getIdOnPlatform())
-            .as("ID on platform is not blank").isNotBlank();
-        softly.assertThat(source.getUrlOnPlatform()).as("Source URL is not blank")
-            .isNotBlank();
-        softly.assertThat(source.getProviderId()).as("Provider ID is not blank");
-        softly.assertThat(source.getFeedName()).as("Feed name is not blank").isNotBlank();
+        softly.assertAlso(validateBaseSourceFields(content.getSource()));
 
         softly.assertAll();
     }
@@ -269,7 +264,6 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param expected the piece of content to compare against
      */
     private static void validateOfcEquality(OneFeedContent actual, OneFeedContent expected) {
-        SoftAssertions softly = new SoftAssertions();
         log.debug("Validating each piece's base Content data...");
         validateContent(actual);
         validateContent(expected);
@@ -279,13 +273,8 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
         // Base Content info
         // Source
-        SourceInfo actualSource = actual.getSource();
-        SourceInfo expectedSource = expected.getSource();
-
-        softly.assertThat(actualSource.getIdOnPlatform()).as("Source IDs on platform match")
-            .isEqualTo(expectedSource.getIdOnPlatform());
-        softly.assertThat(actualSource.getUrlOnPlatform()).as("Source URLs match")
-            .isEqualTo(expectedSource.getUrlOnPlatform());
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertAlso(validateSourceEquality(actual.getSource(), expected.getSource()));
 
         // All other base Content fields
         softly.assertThat(actual.getPublished()).as("Published dates match")
@@ -312,11 +301,16 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         softly.assertThat(actualHasMedia).as("Media existence matches")
             .isEqualTo(expectedHasMedia);
 
-        softly.assertThat(actual.getMedia().size()).as("Media count matches")
-            .isEqualTo(expected.getMedia().size());
+        if (actualHasMedia && expectedHasMedia) {
+            softly.assertThat(actual.getMedia().size()).as("Media count matches")
+                .isEqualTo(expected.getMedia().size());
 
-        for (int i = 0; i < actual.getMedia().size(); i++) {
-            validateMediaEquality(actual.getMedia().get(i), expected.getMedia().get(i), softly, i);
+            log.debug("Validating each piece's media data...");
+            for (int i = 0; i < actual.getMedia().size(); i++) {
+                softly.assertAlso(
+                    validateMediaEquality(actual.getMedia().get(i), expected.getMedia().get(i), i)
+                );
+            }
         }
 
         softly.assertAll();
@@ -327,10 +321,13 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      *
      * @param actual   the piece of media to validate
      * @param expected the piece of media to compare against
+     * @return a {@link SoftAssertions} object containing the results of the validation
      */
-    private static void validateMediaEquality(Media actual, Media expected,
-        SoftAssertions softly, int mediaNum
-    ) {
+    private static SoftAssertions validateMediaEquality(Media actual, Media expected, int mediaNum) {
+        log.debug("Validating the equality of actual media:\n{}\nagainst expected media:\n{}",
+            actual, expected);
+
+        SoftAssertions softly = new SoftAssertions();
         softly.assertThat(actual.getType()).as("Media %s's types match", mediaNum)
             .isEqualTo(expected.getType());
 
@@ -343,7 +340,8 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         softly.assertThat(actual.getSrc()).as("Media %s's srcs match", mediaNum)
             .isEqualTo(expected.getSrc());
 
-        softly.assertThat(actual.getThumbnailSrc()).as("Media %s's thumbnail srcs match", mediaNum)
+        softly.assertThat(actual.getThumbnailSrc())
+            .as("Media %s's thumbnail srcs match", mediaNum)
             .isEqualTo(expected.getThumbnailSrc());
 
         softly.assertThat(actual.getCaption()).as("Media %s's captions match", mediaNum)
@@ -351,5 +349,93 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
         softly.assertThat(actual.getAltText()).as("Media %s's alt texts match", mediaNum)
             .isEqualTo(expected.getAltText());
+
+        return softly;
+    }
+
+    /**
+     * Validates the existence of the basic {@link Author} fields
+     *
+     * @param author the {@link Author to validate
+     * @return a {@link SoftAssertions} object containing the results of the validation
+     */
+    private static SoftAssertions validateBaseAuthorFields(Author author) {
+        assertNotNull(author);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertAlso(validateBaseSourceFields(author.getSource()));
+        softly.assertThat(author.getHandle()).as("Handle is not blank")
+            .isNotBlank();
+
+        return softly;
+    }
+
+    /**
+     * Validates the equality of the given {@link OneFeedAuthor}s.
+     *
+     * @param actual the author to validate
+     * @param expected the author to compare against
+     */
+    private static void validateOfaEquality(OneFeedAuthor actual, OneFeedAuthor expected) {
+        log.debug("Validating the equality of actual author:\n{}\nagainst expected author:\n{}",
+            actual, expected);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertAlso(validateSourceEquality(actual.getSource(), expected.getSource()));
+
+        // handle, name, profile pic src
+        softly.assertThat(actual.getHandle()).as("Handles match")
+            .isEqualTo(expected.getHandle());
+        softly.assertThat(actual.getName()).as("Names match")
+            .isEqualTo(expected.getName());
+        softly.assertThat(actual.getProfilePicSrc()).as("Profile pic srcs match")
+            .isEqualTo(expected.getProfilePicSrc());
+
+        softly.assertAll();
+    }
+
+    /**
+     * Validates the equality of the given {@link SourceInfo} objects.
+     *
+     * @param actual the source info to validate
+     * @param expected the source info to compare against
+     *
+     * @return a {@link SoftAssertions} object containing the results of the validation
+     */
+    private static SoftAssertions validateSourceEquality(SourceInfo actual, SourceInfo expected) {
+        log.debug("Validating the equality of actual source info:\n{}\nagainst expected source info:\n{}",
+            actual, expected);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(actual.getIdOnPlatform()).as("Source IDs on platform match")
+            .isEqualTo(expected.getIdOnPlatform());
+        softly.assertThat(actual.getUrlOnPlatform()).as("Source URLs match")
+            .isEqualTo(expected.getUrlOnPlatform());
+        softly.assertThat(actual.getProviderId()).as("Source provider IDs match")
+            .isEqualTo(expected.getProviderId());
+        softly.assertThat(actual.getFeedName()).as("Source feed names match")
+            .isEqualTo(expected.getFeedName());
+
+        return softly;
+    }
+
+    /**
+     * Validates the existence of the basic {@link SourceInfo} fields
+     * @param source the source info object to validate
+     * @return a {@link SoftAssertions} object containing the results of the validation
+     */
+    private static SoftAssertions validateBaseSourceFields(SourceInfo source) {
+        assertNotNull(source);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(source).as("Source is not null").isNotNull();
+        softly.assertThat(source.getIdOnPlatform())
+            .as("ID on platform is not blank").isNotBlank();
+        softly.assertThat(source.getUrlOnPlatform()).as("Source URL is not blank")
+            .isNotBlank();
+        softly.assertThat(source.getProviderId()).as("Provider ID is not blank");
+        softly.assertThat(source.getFeedName()).as("Feed name is not blank").isNotBlank();
+
+        return softly;
     }
 }
