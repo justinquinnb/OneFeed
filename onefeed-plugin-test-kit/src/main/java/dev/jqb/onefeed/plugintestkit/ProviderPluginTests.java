@@ -125,7 +125,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveFeedProfile(String feedName) {
-        Mono<Profile> mono = provider.getProfile(feedName);
+        Mono<Profile> mono = provider.fetchProfile(feedName);
 
         StepVerifier.create(mono)
             .consumeNextWith(profile -> {
