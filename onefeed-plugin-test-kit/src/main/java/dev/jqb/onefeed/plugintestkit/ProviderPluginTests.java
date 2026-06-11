@@ -2,19 +2,19 @@ package dev.jqb.onefeed.plugintestkit;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import dev.jqb.onefeed.api.author.Author;
-import dev.jqb.onefeed.api.author.AuthorNormalizer;
-import dev.jqb.onefeed.api.author.PlatformAuthor;
-import dev.jqb.onefeed.api.content.Content;
-import dev.jqb.onefeed.api.content.ContentNormalizer;
-import dev.jqb.onefeed.api.content.PlatformContent;
-import dev.jqb.onefeed.api.feed.SourceInfo;
-import dev.jqb.onefeed.api.impl.Media;
-import dev.jqb.onefeed.api.impl.OneFeedAuthor;
-import dev.jqb.onefeed.api.impl.OneFeedContent;
-import dev.jqb.onefeed.api.provider.OneFeedProviderPlugin;
-import dev.jqb.onefeed.api.provider.Platform;
-import dev.jqb.onefeed.api.provider.Provider;
+import dev.jqb.onefeed.core.author.Author;
+import dev.jqb.onefeed.core.author.AuthorNormalizer;
+import dev.jqb.onefeed.core.author.PlatformAuthor;
+import dev.jqb.onefeed.core.content.Content;
+import dev.jqb.onefeed.core.content.ContentNormalizer;
+import dev.jqb.onefeed.core.content.PlatformContent;
+import dev.jqb.onefeed.core.feed.SourceInfo;
+import dev.jqb.onefeed.core.impl.Media;
+import dev.jqb.onefeed.core.impl.OneFeedAuthor;
+import dev.jqb.onefeed.core.impl.OneFeedContent;
+import dev.jqb.onefeed.core.provider.OneFeedProviderPlugin;
+import dev.jqb.onefeed.core.provider.Platform;
+import dev.jqb.onefeed.core.provider.Provider;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 /**
  * Tests the basic functionalities of a {@link OneFeedProviderPlugin}, particularly its provided
