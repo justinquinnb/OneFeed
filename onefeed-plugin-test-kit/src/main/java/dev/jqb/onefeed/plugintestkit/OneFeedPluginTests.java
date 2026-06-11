@@ -1,6 +1,6 @@
 package dev.jqb.onefeed.plugintestkit;
 
-import dev.jqb.onefeed.api.plugin.OneFeedPlugin;
+import dev.jqb.onefeed.core.plugin.OneFeedPlugin;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 

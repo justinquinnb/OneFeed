@@ -23,18 +23,18 @@
     <dependencies>
       <dependency>
         <groupId>dev.jqb</groupId>
-        <artifactId>onefeed-api</artifactId>
-        <version>${project.version}</version>
+        <artifactId>onefeed-core</artifactId>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>dev.jqb</groupId>
         <artifactId>onefeed-plugin-test-kit</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>dev.jqb</groupId>
-        <artifactId>onefeed-app</artifactId>
-        <version>${project.version}</version>
+        <artifactId>onefeed-server</artifactId>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.pf4j</groupId>

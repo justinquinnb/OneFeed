@@ -21,7 +21,7 @@
   <dependencies>
     <dependency>
       <groupId>dev.jqb</groupId>
-      <artifactId>onefeed-api</artifactId>
+      <artifactId>onefeed-core</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>

@@ -2,12 +2,10 @@ package dev.jqb.onefeed.plugintestkit;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import dev.jqb.onefeed.api.author.NormalizedAuthor;
-import dev.jqb.onefeed.api.caching.Cacher;
-import dev.jqb.onefeed.api.caching.OneFeedCacherPlugin;
-import dev.jqb.onefeed.api.content.Content;
-import dev.jqb.onefeed.api.author.Author;
-import dev.jqb.onefeed.api.content.NormalizedContent;
+import dev.jqb.onefeed.core.author.NormalizedAuthor;
+import dev.jqb.onefeed.core.caching.Cacher;
+import dev.jqb.onefeed.core.caching.OneFeedCacherPlugin;
+import dev.jqb.onefeed.core.content.NormalizedContent;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +15,7 @@ import org.junit.jupiter.api.TestInstance;
 
 /**
  * Tests the basic functionalities of a {@link OneFeedCacherPlugin}, particularly its provided
- * {@link dev.jqb.onefeed.api.caching.Cacher} implementation
+ * {@link dev.jqb.onefeed.core.caching.Cacher} implementation
  *
  * @param <T> your specific {@link OneFeedCacherPlugin} implementation
  */
