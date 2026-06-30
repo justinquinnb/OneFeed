@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.core.standards.rss;
+package dev.jqb.onefeed.core.standard.rss;
 
 import java.util.Optional;
 import lombok.Getter;

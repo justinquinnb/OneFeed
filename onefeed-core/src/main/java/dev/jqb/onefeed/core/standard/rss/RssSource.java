@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.core.standards.rss;
+package dev.jqb.onefeed.core.standard.rss;
 
 /**
  * The RSS channel an item came from

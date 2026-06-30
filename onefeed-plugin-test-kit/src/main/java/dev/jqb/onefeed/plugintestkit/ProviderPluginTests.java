@@ -2,18 +2,18 @@ package dev.jqb.onefeed.plugintestkit;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import dev.jqb.onefeed.core.author.Author;
-import dev.jqb.onefeed.core.author.AuthorNormalizer;
-import dev.jqb.onefeed.core.author.PlatformAuthor;
+import dev.jqb.onefeed.core.actor.Actor;
+import dev.jqb.onefeed.core.actor.ActorNormalizer;
+import dev.jqb.onefeed.core.actor.PlatformActor;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentNormalizer;
 import dev.jqb.onefeed.core.content.PlatformContent;
 import dev.jqb.onefeed.core.feed.SourceInfo;
-import dev.jqb.onefeed.core.impl.Media;
-import dev.jqb.onefeed.core.impl.OneFeedAuthor;
-import dev.jqb.onefeed.core.impl.OneFeedContent;
+import dev.jqb.onefeed.core.content.Media;
+import dev.jqb.onefeed.core.actor.OneFeedActor;
+import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.provider.OneFeedProviderPlugin;
-import dev.jqb.onefeed.core.provider.Platform;
+import dev.jqb.onefeed.core.platform.Platform;
 import dev.jqb.onefeed.core.provider.Provider;
 import java.util.List;
 import java.util.stream.Stream;
@@ -37,16 +37,16 @@ import reactor.core.publisher.Flux;
 public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPlugin>
     extends OneFeedPluginTests<T> {
 
-    public Provider<PlatformContent, PlatformAuthor> provider;
+    public Provider<PlatformContent, PlatformActor> provider;
     public int contentPerPageLimit;
     public PlatformContent contentNormalizerInput;
     public OneFeedContent expectedContentNormalizerOutput;
-    public PlatformAuthor authorNormalizerInput;
-    public OneFeedAuthor expectedAuthorNormalizerOutput;
+    public PlatformActor authorNormalizerInput;
+    public OneFeedActor expectedAuthorNormalizerOutput;
 
     @BeforeAll
     public void getProvider() {
-        this.provider = (Provider<PlatformContent, PlatformAuthor>) plugin.getProvider();
+        this.provider = (Provider<PlatformContent, PlatformActor>) plugin.getProvider();
         this.contentPerPageLimit = getContentPerPageLimit();
         this.contentNormalizerInput = getContentNormalizerInput();
         this.expectedContentNormalizerOutput = getExpectedContentNormalizerOutput();
@@ -80,14 +80,14 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      *
      * @return a sample author to attempt to normalize
      */
-    protected abstract PlatformAuthor getAuthorNormalizerInput();
+    protected abstract PlatformActor getAuthorNormalizerInput();
 
     /**
      * Gets the sample author correctly normalized as a piece of {@link OneFeedContent}.
      *
      * @return a sample author correctly normalized as a piece of {@link OneFeedContent}
      */
-    protected abstract OneFeedAuthor getExpectedAuthorNormalizerOutput();
+    protected abstract OneFeedActor getExpectedAuthorNormalizerOutput();
 
     @Test
     public void contentNormalizerWorksAsExpected() {
@@ -100,9 +100,9 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
     @Test
     public void authorNormalizerWorksAsExpected() {
-        AuthorNormalizer<PlatformAuthor, OneFeedAuthor> authorNormalizer =
+        ActorNormalizer<PlatformActor, OneFeedActor> actorNormalizer =
             provider.getAuthorNormalizer();
-        OneFeedAuthor normalizerOutput = authorNormalizer.normalize(authorNormalizerInput);
+        OneFeedActor normalizerOutput = actorNormalizer.normalize(authorNormalizerInput);
 
         validateOfaEquality(normalizerOutput, expectedAuthorNormalizerOutput);
     }
@@ -146,13 +146,13 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
     }
 
     /**
-     * Test retrieval of the given feed's {@link OneFeedAuthor}, validating a successful response and the
+     * Test retrieval of the given feed's {@link OneFeedActor}, validating a successful response and the
      * existence of the profile and its fields
      *
      * @param feedName the name of the feed whose profile to try retrieving
      */
     private void retrieveFeedAuthor(String feedName) {
-        PlatformAuthor author = provider.fetchAuthor(feedName).block();
+        PlatformActor author = provider.fetchAuthor(feedName).block();
         log.debug("Retrieved platform author: {}", author);
     }
 
@@ -353,12 +353,12 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
     }
 
     /**
-     * Validates the existence of the basic {@link Author} fields
+     * Validates the existence of the basic {@link Actor} fields
      *
-     * @param author the {@link Author to validate
+     * @param author the {@link Actor to validate
      * @return a {@link SoftAssertions} object containing the results of the validation
      */
-    private static SoftAssertions validateBaseAuthorFields(Author author) {
+    private static SoftAssertions validateBaseAuthorFields(Actor author) {
         assertNotNull(author);
 
         SoftAssertions softly = new SoftAssertions();
@@ -370,12 +370,12 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
     }
 
     /**
-     * Validates the equality of the given {@link OneFeedAuthor}s.
+     * Validates the equality of the given {@link OneFeedActor}s.
      *
      * @param actual the author to validate
      * @param expected the author to compare against
      */
-    private static void validateOfaEquality(OneFeedAuthor actual, OneFeedAuthor expected) {
+    private static void validateOfaEquality(OneFeedActor actual, OneFeedActor expected) {
         log.debug("Validating the equality of actual author:\n{}\nagainst expected author:\n{}",
             actual, expected);
 

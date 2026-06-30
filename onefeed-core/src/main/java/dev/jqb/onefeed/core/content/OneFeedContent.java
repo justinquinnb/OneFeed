@@ -1,7 +1,6 @@
-package dev.jqb.onefeed.core.impl;
+package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.jqb.onefeed.core.content.NormalizedContent;
 import dev.jqb.onefeed.core.feed.SourceInfo;
 import java.time.Instant;
 import java.util.List;

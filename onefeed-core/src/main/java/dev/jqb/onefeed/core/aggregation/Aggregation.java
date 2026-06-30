@@ -1,8 +1,8 @@
 package dev.jqb.onefeed.core.aggregation;
 
+import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.content.NormalizedContent;
-import dev.jqb.onefeed.core.author.Author;
-import dev.jqb.onefeed.core.feed.FeedIdentifier;
+import dev.jqb.onefeed.core.feed.FeedId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class Aggregation {
     /**
      * The authors of the aggregated content, indexed by the ID of the feed they came from
      */
-    private Map<FeedIdentifier, Author> authors;
+    private Map<FeedId, Actor> authors;
 
     /**
      * The aggregated content, in descending chronological order
@@ -44,7 +44,7 @@ public class Aggregation {
      * @param aggregateCursor the cursor to the next batch/page of aggregated content
      */
     public Aggregation(
-        @Nullable Map<FeedIdentifier, Author> authors,
+        @Nullable Map<FeedId, Actor> authors,
         List<? extends NormalizedContent> content,
         @Nullable String aggregateCursor
     ) {

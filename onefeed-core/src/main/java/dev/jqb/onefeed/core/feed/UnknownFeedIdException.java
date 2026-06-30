@@ -17,7 +17,7 @@ public class UnknownFeedIdException extends RuntimeException {
      * Creates a new {@code UnknownFeedIdException} with the given ID
      * @param unknownId the ID of the feed that was not found
      */
-    public UnknownFeedIdException(FeedIdentifier unknownId) {
-        super(String.format("Unknown feed ID: %s", unknownId.toIdString()));
+    public UnknownFeedIdException(FeedId unknownId) {
+        super(String.format("Unknown feed ID: %s", unknownId));
     }
 }

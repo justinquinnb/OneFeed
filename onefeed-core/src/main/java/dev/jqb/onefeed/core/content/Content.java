@@ -1,30 +1,42 @@
 package dev.jqb.onefeed.core.content;
 
+import dev.jqb.onefeed.core.actor.Actor;
+import dev.jqb.onefeed.core.actor.PlatformActor;
+import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.feed.FeedIdentifiable;
-import dev.jqb.onefeed.core.feed.FeedIdentifier;
-import dev.jqb.onefeed.core.feed.SourceInfo;
+import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.jspecify.annotations.Nullable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * The minimum required data for of a piece of content.
+ *
+ * @param <A> the type of author this content references/exposes
  */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-public abstract sealed class Content implements FeedIdentifiable, Comparable<Content>
+public abstract sealed class Content<A extends Actor> implements FeedIdentifiable, Comparable<Content>
     permits PlatformContent, NormalizedContent
 {
 
     /**
-     * The origin of the content
+     * The unique ID of the feed the content is from
      */
-    protected SourceInfo source;
+    protected FeedId feedId;
+
+    /**
+     * A means of accessing the resource on the source platform
+     */
+    protected ExternalRef externalRef;
 
     /**
      * Gets time at which the content was published.
@@ -42,13 +54,17 @@ public abstract sealed class Content implements FeedIdentifiable, Comparable<Con
      * Constructs a piece of {@code Content} attributed to a {@code source} and created/published
      * at the given time.
      *
-     * @param source the origin of the content
+     * @param feedId the unique ID of the feed the content is from
+     * @param externalRef a means of accessing the resource on the source platform
      * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
      *                       some equivalent means), if known, on the originating platform's API
      * @param published the time the {@code Content} was published on its {@code source}
      */
-    public Content(SourceInfo source, @Nullable String nextPageCursor, Instant published) {
-        this.source = source;
+    public Content(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
+        Instant published
+    ) {
+        this.feedId = feedId;
+        this.externalRef = externalRef;
         this.nextPageCursor = nextPageCursor;
         this.published = published;
     }
@@ -68,7 +84,21 @@ public abstract sealed class Content implements FeedIdentifiable, Comparable<Con
     }
 
     @Override
-    public FeedIdentifier getFeedIdentifier() {
-        return source;
+    public FeedId getFeedId() {
+        return feedId;
     }
+
+    /**
+     * Gets a unique key for {@code this} content on OneFeed.
+     * @return a unique key for this content on OneFeed
+     */
+    public ContentKey getKey() {
+        return new ContentKey(feedId, externalRef.id());
+    }
+
+    /**
+     * Fetches the authors of {@code this} content.
+     * @return a {@link Flux} that emits the authors of {@code this} content
+     */
+    public abstract Flux<A> fetchAuthors();
 }

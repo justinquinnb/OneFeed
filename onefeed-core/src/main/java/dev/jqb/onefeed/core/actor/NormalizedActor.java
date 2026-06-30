@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.core.author;
+package dev.jqb.onefeed.core.actor;
 
 import dev.jqb.onefeed.core.feed.SourceInfo;
 import dev.jqb.onefeed.core.provider.Provider;
@@ -15,7 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 @NoArgsConstructor
-public abstract non-sealed class NormalizedAuthor extends Author {
+public abstract non-sealed class NormalizedActor extends Actor {
 
     /**
      * Constructs a {@code NormalizedAuthor} attributed to a {@code source} and represented by a
@@ -25,7 +25,7 @@ public abstract non-sealed class NormalizedAuthor extends Author {
      * @param handle the username of the author on the source's platform, devoid of any
      *                 platform-specific prefixes like {@code @}
      */
-    public NormalizedAuthor(SourceInfo source, String handle) {
+    public NormalizedActor(SourceInfo source, String handle) {
         super(source, handle);
     }
 }

@@ -1,11 +1,11 @@
 package dev.jqb.onefeed.core.aggregation;
 
-import dev.jqb.onefeed.core.author.PlatformAuthor;
+import dev.jqb.onefeed.core.actor.PlatformActor;
 import dev.jqb.onefeed.core.content.NormalizedContent;
 import dev.jqb.onefeed.core.content.PlatformContent;
-import dev.jqb.onefeed.core.content.PlatformCursor;
+import dev.jqb.onefeed.core.feed.PlatformCursor;
 import dev.jqb.onefeed.core.feed.Feed;
-import dev.jqb.onefeed.core.feed.FeedIdentifier;
+import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.provider.Provider;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ public interface Aggregator<Out extends NormalizedContent> {
      */
     Flux<Out> aggregate(
         int amount,
-        List<Feed<? extends PlatformContent, ? extends PlatformAuthor>> feeds,
+        List<Feed<? extends PlatformContent, ? extends PlatformActor>> feeds,
         AggregationOptions options
     );
 
@@ -45,8 +45,8 @@ public interface Aggregator<Out extends NormalizedContent> {
      */
     Flux<Out> aggregate(
         int amount,
-        List<Feed<? extends PlatformContent, ? extends PlatformAuthor>> feeds,
-        Map<FeedIdentifier, ? extends PlatformCursor> cursors,
+        List<Feed<? extends PlatformContent, ? extends PlatformActor>> feeds,
+        Map<FeedId, ? extends PlatformCursor> cursors,
         AggregationOptions options
     );
 }

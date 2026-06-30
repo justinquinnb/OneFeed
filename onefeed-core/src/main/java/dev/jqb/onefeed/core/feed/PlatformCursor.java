@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.core.content;
+package dev.jqb.onefeed.core.feed;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,6 @@
-package dev.jqb.onefeed.core.impl;
+package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.jqb.onefeed.core.standards.rss.RssEnclosure;
-import dev.jqb.onefeed.core.standards.rss.RssImage;
 import jakarta.activation.MimeType;
 import java.util.Optional;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package dev.jqb.onefeed.core.content;
 
-import dev.jqb.onefeed.core.provider.Provider;
 import dev.jqb.onefeed.core.feed.SourceInfo;
+import dev.jqb.onefeed.core.provider.Provider;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

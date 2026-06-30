@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.core.author;
+package dev.jqb.onefeed.core.actor;
 
 import dev.jqb.onefeed.core.feed.SourceInfo;
 import dev.jqb.onefeed.core.provider.Provider;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public abstract non-sealed class PlatformAuthor extends Author {
+public abstract non-sealed class PlatformActor extends Actor {
 
     /**
      * Constructs a {@code PlatformAuthor} attributed to a {@code source} and represented by a
@@ -24,7 +24,7 @@ public abstract non-sealed class PlatformAuthor extends Author {
      * @param handle the username of the author on the source's platform, devoid of any
      *                 platform-specific prefixes like {@code @}
      */
-    public PlatformAuthor(SourceInfo source, String handle) {
+    public PlatformActor(SourceInfo source, String handle) {
         super(source, handle);
     }
 }

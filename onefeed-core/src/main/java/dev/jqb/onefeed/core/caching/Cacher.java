@@ -1,19 +1,19 @@
 package dev.jqb.onefeed.core.caching;
 
-import dev.jqb.onefeed.core.author.NormalizedAuthor;
-import dev.jqb.onefeed.core.content.ContentIdentifier;
+import dev.jqb.onefeed.core.actor.NormalizedActor;
+import dev.jqb.onefeed.core.content.ContentId;
 import dev.jqb.onefeed.core.content.NormalizedContent;
-import dev.jqb.onefeed.core.feed.FeedIdentifier;
+import dev.jqb.onefeed.core.feed.FeedId;
 import java.util.List;
 
 /**
  * Provides a means of caching and retrieving {@link NormalizedContent} and
- * {@link NormalizedAuthor}s
+ * {@link NormalizedActor}s
  *
  * @param <C> the type of {@link NormalizedContent} in the cache
- * @param <A> the type of {@link NormalizedAuthor} in the cache
+ * @param <A> the type of {@link NormalizedActor} in the cache
  */
-public interface Cacher<C extends NormalizedContent, A extends NormalizedAuthor> {
+public interface Cacher<C extends NormalizedContent, A extends NormalizedActor> {
 
     /**
      * Gets the {@code amount} most recent content from the cache.
@@ -23,7 +23,7 @@ public interface Cacher<C extends NormalizedContent, A extends NormalizedAuthor>
      *
      * @return at most {@code amount} pieces of cached content from the desired feed
      */
-    List<C> fetchRecentContent(FeedIdentifier feed, int amount);
+    List<C> fetchRecentContent(FeedId feed, int amount);
 
     /**
      * Gets the {@code amount} most recent content from the cache.
@@ -34,14 +34,14 @@ public interface Cacher<C extends NormalizedContent, A extends NormalizedAuthor>
      *
      * @return at most {@code amount} pieces of cached content from the desired feed
      */
-    List<C> fetchRecentContent(FeedIdentifier feed, int amount, ContentIdentifier after);
+    List<C> fetchRecentContent(FeedId feed, int amount, ContentId after);
 
     /**
      * Gets a specific piece of content from the cache.
      * @param id the ID of the content to retrieve
-     * @return the content with the given {@link ContentIdentifier}
+     * @return the content with the given {@link ContentId}
      */
-    C fetchContent(ContentIdentifier id);
+    C fetchContent(ContentId id);
 
     /**
      * Caches the given {@code content}.
@@ -58,7 +58,7 @@ public interface Cacher<C extends NormalizedContent, A extends NormalizedAuthor>
      * @param feed the feed whose content to remove
      * @param idOnPlatform the id of the content to remove
      */
-    void removeContent(FeedIdentifier feed, String idOnPlatform);
+    void removeContent(FeedId feed, String idOnPlatform);
 
     /**
      * Gets the desired author from the cache
@@ -67,7 +67,7 @@ public interface Cacher<C extends NormalizedContent, A extends NormalizedAuthor>
      *
      * @return the author of the desired {@code feed}
      */
-    A fetchAuthor(FeedIdentifier feed);
+    A fetchAuthor(FeedId feed);
 
     /**
      * Caches the given {@code authors}.
@@ -83,5 +83,5 @@ public interface Cacher<C extends NormalizedContent, A extends NormalizedAuthor>
      * Removes the author with the given id for the given feed from the cache.
      * @param feed the feed whose author to remove
      */
-    void removeAuthor(FeedIdentifier feed);
+    void removeAuthor(FeedId feed);
 }

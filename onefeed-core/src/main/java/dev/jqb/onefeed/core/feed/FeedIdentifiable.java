@@ -1,16 +1,15 @@
 package dev.jqb.onefeed.core.feed;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
 
 /**
  * A type whose source feed can be identified
  */
-public interface FeedIdentifiable {
+public interface FeedIdentifiable extends ProviderIdentifiable {
 
     /**
      * Gets the identifier of the feed the object is from
      * @return the identifier of the feed the object is from
      */
-    @JsonIgnore
-    FeedIdentifier getFeedIdentifier();
+    FeedId getFeedId();
 }

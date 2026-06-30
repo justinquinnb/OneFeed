@@ -1,7 +1,7 @@
 package dev.jqb.onefeed.core.provider;
 
-import dev.jqb.onefeed.core.impl.OneFeedAuthor;
-import dev.jqb.onefeed.core.impl.OneFeedContent;
+import dev.jqb.onefeed.core.actor.OneFeedActor;
+import dev.jqb.onefeed.core.content.OneFeedContent;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class ProviderConfig {
     /**
      * Whether to use the "lite" fetch mode, wherein the provider only requests the fields of
      * authors and content that are required to complete {@link OneFeedContent} and
-     * {@link OneFeedAuthor} objects during normalization.
+     * {@link OneFeedActor} objects during normalization.
      */
     private boolean useLiteFetchMode = true;
 

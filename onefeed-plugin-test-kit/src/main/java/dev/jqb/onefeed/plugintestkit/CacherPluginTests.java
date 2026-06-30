@@ -2,7 +2,7 @@ package dev.jqb.onefeed.plugintestkit;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import dev.jqb.onefeed.core.author.NormalizedAuthor;
+import dev.jqb.onefeed.core.actor.NormalizedActor;
 import dev.jqb.onefeed.core.caching.Cacher;
 import dev.jqb.onefeed.core.caching.OneFeedCacherPlugin;
 import dev.jqb.onefeed.core.content.NormalizedContent;
@@ -24,15 +24,15 @@ import org.junit.jupiter.api.TestInstance;
 public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin>
     extends OneFeedPluginTests<T>
 {
-    public Cacher<NormalizedContent, NormalizedAuthor> cacher;
+    public Cacher<NormalizedContent, NormalizedActor> cacher;
     public NormalizedContent sampleContent;
     public NormalizedContent updatedSampleContent;
-    public NormalizedAuthor sampleAuthor;
-    public NormalizedAuthor updatedSampleAuthor;
+    public NormalizedActor sampleAuthor;
+    public NormalizedActor updatedSampleAuthor;
 
     @BeforeAll
     public void getCacher() {
-        this.cacher = (Cacher<NormalizedContent, NormalizedAuthor>) plugin.getCacher();
+        this.cacher = (Cacher<NormalizedContent, NormalizedActor>) plugin.getCacher();
         this.sampleContent = this.getSampleContent();
         this.updatedSampleContent = this.getUpdatedSampleContent();
         this.sampleAuthor = this.getSampleAuthor();
@@ -40,11 +40,11 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     }
 
     protected abstract NormalizedContent getSampleContent();
-    protected abstract NormalizedAuthor getSampleAuthor();
+    protected abstract NormalizedActor getSampleAuthor();
     protected abstract NormalizedContent getUpdatedSampleContent();
-    protected abstract NormalizedAuthor getUpdatedSampleAuthor();
+    protected abstract NormalizedActor getUpdatedSampleAuthor();
     protected abstract boolean contentMatches(NormalizedContent one, NormalizedContent two);
-    protected abstract boolean authorsMatch(NormalizedAuthor one, NormalizedAuthor two);
+    protected abstract boolean authorsMatch(NormalizedActor one, NormalizedActor two);
 
     /**
      * Test whether errors are thrown when caching content.
@@ -80,7 +80,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Test
     @Order(4)
     public void fetchSampleAuthor() {
-        NormalizedAuthor author = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
+        NormalizedActor author = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
         assert authorsMatch(sampleAuthor, author);
     }
 
@@ -99,7 +99,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Order(6)
     public void updateSampleAuthor() {
         cacher.cacheAuthors(List.of(updatedSampleAuthor));
-        NormalizedAuthor updatedSampleAuthor = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
+        NormalizedActor updatedSampleAuthor = cacher.fetchAuthor(sampleAuthor.getFeedIdentifier());
         assert authorsMatch(sampleAuthor, updatedSampleAuthor);
     }
 

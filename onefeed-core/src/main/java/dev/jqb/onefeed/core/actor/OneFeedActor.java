@@ -1,7 +1,5 @@
-package dev.jqb.onefeed.core.impl;
+package dev.jqb.onefeed.core.actor;
 
-import dev.jqb.onefeed.core.author.Author;
-import dev.jqb.onefeed.core.author.NormalizedAuthor;
 import dev.jqb.onefeed.core.feed.SourceInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true)
-public class OneFeedAuthor extends NormalizedAuthor {
+public class OneFeedActor extends NormalizedActor {
 
     /**
      * The non-unique, human name or nickname of the author
@@ -29,7 +27,7 @@ public class OneFeedAuthor extends NormalizedAuthor {
 
     /**
      * Constructs a user {@code Profile} object, effectively a more personalized piece of
-     * {@link Author} info.
+     * {@link Actor} info.
      *
      * @param source the origin of the profile
      * @param handle the handle of the profile on the source's platform, devoid of any
@@ -37,7 +35,7 @@ public class OneFeedAuthor extends NormalizedAuthor {
      * @param name the non-unique, human name or nickname of the author
      * @param profilePicSrc a URL for their profile picture on the platform
      */
-    public OneFeedAuthor(SourceInfo source, String handle, String name, String profilePicSrc) {
+    public OneFeedActor(SourceInfo source, String handle, String name, String profilePicSrc) {
         super(source, handle);
         this.name = name;
         this.profilePicSrc = profilePicSrc;

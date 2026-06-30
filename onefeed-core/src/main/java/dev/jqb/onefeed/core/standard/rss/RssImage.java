@@ -1,6 +1,4 @@
-package dev.jqb.onefeed.core.standards.rss;
-
-import java.util.Optional;
+package dev.jqb.onefeed.core.standard.rss;
 
 /**
  * A channel image in RSS.

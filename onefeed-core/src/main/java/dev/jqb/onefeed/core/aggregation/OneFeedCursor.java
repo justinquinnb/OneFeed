@@ -1,6 +1,6 @@
-package dev.jqb.onefeed.core.impl;
+package dev.jqb.onefeed.core.aggregation;
 
-import dev.jqb.onefeed.core.content.PlatformCursor;
+import dev.jqb.onefeed.core.feed.PlatformCursor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

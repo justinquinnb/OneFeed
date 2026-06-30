@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.core.standards.rss;
+package dev.jqb.onefeed.core.standard.rss;
 
 /**
  * A string that uniquely identifies an RSS item for RSS aggregators

@@ -3,7 +3,7 @@ package dev.jqb.onefeed.core.feed;
 /**
  * Thrown when a feed identifier string is malformed
  *
- * @see FeedIdentifier#fromIdString(String)
+ * @see FeedId#fromIdString(String)
  */
 public class MalformedFeedIdException extends RuntimeException {
 

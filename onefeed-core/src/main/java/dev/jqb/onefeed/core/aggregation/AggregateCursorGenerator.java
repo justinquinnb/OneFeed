@@ -3,8 +3,7 @@ package dev.jqb.onefeed.core.aggregation;
 
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.NormalizedContent;
-import dev.jqb.onefeed.core.feed.FeedIdentifier;
-import dev.jqb.onefeed.core.impl.OneFeedCursor;
+import dev.jqb.onefeed.core.feed.FeedId;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ public interface AggregateCursorGenerator<In extends NormalizedContent> {
      *
      * @param aggregateCursor the aggregate nextPageCursor, encoded in base 64, to decode
      * @return a mapping of feed ID strings to {@link OneFeedCursor}s
-     * @see dev.jqb.onefeed.core.feed.FeedIdentifier#toIdString()
+     * @see FeedId#toIdString()
      */
-    Map<FeedIdentifier, OneFeedCursor> decodeAggregateCursor(String aggregateCursor);
+    Map<FeedId, OneFeedCursor> decodeAggregateCursor(String aggregateCursor);
 }
