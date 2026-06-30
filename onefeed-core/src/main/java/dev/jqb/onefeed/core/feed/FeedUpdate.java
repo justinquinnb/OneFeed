@@ -1,5 +1,7 @@
 package dev.jqb.onefeed.core.feed;
 
+import dev.jqb.onefeed.core.actor.Actor;
+import dev.jqb.onefeed.core.content.Content;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class FeedUpdate<C extends Contnt<PlatformActor>, A extends PlatformActor> {
+public class FeedUpdate<C extends Content, A extends Actor> {
 
     /**
      * Any new content that was added to the feed
@@ -34,5 +36,6 @@ public class FeedUpdate<C extends Contnt<PlatformActor>, A extends PlatformActor
     /**
      * The updated profile of the feed's author
      */
-    private A updatedAuthor;
+    @Builder.Default
+    private List<A> updatedAuthors = List.of();
 }
