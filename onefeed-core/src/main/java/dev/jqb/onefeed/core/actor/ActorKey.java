@@ -1,5 +1,7 @@
 package dev.jqb.onefeed.core.actor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
 
 /**
@@ -20,7 +22,19 @@ public record ActorKey(String providerId, String idOnPlatform) implements Provid
      * @return a string representation of this actor key in format
      * {@link #providerId}{@code :}{@link #idOnPlatform}
      */
+    @JsonValue
     public String toKeyString() {
         return String.format("%s:%s", providerId, idOnPlatform);
+    }
+
+    /**
+     * Parses an {@code ActorKey} from a string.
+     * @param keyString the string to parse, of format {@link #providerId}{@code :}{@link #idOnPlatform}
+     * @return the {@code ActorKey} represented by {@code keyString}
+     */
+    @JsonCreator
+    public static ActorKey fromKeyString(String keyString) {
+        String[] parts = keyString.split(":");
+        return new ActorKey(parts[0], parts[1]);
     }
 }

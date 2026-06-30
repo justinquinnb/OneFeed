@@ -1,5 +1,7 @@
 package dev.jqb.onefeed.core.feed;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +13,6 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class FeedCursor {
 
@@ -42,6 +43,7 @@ public class FeedCursor {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return String.format("%s+%d", cursorOnPlatform, offsetFromCursor);
     }
@@ -51,6 +53,7 @@ public class FeedCursor {
      * @param cursorString the string to parse, of format {@code cursor}{@code +}{@code offset}
      * @return a {@code PlatformCursor} object representing the given string
      */
+    @JsonCreator
     public static FeedCursor fromString(String cursorString) {
         int splitAt = cursorString.lastIndexOf('+');
         String cursor = cursorString.substring(0, splitAt);
