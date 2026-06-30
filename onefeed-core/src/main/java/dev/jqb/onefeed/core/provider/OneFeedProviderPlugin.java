@@ -1,7 +1,5 @@
 package dev.jqb.onefeed.core.provider;
 
-import dev.jqb.onefeed.core.actor.PlatformActor;
-import dev.jqb.onefeed.core.content.PlatformContent;
 import dev.jqb.onefeed.core.plugin.OneFeedPlugin;
 import java.util.List;
 

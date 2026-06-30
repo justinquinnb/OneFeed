@@ -3,6 +3,7 @@ package dev.jqb.onefeed.core.actor;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,20 +13,19 @@ import lombok.ToString;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @ToString
-public abstract sealed class Actor implements ProviderIdentifiable permits PlatformActor,
-    NormalizedActor
-{
+public abstract class Actor implements ProviderIdentifiable {
 
     /**
      * The unique identifier of the {@link dev.jqb.onefeed.core.provider.Provider} the actor is from
      */
-    private final String providerId;
+    private String providerId;
 
     /**
      * A means of accessing the resource on the source platform
      */
-    private final ExternalRef externalRef;
+    private ExternalRef externalRef;
 
     /**
      * The handle of the actor on the content's platform, devoid of any platform-specific prefixes
@@ -33,6 +33,7 @@ public abstract sealed class Actor implements ProviderIdentifiable permits Platf
      */
     private String handle;
 
+    // TODO make this a builder instead
     /**
      * Constructs an {@code Author} attributed to a {@code source} and represented by a
      * {@code handle}.
@@ -49,16 +50,16 @@ public abstract sealed class Actor implements ProviderIdentifiable permits Platf
         this.handle = handle;
     }
 
-    @Override
-    public String getProviderId() {
-        return providerId;
-    }
-
     /**
      * Gets a unique key for {@code this} actor on OneFeed.
      * @return a unique key for this actor on OneFeed
      */
     public ActorKey getKey() {
         return new ActorKey(providerId, externalRef.id());
+    }
+
+    @Override
+    public String getProviderId() {
+        return providerId;
     }
 }

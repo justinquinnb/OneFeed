@@ -1,7 +1,5 @@
 package dev.jqb.onefeed.core.caching;
 
-import dev.jqb.onefeed.core.actor.NormalizedActor;
-import dev.jqb.onefeed.core.content.NormalizedContent;
 import dev.jqb.onefeed.core.plugin.OneFeedPlugin;
 
 public abstract class OneFeedCacherPlugin extends OneFeedPlugin {

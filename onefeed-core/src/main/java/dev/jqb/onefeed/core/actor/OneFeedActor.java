@@ -1,19 +1,19 @@
 package dev.jqb.onefeed.core.actor;
 
-import dev.jqb.onefeed.core.feed.SourceInfo;
+import dev.jqb.onefeed.core.platform.ExternalRef;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- * A feed author's profile
+ * The default implementation of {@link Actor}s
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true)
-public class OneFeedActor extends NormalizedActor {
+public class OneFeedActor extends Actor {
 
     /**
      * The non-unique, human name or nickname of the author
@@ -29,14 +29,16 @@ public class OneFeedActor extends NormalizedActor {
      * Constructs a user {@code Profile} object, effectively a more personalized piece of
      * {@link Actor} info.
      *
-     * @param source the origin of the profile
-     * @param handle the handle of the profile on the source's platform, devoid of any
-     *                 platform-specific prefixes like {@code @}
+     * @param providerId the unique identifier of the {@link dev.jqb.onefeed.core.provider.Provider}
+     *                   the actor is from
+     * @param externalRef a means of accessing the resource on the source platform
      * @param name the non-unique, human name or nickname of the author
      * @param profilePicSrc a URL for their profile picture on the platform
      */
-    public OneFeedActor(SourceInfo source, String handle, String name, String profilePicSrc) {
-        super(source, handle);
+    public OneFeedActor(String providerId, ExternalRef externalRef, String handle, String name,
+        String profilePicSrc
+    ) {
+        super(providerId, externalRef, handle);
         this.name = name;
         this.profilePicSrc = profilePicSrc;
     }

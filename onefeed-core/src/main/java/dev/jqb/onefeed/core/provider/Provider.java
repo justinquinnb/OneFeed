@@ -1,16 +1,15 @@
 package dev.jqb.onefeed.core.provider;
 
-import dev.jqb.onefeed.core.actor.ActorNormalizer;
+import dev.jqb.onefeed.core.actor.ActorTransformer;
 import dev.jqb.onefeed.core.actor.OneFeedActor;
-import dev.jqb.onefeed.core.actor.PlatformActor;
-import dev.jqb.onefeed.core.content.ContentNormalizer;
+import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.content.OneFeedContent;
-import dev.jqb.onefeed.core.content.PlatformContent;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.platform.Platform;
 import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -21,7 +20,7 @@ import reactor.core.publisher.Mono;
  */
 @Getter
 @ToString
-public abstract class Provider<C extends PlatformContent, A extends PlatformActor> {
+public abstract class Provider<C extends Contnt<PlatformActor>, A extends PlatformActor> {
 
     /**
      * The unique identifier of this provider
@@ -43,22 +42,28 @@ public abstract class Provider<C extends PlatformContent, A extends PlatformActo
     public abstract List<Feed<C>> getFeeds();
 
     /**
-     * Gets the {@link ContentNormalizer} capable of transforming this provider's
+     * Gets the {@link ContentTransformer} capable of transforming this provider's
      * {@link PlatformContent} DTOs into normalized {@link OneFeedContent}
      *
-     * @return a {@link ContentNormalizer} capable of transforming this provider's
+     * @return a {@link ContentTransformer} capable of transforming this provider's
      * {@link PlatformContent} DTO into normalized {@link OneFeedContent}
      */
-    public abstract ContentNormalizer<C, OneFeedContent> getContentNormalizer();
+    public abstract ContentTransformer<C, OneFeedContent> getContentNormalizer();
 
     /**
-     * Gets the {@link ActorNormalizer} capable of transforming this provider's
+     * Gets the {@link ActorTransformer} capable of transforming this provider's
      * {@link PlatformActor} DTOs into normalized {@link OneFeedActor}s
      *
-     * @return a {@link ActorNormalizer} capable of transforming this provider's
+     * @return a {@link ActorTransformer} capable of transforming this provider's
      * {@link PlatformActor} DTO into normalized {@link OneFeedActor}
      */
-    public abstract ActorNormalizer<A, OneFeedActor> getActorNormalizer();
+    public abstract ActorTransformer<A, OneFeedActor> getActorNormalizer();
+
+    /**
+     * Fetches the authors of {@code this} content.
+     * @return a {@link Flux} that emits the authors of {@code this} content
+     */
+    public abstract Mono<A> fetchAuthor(String authorId);
 
     /**
      * Gets info about this provider's source platform.

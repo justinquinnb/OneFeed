@@ -1,8 +1,6 @@
 package dev.jqb.onefeed.core.caching;
 
-import dev.jqb.onefeed.core.actor.NormalizedActor;
 import dev.jqb.onefeed.core.content.ContentId;
-import dev.jqb.onefeed.core.content.NormalizedContent;
 import dev.jqb.onefeed.core.feed.FeedId;
 import java.util.List;
 

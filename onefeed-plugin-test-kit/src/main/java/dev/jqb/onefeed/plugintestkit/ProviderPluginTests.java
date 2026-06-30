@@ -3,11 +3,7 @@ package dev.jqb.onefeed.plugintestkit;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.jqb.onefeed.core.actor.Actor;
-import dev.jqb.onefeed.core.actor.ActorNormalizer;
-import dev.jqb.onefeed.core.actor.PlatformActor;
 import dev.jqb.onefeed.core.content.Content;
-import dev.jqb.onefeed.core.content.ContentNormalizer;
-import dev.jqb.onefeed.core.content.PlatformContent;
 import dev.jqb.onefeed.core.feed.SourceInfo;
 import dev.jqb.onefeed.core.content.Media;
 import dev.jqb.onefeed.core.actor.OneFeedActor;

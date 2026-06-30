@@ -1,7 +1,5 @@
 package dev.jqb.onefeed.core.provider;
 
-import dev.jqb.onefeed.core.actor.PlatformActor;
-import dev.jqb.onefeed.core.content.PlatformContent;
 import dev.jqb.onefeed.core.feed.FeedUpdate;
 
 /**
@@ -10,7 +8,7 @@ import dev.jqb.onefeed.core.feed.FeedUpdate;
  * @param <C> the type of {@link PlatformContent} produced
  * @param <A> the type of {@link PlatformActor} produced
  */
-public abstract class WebhookEnabledProvider<C extends PlatformContent, A extends PlatformActor>
+public abstract class WebhookEnabledProvider<C extends Contnt<PlatformActor>, A extends PlatformActor>
     extends Provider<C, A>
 {
 

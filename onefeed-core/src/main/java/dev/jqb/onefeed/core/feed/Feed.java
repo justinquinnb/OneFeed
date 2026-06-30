@@ -1,23 +1,21 @@
 package dev.jqb.onefeed.core.feed;
 
-import dev.jqb.onefeed.core.actor.PlatformActor;
-import dev.jqb.onefeed.core.content.PlatformContent;
+import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 /**
  * A single feed of content from a single provider
+ *
+ * @param <C> the type of {@link Content} that the feed produces
  */
 @Getter
 @Setter
 @ToString
-public abstract class Feed<C extends PlatformContent, A extends PlatformActor> implements
-    ProviderIdentifiable
-{
+public abstract class Feed<C extends Content> implements ProviderIdentifiable {
 
     /**
      * The unique ID of the feed
@@ -52,12 +50,6 @@ public abstract class Feed<C extends PlatformContent, A extends PlatformActor> i
      * {@code amount} of retrieved content
      */
     public abstract Flux<C> fetchRecentContent(int amount, PlatformCursor cursor);
-
-    /**
-     * Fetches the publisher of {@code this} feed.
-     * @return a {@link Mono} that emits the publisher of {@code this} feed
-     */
-    public abstract Mono<A> fetchPublisher();
 
     @Override
     public String getProviderId() {

@@ -2,10 +2,8 @@ package dev.jqb.onefeed.plugintestkit;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import dev.jqb.onefeed.core.actor.NormalizedActor;
 import dev.jqb.onefeed.core.caching.Cacher;
 import dev.jqb.onefeed.core.caching.OneFeedCacherPlugin;
-import dev.jqb.onefeed.core.content.NormalizedContent;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;

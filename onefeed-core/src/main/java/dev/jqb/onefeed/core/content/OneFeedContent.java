@@ -1,7 +1,8 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.jqb.onefeed.core.feed.SourceInfo;
+import dev.jqb.onefeed.core.feed.FeedId;
+import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
 import java.util.List;
 import lombok.Getter;
@@ -11,13 +12,13 @@ import lombok.ToString;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The default implementation of {@link NormalizedContent}
+ * The default implementation of {@link Content}
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true)
-public class OneFeedContent extends NormalizedContent {
+public class OneFeedContent extends Content {
 
     /**
      * The title of the content, using CommonMark-Flavored Markdown for any formatting.
@@ -53,17 +54,18 @@ public class OneFeedContent extends NormalizedContent {
      * Constructs a piece of {@code OneFeedContent} attributed to a {@code source} and
      * created/published at the given time.
      *
-     * @param source the origin of the content
+     * @param feedId the unique ID of the feed the content is from
+     * @param externalRef a means of accessing the resource on the source platform
      * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
      *                       some equivalent means), if known, on the originating platform's API
      * @param published the time the {@code Content} was published on its {@code source}
      * @param body the primary textual content, using CommonMark-Flavored Markdown for any
      *             formatting
      */
-    public OneFeedContent(SourceInfo source, @Nullable String nextPageCursor, Instant published,
-        String body
+    public OneFeedContent(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
+        Instant published, String body, List<String> authorIds
     ) {
-        super(source, nextPageCursor, published);
+        super(feedId, externalRef, nextPageCursor, published, authorIds);
         this.body = body;
     }
 
@@ -71,17 +73,18 @@ public class OneFeedContent extends NormalizedContent {
      * Constructs a piece of {@code OneFeedContent}, containing just media. All other fields may be
      * set with setters.
      *
-     * @param source the origin of the content
+     * @param feedId the unique ID of the feed the content is from
+     * @param externalRef a means of accessing the resource on the source platform
      * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
      *                       some equivalent means), if known, on the originating platform's API
      * @param published the time the {@code Content} was published on its {@code source}
      * @param media any attached media, such as links, videos, images, or files, in their desired
      *              order of presentation or priority (high/first to low/last)
      */
-    public OneFeedContent(SourceInfo source, @Nullable String nextPageCursor, Instant published,
-        List<Media> media
+    public OneFeedContent(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
+        Instant published, List<Media> media, List<String> authorIds
     ) {
-        super(source, nextPageCursor, published);
+        super(feedId, externalRef, nextPageCursor, published, authorIds);
         this.media = media;
     }
 
@@ -89,7 +92,8 @@ public class OneFeedContent extends NormalizedContent {
      * Constructs a piece of {@code OneFeedContent}, containing both body text and media. All other
      * fields may be set with setters.
      *
-     * @param source the origin of the content
+     * @param feedId the unique ID of the feed the content is from
+     * @param externalRef a means of accessing the resource on the source platform
      * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
      *                       some equivalent means), if known, on the originating platform's API
      * @param published the time the {@code Content} was published on its {@code source}
@@ -98,11 +102,16 @@ public class OneFeedContent extends NormalizedContent {
      * @param media any attached media, such as links, videos, images, or files, in their desired
      *              order of presentation or priority (high/first to low/last)
      */
-    public OneFeedContent(SourceInfo source, @Nullable String nextPageCursor, Instant published,
-        String body, List<Media> media
+    public OneFeedContent(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
+        Instant published, String body, List<Media> media, List<String> authorIds
     ) {
-        super(source, nextPageCursor, published);
+        super(feedId, externalRef, nextPageCursor, published, authorIds);
         this.body = body;
         this.media = media;
+    }
+
+    @Override
+    public List<String> getAuthorIds() {
+        return List.of();
     }
 }

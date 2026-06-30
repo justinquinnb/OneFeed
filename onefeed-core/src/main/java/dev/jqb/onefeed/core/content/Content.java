@@ -1,7 +1,5 @@
 package dev.jqb.onefeed.core.content;
 
-import dev.jqb.onefeed.core.actor.Actor;
-import dev.jqb.onefeed.core.actor.PlatformActor;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.feed.FeedIdentifiable;
 import dev.jqb.onefeed.core.platform.ExternalRef;
@@ -12,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.jspecify.annotations.Nullable;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 /**
  * The minimum required data for of a piece of content.
@@ -24,9 +20,7 @@ import reactor.core.publisher.Mono;
 @Setter
 @ToString
 @NoArgsConstructor
-public abstract sealed class Content<A extends Actor> implements FeedIdentifiable, Comparable<Content>
-    permits PlatformContent, NormalizedContent
-{
+public abstract class Content implements FeedIdentifiable, Comparable<Content> {
 
     /**
      * The unique ID of the feed the content is from
@@ -39,17 +33,23 @@ public abstract sealed class Content<A extends Actor> implements FeedIdentifiabl
     protected ExternalRef externalRef;
 
     /**
-     * Gets time at which the content was published.
+     * Gets time at which the content was published
      */
     protected Instant published;
 
     /**
      * The cursor pointing to the next page of content after {@code this} (or some equivalent means),
-     * if known, on the originating platform's API.
+     * if known, on the originating platform's API
      */
     @Nullable
     protected String nextPageCursor;
 
+    /**
+     * The IDs of the authors of {@code this} content on the source platform
+     */
+    protected List<String> authorIds;
+
+    // TODO make this a builder instead
     /**
      * Constructs a piece of {@code Content} attributed to a {@code source} and created/published
      * at the given time.
@@ -61,12 +61,21 @@ public abstract sealed class Content<A extends Actor> implements FeedIdentifiabl
      * @param published the time the {@code Content} was published on its {@code source}
      */
     public Content(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
-        Instant published
+        Instant published, List<String> authorIds
     ) {
         this.feedId = feedId;
         this.externalRef = externalRef;
         this.nextPageCursor = nextPageCursor;
         this.published = published;
+        this.authorIds = authorIds;
+    }
+
+    /**
+     * Gets a unique key for {@code this} content on OneFeed.
+     * @return a unique key for this content on OneFeed
+     */
+    public ContentKey getKey() {
+        return new ContentKey(feedId, externalRef.id());
     }
 
     /**
@@ -88,17 +97,8 @@ public abstract sealed class Content<A extends Actor> implements FeedIdentifiabl
         return feedId;
     }
 
-    /**
-     * Gets a unique key for {@code this} content on OneFeed.
-     * @return a unique key for this content on OneFeed
-     */
-    public ContentKey getKey() {
-        return new ContentKey(feedId, externalRef.id());
+    @Override
+    public String getProviderId() {
+        return feedId.getProviderId();
     }
-
-    /**
-     * Fetches the authors of {@code this} content.
-     * @return a {@link Flux} that emits the authors of {@code this} content
-     */
-    public abstract Flux<A> fetchAuthors();
 }
