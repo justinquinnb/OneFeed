@@ -13,7 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class PlatformCursor {
+public class FeedCursor {
 
     /**
      * The cursor, as provided by the platform's API
@@ -36,8 +36,25 @@ public class PlatformCursor {
      *                         offset of 3 indicates content piece 14 should be the first piece to
      *                         consider.
      */
-    public PlatformCursor(String cursorOnPlatform, int offsetFromCursor) {
+    public FeedCursor(String cursorOnPlatform, int offsetFromCursor) {
         this.cursorOnPlatform = cursorOnPlatform;
         this.offsetFromCursor = offsetFromCursor;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s+%d", cursorOnPlatform, offsetFromCursor);
+    }
+
+    /**
+     * Parses a {@code PlatformCursor} from a string.
+     * @param cursorString the string to parse, of format {@code cursor}{@code +}{@code offset}
+     * @return a {@code PlatformCursor} object representing the given string
+     */
+    public static FeedCursor fromString(String cursorString) {
+        int splitAt = cursorString.lastIndexOf('+');
+        String cursor = cursorString.substring(0, splitAt);
+        int offset = Integer.parseInt(cursorString.substring(splitAt + 1));
+        return new FeedCursor(cursor, offset);
     }
 }

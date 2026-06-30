@@ -1,7 +1,9 @@
 package dev.jqb.onefeed.core.provider;
 
+import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.actor.ActorTransformer;
 import dev.jqb.onefeed.core.actor.OneFeedActor;
+import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.feed.Feed;
@@ -15,12 +17,12 @@ import reactor.core.publisher.Mono;
 /**
  * A provider of feed content via APIs
  *
- * @param <C> the type of {@link PlatformContent} DTO that the provider produces
- * @param <A> the type of {@link PlatformActor} DTO that the provider produces
+ * @param <C> the type of {@link Content} that the provider produces
+ * @param <A> the type of {@link Actor} that the provider produces
  */
 @Getter
 @ToString
-public abstract class Provider<C extends Contnt<PlatformActor>, A extends PlatformActor> {
+public abstract class Provider<C extends Content, A extends Actor> {
 
     /**
      * The unique identifier of this provider
@@ -43,19 +45,19 @@ public abstract class Provider<C extends Contnt<PlatformActor>, A extends Platfo
 
     /**
      * Gets the {@link ContentTransformer} capable of transforming this provider's
-     * {@link PlatformContent} DTOs into normalized {@link OneFeedContent}
+     * {@link Content} DTOs into normalized {@link OneFeedContent}
      *
      * @return a {@link ContentTransformer} capable of transforming this provider's
-     * {@link PlatformContent} DTO into normalized {@link OneFeedContent}
+     * {@link Content} DTO into normalized {@link OneFeedContent}
      */
     public abstract ContentTransformer<C, OneFeedContent> getContentNormalizer();
 
     /**
      * Gets the {@link ActorTransformer} capable of transforming this provider's
-     * {@link PlatformActor} DTOs into normalized {@link OneFeedActor}s
+     * {@link Actor} DTOs into normalized {@link OneFeedActor}s
      *
      * @return a {@link ActorTransformer} capable of transforming this provider's
-     * {@link PlatformActor} DTO into normalized {@link OneFeedActor}
+     * {@link Actor} DTO into normalized {@link OneFeedActor}
      */
     public abstract ActorTransformer<A, OneFeedActor> getActorNormalizer();
 

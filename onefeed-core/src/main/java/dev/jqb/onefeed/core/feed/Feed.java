@@ -49,7 +49,7 @@ public abstract class Feed<C extends Content> implements ProviderIdentifiable {
      * @return a {@link Flux} that emits a stream of {@link C} containing at most the desired
      * {@code amount} of retrieved content
      */
-    public abstract Flux<C> fetchRecentContent(int amount, PlatformCursor cursor);
+    public abstract Flux<C> fetchRecentContent(int amount, FeedCursor cursor);
 
     @Override
     public String getProviderId() {
