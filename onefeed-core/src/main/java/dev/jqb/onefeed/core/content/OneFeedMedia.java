@@ -15,7 +15,7 @@ import org.jspecify.annotations.Nullable;
 @Setter
 @NoArgsConstructor
 @ToString
-public class Media {
+public class OneFeedMedia {
 
     /**
      * The type of media being represented
@@ -65,13 +65,13 @@ public class Media {
     private String altText;
 
     /**
-     * Constructs a piece of {@link Media}.
+     * Constructs a piece of {@link OneFeedMedia}.
      *
      * @param type the type of media the constructed object represents, guiding its fields' semantic
      *             interpretation or presentation by the client
      * @param href the click-through link to view the media on its host platform
      */
-    public Media(MimeType type, String href) {
+    public OneFeedMedia(MimeType type, String href) {
         this.type = type;
         this.href = href;
     }

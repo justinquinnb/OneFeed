@@ -1,5 +1,7 @@
 package dev.jqb.onefeed.core.provider;
 
+import dev.jqb.onefeed.core.actor.Actor;
+import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.plugin.OneFeedPlugin;
 import java.util.List;
 
@@ -23,11 +25,5 @@ public abstract class OneFeedProviderPlugin extends OneFeedPlugin {
      * Gets the content {@link Provider} that this plugin... well, provides.
      * @return the content {@link Provider} that this plugin provides
      */
-    public abstract Provider<? extends PlatformContent, ? extends PlatformActor> getProvider();
-
-    /**
-     * Gets the names of the feeds that this plugin provides.
-     * @return a list of the names of the feeds that this plugin is configured to provide
-     */
-    public abstract List<String> getFeedNames();
+    public abstract Provider<? extends Content, ? extends Actor> getProvider();
 }

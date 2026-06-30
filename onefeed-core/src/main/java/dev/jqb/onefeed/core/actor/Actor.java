@@ -33,7 +33,6 @@ public abstract class Actor implements ProviderIdentifiable {
      */
     private String handle;
 
-    // TODO make this a builder instead
     /**
      * Constructs an {@code Author} attributed to a {@code source} and represented by a
      * {@code handle}.

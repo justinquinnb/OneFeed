@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.content.Content;
+import dev.jqb.onefeed.core.content.OneFeedMedia;
 import dev.jqb.onefeed.core.feed.SourceInfo;
-import dev.jqb.onefeed.core.content.Media;
 import dev.jqb.onefeed.core.actor.OneFeedActor;
 import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.provider.OneFeedProviderPlugin;
@@ -293,11 +293,11 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         // Media
         boolean actualHasMedia = actual.getMedia() != null;
         boolean expectedHasMedia = expected.getMedia() != null;
-        softly.assertThat(actualHasMedia).as("Media existence matches")
+        softly.assertThat(actualHasMedia).as("OneFeedMedia existence matches")
             .isEqualTo(expectedHasMedia);
 
         if (actualHasMedia && expectedHasMedia) {
-            softly.assertThat(actual.getMedia().size()).as("Media count matches")
+            softly.assertThat(actual.getMedia().size()).as("OneFeedMedia count matches")
                 .isEqualTo(expected.getMedia().size());
 
             log.debug("Validating each piece's media data...");
@@ -312,37 +312,37 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
     }
 
     /**
-     * Validates the equality of the given {@link Media} pieces.
+     * Validates the equality of the given {@link OneFeedMedia} pieces.
      *
      * @param actual   the piece of media to validate
      * @param expected the piece of media to compare against
      * @return a {@link SoftAssertions} object containing the results of the validation
      */
-    private static SoftAssertions validateMediaEquality(Media actual, Media expected, int mediaNum) {
+    private static SoftAssertions validateMediaEquality(OneFeedMedia actual, OneFeedMedia expected, int mediaNum) {
         log.debug("Validating the equality of actual media:\n{}\nagainst expected media:\n{}",
             actual, expected);
 
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(actual.getType()).as("Media %s's types match", mediaNum)
+        softly.assertThat(actual.getType()).as("OneFeedMedia %s's types match", mediaNum)
             .isEqualTo(expected.getType());
 
-        softly.assertThat(actual.getHref()).as("Media %s's hrefs match", mediaNum)
+        softly.assertThat(actual.getHref()).as("OneFeedMedia %s's hrefs match", mediaNum)
             .isEqualTo(expected.getHref());
 
-        softly.assertThat(actual.getTitle()).as("Media %s's titles match", mediaNum)
+        softly.assertThat(actual.getTitle()).as("OneFeedMedia %s's titles match", mediaNum)
             .isEqualTo(expected.getTitle());
 
-        softly.assertThat(actual.getSrc()).as("Media %s's srcs match", mediaNum)
+        softly.assertThat(actual.getSrc()).as("OneFeedMedia %s's srcs match", mediaNum)
             .isEqualTo(expected.getSrc());
 
         softly.assertThat(actual.getThumbnailSrc())
-            .as("Media %s's thumbnail srcs match", mediaNum)
+            .as("OneFeedMedia %s's thumbnail srcs match", mediaNum)
             .isEqualTo(expected.getThumbnailSrc());
 
-        softly.assertThat(actual.getCaption()).as("Media %s's captions match", mediaNum)
+        softly.assertThat(actual.getCaption()).as("OneFeedMedia %s's captions match", mediaNum)
             .isEqualTo(expected.getCaption());
 
-        softly.assertThat(actual.getAltText()).as("Media %s's alt texts match", mediaNum)
+        softly.assertThat(actual.getAltText()).as("OneFeedMedia %s's alt texts match", mediaNum)
             .isEqualTo(expected.getAltText());
 
         return softly;

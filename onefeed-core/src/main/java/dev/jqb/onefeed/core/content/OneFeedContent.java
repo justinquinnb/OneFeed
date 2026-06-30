@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.jspecify.annotations.Nullable;
 
 /**
  * The default implementation of {@link Content}
@@ -41,7 +40,7 @@ public class OneFeedContent extends Content {
      * presentation or priority (high/first to low/last)
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Media> media;
+    private List<OneFeedMedia> media;
 
     /**
      * The quantity of whatever reaction type is primary on the source platform, the semantics of
@@ -51,63 +50,153 @@ public class OneFeedContent extends Content {
     private int primaryReactionCount;
 
     /**
-     * Constructs a piece of {@code OneFeedContent} attributed to a {@code source} and
-     * created/published at the given time.
-     *
-     * @param feedId the unique ID of the feed the content is from
-     * @param externalRef a means of accessing the resource on the source platform
-     * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
-     *                       some equivalent means), if known, on the originating platform's API
-     * @param published the time the {@code Content} was published on its {@code source}
-     * @param body the primary textual content, using CommonMark-Flavored Markdown for any
-     *             formatting
+     * Creates a piece of {@code OneFeedContent} from the given builder.
+     * @param builder the builder to construct the content with
      */
-    public OneFeedContent(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
-        Instant published, String body, List<String> authorIds
-    ) {
-        super(feedId, externalRef, nextPageCursor, published, authorIds);
-        this.body = body;
+    protected OneFeedContent(CompleteOneFeedContentBuilder builder) {
+        super(builder.getFeedId(), builder.getExternalRef(), builder.getNextPageCursor(),
+            builder.getPublished(), builder.getAuthorIds());
+        this.title = builder.getTitle();
+        this.body = builder.getBody();
+        this.media = builder.getMedia();
+        this.primaryReactionCount = builder.getPrimaryReactionCount();
     }
 
     /**
-     * Constructs a piece of {@code OneFeedContent}, containing just media. All other fields may be
-     * set with setters.
+     * Prepares a new {@code OneFeedContentBuilder} with the given fields.
      *
      * @param feedId the unique ID of the feed the content is from
      * @param externalRef a means of accessing the resource on the source platform
-     * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
-     *                       some equivalent means), if known, on the originating platform's API
      * @param published the time the {@code Content} was published on its {@code source}
-     * @param media any attached media, such as links, videos, images, or files, in their desired
-     *              order of presentation or priority (high/first to low/last)
      */
-    public OneFeedContent(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
-        Instant published, List<Media> media, List<String> authorIds
+    public static OneFeedContentBuilder builder(FeedId feedId, ExternalRef externalRef,
+        Instant published
     ) {
-        super(feedId, externalRef, nextPageCursor, published, authorIds);
-        this.media = media;
+        return new OneFeedContentBuilder(feedId, externalRef, published);
     }
 
     /**
-     * Constructs a piece of {@code OneFeedContent}, containing both body text and media. All other
-     * fields may be set with setters.
-     *
-     * @param feedId the unique ID of the feed the content is from
-     * @param externalRef a means of accessing the resource on the source platform
-     * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
-     *                       some equivalent means), if known, on the originating platform's API
-     * @param published the time the {@code Content} was published on its {@code source}
-     * @param body the primary textual content, using CommonMark-Flavored Markdown for any
-     *             formatting
-     * @param media any attached media, such as links, videos, images, or files, in their desired
-     *              order of presentation or priority (high/first to low/last)
+     * A builder for {@code OneFeedContent} objects
      */
-    public OneFeedContent(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
-        Instant published, String body, List<Media> media, List<String> authorIds
-    ) {
-        super(feedId, externalRef, nextPageCursor, published, authorIds);
-        this.body = body;
-        this.media = media;
+    @Getter
+    public static class OneFeedContentBuilder {
+        private FeedId feedId;
+        private ExternalRef externalRef;
+        private String nextPageCursor;
+        private Instant published;
+        private int primaryReactionCount;
+        private List<String> authorIds;
+
+        private String title;
+        private String body;
+        private List<OneFeedMedia> media;
+
+        /**
+         * Prepares a new {@code OneFeedContentBuilder} with the given fields.
+         *
+         * @param feedId the unique ID of the feed the content is from
+         * @param externalRef a means of accessing the resource on the source platform
+         * @param published the time the {@code Content} was published on its {@code source}
+         */
+        private OneFeedContentBuilder(FeedId feedId, ExternalRef externalRef, Instant published) {
+            this.feedId = feedId;
+            this.externalRef = externalRef;
+            this.published = published;
+        }
+
+        /**
+         * Sets the next page cursor for the content.
+         * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
+         *                       some equivalent means), if known, on the originating platform's API
+         * @return the updated builder
+         */
+        public OneFeedContentBuilder nextPageCursor(String nextPageCursor) {
+            this.nextPageCursor = nextPageCursor;
+            return this;
+        }
+
+        /**
+         * Sets the primary reaction count for the content.
+         * @param primaryReactionCount the quantity of whatever reaction type is primary on the
+         *                             source platform, the semantics of which are discernable via
+         *                             interpretation of the content's source platform by the client
+         * @return the updated builder
+         */
+        public OneFeedContentBuilder primaryReactionCount(int primaryReactionCount) {
+            this.primaryReactionCount = primaryReactionCount;
+            return this;
+        }
+
+        /**
+         * Sets the author IDs for the content.
+         * @param authorIds the IDs of the authors of {@code this} content on the source platform
+         * @return the updated builder
+         */
+        public OneFeedContentBuilder authorIds(List<String> authorIds) {
+            this.authorIds = authorIds;
+            return this;
+        }
+
+        /**
+         * Sets the title of the content, using CommonMark-Flavored Markdown for any formatting.
+         * @param title the title of the content, using CommonMark-Flavored Markdown for any
+         *              formatting
+         * @return the updated builder
+         */
+        public CompleteOneFeedContentBuilder title(String title) {
+            this.title = title;
+            return (CompleteOneFeedContentBuilder) this;
+        }
+
+        /**
+         * Sets the primary textual content, using CommonMark-Flavored Markdown for any formatting.
+         * @param body the primary textual content, using CommonMark-Flavored Markdown for any
+         *             formatting
+         * @return the updated builder
+         */
+        public CompleteOneFeedContentBuilder body(String body) {
+            this.body = body;
+            return (CompleteOneFeedContentBuilder) this;
+        }
+
+        /**
+         * Sets any attached media, such as links, videos, images, or files, in their desired order
+         * of presentation or priority (high/first to low/last)
+         * @param media any attached media, such as links, videos, images, or files, in their
+         *              desired order of presentation or priority (high/first to low/last)
+         * @return the updated builder
+         */
+        public CompleteOneFeedContentBuilder media(List<Media> media) {
+            this.media = media;
+            return (CompleteOneFeedContentBuilder) this;
+        }
+    }
+
+    /**
+     * A stage in the builder process where at minimum the title, body, and media has been set (as
+     * well as all other constructor-required fields)
+     */
+    public static class CompleteOneFeedContentBuilder extends OneFeedContentBuilder {
+
+        /**
+         * Prepares a new {@code OneFeedContentBuilder} with the given fields.
+         *
+         * @param feedId      the unique ID of the feed the content is from
+         * @param externalRef a means of accessing the resource on the source platform
+         * @param published   the time the {@code Content} was published on its {@code source}
+         */
+        private CompleteOneFeedContentBuilder(FeedId feedId, ExternalRef externalRef,
+            Instant published) {
+            super(feedId, externalRef, published);
+        }
+
+        /**
+         * Builds a piece of {@code OneFeedContent} from the fields set on this builder.
+         * @return a piece of {@code OneFeedContent} using the fields set on this builder
+         */
+        public OneFeedContent build() {
+            return new OneFeedContent(this);
+        }
     }
 
     @Override

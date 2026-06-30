@@ -13,8 +13,6 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The minimum required data for of a piece of content.
- *
- * @param <A> the type of author this content references/exposes
  */
 @Getter
 @Setter
@@ -49,7 +47,6 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
      */
     protected List<String> authorIds;
 
-    // TODO make this a builder instead
     /**
      * Constructs a piece of {@code Content} attributed to a {@code source} and created/published
      * at the given time.
@@ -59,6 +56,7 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
      * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
      *                       some equivalent means), if known, on the originating platform's API
      * @param published the time the {@code Content} was published on its {@code source}
+     * @param authorIds the IDs of the authors of {@code this} content on the source platform
      */
     public Content(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
         Instant published, List<String> authorIds
