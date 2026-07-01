@@ -120,7 +120,7 @@ public class Aggregation<C extends Content> extends Feed<C> {
      * @param content a list of the content to generate the cursor from
      * @return the aggregate nextPageCursor, encoded in base 64
      */
-    protected FeedCursor generateAggregateCursor(List<C> content) {
+    public FeedCursor generateAggregateCursor(List<C> content) {
         List<C> sortedContent = new ArrayList<>(content);
         sortedContent.sort(Content::compareTo);
 
@@ -175,7 +175,7 @@ public class Aggregation<C extends Content> extends Feed<C> {
      *
      * @return a mapping of {@link FeedId}s to {@link FeedCursor}s
      */
-    protected static Map<FeedId, FeedCursor> decodeAggregateCursor(FeedCursor aggregateCursor) {
+    public static Map<FeedId, FeedCursor> decodeAggregateCursor(FeedCursor aggregateCursor) {
         String[] encodedCursors = aggregateCursor.getCursorOnPlatform().split(",");
         HashMap<FeedId, FeedCursor> decodedCursors = new HashMap<>();
 
