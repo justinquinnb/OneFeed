@@ -104,4 +104,11 @@ public class OneFeedMedia {
     public Optional<String> getAltText() {
         return Optional.ofNullable(this.altText);
     }
+
+    /**
+     * Gets the title for the piece of media.
+     */
+    public Optional<String> getTitle() {
+        return Optional.ofNullable(this.title);
+    }
 }
