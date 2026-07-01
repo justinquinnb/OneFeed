@@ -2,6 +2,8 @@ package dev.jqb.onefeed.core.aggregation;
 
 import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.content.Content;
+import dev.jqb.onefeed.core.content.ContentTransformer;
+import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedCursor;
 import dev.jqb.onefeed.core.feed.FeedId;
@@ -11,22 +13,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 
 /**
  * An aggregator of content across multiple {@link Feed}s
  */
-public abstract class Aggregation<C extends Content> extends Feed<C> {
+public class Aggregation<C extends Content> extends Feed<C> {
+    private static final Logger logger = LoggerFactory.getLogger(Aggregation.class);
 
     /**
      * The sources of content to pull from
      */
-    private final List<Feed<C>> feeds;
+    private final List<Feed<? extends Content>> feeds;
 
     /**
      * The providers exposing the feeds and other platform data
      */
-    private final List<Provider<? extends Content, ? extends Actor>> providers;
+    private final Map<String, ContentTransformer<? extends Content, C>> normalizers;
 
     /**
      * The options to adjust the contents of the returned aggregation
@@ -39,35 +44,75 @@ public abstract class Aggregation<C extends Content> extends Feed<C> {
      *
      * @param id the ID of the created aggregation
      * @param feedIds the IDs of the feeds to aggregate content from
-     * @param providers the providers to aggregate content from
+     * @param normalizers the normalizers to apply to the content before returning it
      * @param options the options to adjust the contents of the returned aggregation
      */
     public Aggregation(
         FeedId id,
-        List<FeedId> feedIds,
-        List<Provider<? extends Content, ? extends Actor>> providers,
+        List<Feed<? extends Content>> feeds,
+        Map<String, ContentTransformer<? extends Content, C>> normalizers,
         AggregationOptions options
     ) {
         super(id);
-        this.providers = providers;
         this.options = options;
 
-        this.feeds = new ArrayList<>(feedIds.size());
+        this.feeds = feeds;
+        this.normalizers= normalizers;
+    }
 
-        for (Provider<?,?> provider : providers) {
-            for (Feed feed : provider.getFeeds()) {
-                if (feed.getId().equals(id)) {
-                    feeds.add(feed);
-                }
-            }
+    @Override
+    public Flux<C> fetchRecentContent(int amount) {
+        Map<FeedId, Integer> targetAmounts = options.getTargetAmounts(amount);
+        List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
+
+        for (Feed<? extends Content> feed : feeds) {
+            ContentTransformer<Content, C> contentNormalizer =
+                (ContentTransformer<Content, C>) normalizers.get(feed.getProviderId());
+
+            Flux<? extends Content> feedStream = feed.fetchRecentContent(
+                targetAmounts.get(feed.getId()));
+
+            normalizedContentStreams.add(
+                feedStream
+                    .map(contentNormalizer::transform)
+                    .doOnError(err -> logger.warn(
+                        "Error fetching content from feed '{}': {}", feed.getId().feedName(),
+                        err.getStackTrace()))
+                    .onErrorComplete()
+            );
         }
+
+        return Flux.merge(normalizedContentStreams);
     }
 
     /**
      * @param aggregateCursor an aggregate cursor for the feed to retrieve content after, inclusive
      */
     @Override
-    public abstract Flux<C> fetchRecentContent(int amount, FeedCursor aggregateCursor);
+    public Flux<C> fetchRecentContent(int amount, FeedCursor aggregateCursor) {
+        Map<FeedId, Integer> targetAmounts = options.getTargetAmounts(amount);
+        Map<FeedId, FeedCursor> decodedCursors = decodeAggregateCursor(aggregateCursor);
+        List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
+
+        for (Feed<? extends Content> feed : feeds) {
+            ContentTransformer<Content, C> contentNormalizer =
+                (ContentTransformer<Content, C>) normalizers.get(feed.getProviderId());
+
+            Flux<? extends Content> feedStream = feed.fetchRecentContent(
+                targetAmounts.get(feed.getId()), decodedCursors.get(feed.getId()));
+
+            normalizedContentStreams.add(
+                feedStream
+                    .map(contentNormalizer::transform)
+                    .doOnError(err -> logger.warn(
+                        "Error fetching content from feed '{}': {}", feed.getId().feedName(),
+                        err.getStackTrace()))
+                    .onErrorComplete()
+            );
+        }
+
+        return Flux.merge(normalizedContentStreams);
+    }
 
     /**
      * Generates an aggregate cursor {@code String} from a list of {@code content}.
