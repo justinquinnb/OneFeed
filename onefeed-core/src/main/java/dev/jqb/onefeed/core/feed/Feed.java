@@ -2,6 +2,8 @@ package dev.jqb.onefeed.core.feed;
 
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -54,5 +56,33 @@ public abstract class Feed<C extends Content> implements ProviderIdentifiable {
     @Override
     public String getProviderId() {
         return id.getProviderId();
+    }
+
+    /**
+     * Generates a {@link FeedCursor} from the given list of {@link Content}.
+     * @param content the list of {@code Content} to generate the cursor from
+     * @return a cursor indicating how to obtain the next piece of content in the list from the
+     * platform
+     */
+    public static FeedCursor generateCursor(List<? extends Content> content) {
+        List<? extends Content> sortedContent = new ArrayList<>(content);
+        sortedContent.sort(Content::compareTo);
+        Content initialContent = sortedContent.getFirst();
+        FeedCursor feedCursor = new FeedCursor(
+            initialContent.getNextPageCursor().orElse(null), 0);
+
+        for (Content c : sortedContent.subList(1, sortedContent.size())) {
+            // Nth piece of content in feed
+            // Piece of content has no next page cursor
+            if (c.getNextPageCursor().isEmpty()) {
+                int currentOffset = feedCursor.getOffsetFromCursor();
+                feedCursor.setOffsetFromCursor(currentOffset + 1);
+            } else { // Piece of content HAS a next page cursor
+                feedCursor.setOffsetFromCursor(0);
+                feedCursor.setCursorOnPlatform(c.getNextPageCursor().get());
+            }
+        }
+
+        return  feedCursor;
     }
 }

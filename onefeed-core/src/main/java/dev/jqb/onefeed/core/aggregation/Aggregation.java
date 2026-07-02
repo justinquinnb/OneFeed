@@ -115,7 +115,7 @@ public class Aggregation<C extends Content> extends Feed<C> {
      * Generates an aggregate cursor {@code String} from a list of {@code content}.
      *
      * @param content a list of the content to generate the cursor from
-     * @return the aggregate nextPageCursor, encoded in base 64
+     * @return the aggregate nextPageCursor
      */
     public static FeedCursor generateAggregateCursor(List<? extends Content> content) {
         List<? extends Content> sortedContent = new ArrayList<>(content);
@@ -123,8 +123,12 @@ public class Aggregation<C extends Content> extends Feed<C> {
 
         HashMap<FeedId, FeedCursor> oldestFeedCursors = new HashMap<>();
 
-        // Because the content is in descending timestamp order, the last piece of content with a
-        // cursor for a feed is easy to get with this
+        /* Because the content is in descending timestamp order, the last piece of content with a
+           cursor for a feed is easy to get with this
+           NOTE: this differs from the Feed's version of this algo bc it's more efficient to just
+           pass through this whole list once as opposed to separating this into feed-specific
+           lists of content and going from there
+         */
         for (Content c : sortedContent) {
             // First piece of content in list for feed
             if (!oldestFeedCursors.containsKey(c.getFeedId())) {
