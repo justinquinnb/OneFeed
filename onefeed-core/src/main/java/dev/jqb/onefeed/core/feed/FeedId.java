@@ -2,7 +2,6 @@ package dev.jqb.onefeed.core.feed;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
 
 /**
  * A means of identifying a single feed of content
@@ -10,7 +9,7 @@ import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
  * @param providerId the unique identifier of the provider plugin exposing the feed
  * @param feedName the ID of the feed as exposed by the provider
  */
-public record FeedId(String providerId, String feedName) implements ProviderIdentifiable {
+public record FeedId(String providerId, String feedName) implements FeedIdentifiable {
 
     /**
      * Converts this {@code FeedNameentifier} to a string suitable for use as a unique key
@@ -44,5 +43,10 @@ public record FeedId(String providerId, String feedName) implements ProviderIden
     @Override
     public String getProviderId() {
         return providerId;
+    }
+
+    @Override
+    public FeedId getFeedId() {
+        return this;
     }
 }

@@ -5,6 +5,7 @@ import dev.jqb.onefeed.core.feed.FeedIdentifiable;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,6 @@ import org.jspecify.annotations.Nullable;
 /**
  * The minimum required data for of a piece of content.
  */
-@Getter
 @Setter
 @ToString
 @NoArgsConstructor
@@ -28,11 +28,13 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
     /**
      * A means of accessing the resource on the source platform
      */
+    @Getter
     protected ExternalRef externalRef;
 
     /**
      * Gets time at which the content was published
      */
+    @Getter
     protected Instant published;
 
     /**
@@ -45,6 +47,7 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
     /**
      * The IDs of the authors of {@code this} content on the source platform
      */
+    @Getter
     protected List<String> authorIds;
 
     /**
@@ -98,5 +101,16 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
     @Override
     public String getProviderId() {
         return feedId.getProviderId();
+    }
+
+    /**
+     * Gets the cursor pointing to the next page of content after {@code this} (or some equivalent
+     * means), if known, on the originating platform's API.
+     * @return the cursor pointing to the next page of content after {@code this} (or some
+     * equivalent) on the originating platform's API, if known, or {@link Optional#empty()}
+     * otherwise
+     */
+    public Optional<String> getNextPageCursor() {
+        return Optional.ofNullable(nextPageCursor);
     }
 }

@@ -1,14 +1,16 @@
 package dev.jqb.onefeed.core.provider;
 
+import dev.jqb.onefeed.core.actor.Actor;
+import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.feed.FeedUpdate;
 
 /**
  * A {@link Provider} capable of notifying OneFeed when a feed has been updated via webhooks
  *
- * @param <C> the type of {@link PlatformContent} produced
- * @param <A> the type of {@link PlatformActor} produced
+ * @param <C> the type of {@link Content} produced
+ * @param <A> the type of {@link Actor} produced
  */
-public abstract class WebhookEnabledProvider<C extends Contnt<PlatformActor>, A extends PlatformActor>
+public abstract class WebhookEnabledProvider<C extends Content, A extends Actor>
     extends Provider<C, A>
 {
 

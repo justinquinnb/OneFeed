@@ -53,7 +53,7 @@ public class OneFeedContent extends Content {
      * Creates a piece of {@code OneFeedContent} from the given builder.
      * @param builder the builder to construct the content with
      */
-    protected OneFeedContent(CompleteOneFeedContentBuilder builder) {
+    protected OneFeedContent(OneFeedContentBuilder builder) {
         super(builder.getFeedId(), builder.getExternalRef(), builder.getNextPageCursor(),
             builder.getPublished(), builder.getAuthorIds());
         this.title = builder.getTitle();
@@ -143,9 +143,9 @@ public class OneFeedContent extends Content {
          *              formatting
          * @return the updated builder
          */
-        public CompleteOneFeedContentBuilder title(String title) {
+        public OneFeedContentBuilder title(String title) {
             this.title = title;
-            return (CompleteOneFeedContentBuilder) this;
+            return this;
         }
 
         /**
@@ -154,9 +154,9 @@ public class OneFeedContent extends Content {
          *             formatting
          * @return the updated builder
          */
-        public CompleteOneFeedContentBuilder body(String body) {
+        public OneFeedContentBuilder body(String body) {
             this.body = body;
-            return (CompleteOneFeedContentBuilder) this;
+            return this;
         }
 
         /**
@@ -166,33 +166,14 @@ public class OneFeedContent extends Content {
          *              desired order of presentation or priority (high/first to low/last)
          * @return the updated builder
          */
-        public CompleteOneFeedContentBuilder media(List<Media> media) {
+        public OneFeedContentBuilder media(List<OneFeedMedia> media) {
             this.media = media;
-            return (CompleteOneFeedContentBuilder) this;
-        }
-    }
-
-    /**
-     * A stage in the builder process where at minimum the title, body, and media has been set (as
-     * well as all other constructor-required fields)
-     */
-    public static class CompleteOneFeedContentBuilder extends OneFeedContentBuilder {
-
-        /**
-         * Prepares a new {@code OneFeedContentBuilder} with the given fields.
-         *
-         * @param feedId      the unique ID of the feed the content is from
-         * @param externalRef a means of accessing the resource on the source platform
-         * @param published   the time the {@code Content} was published on its {@code source}
-         */
-        private CompleteOneFeedContentBuilder(FeedId feedId, ExternalRef externalRef,
-            Instant published) {
-            super(feedId, externalRef, published);
+            return this;
         }
 
         /**
-         * Builds a piece of {@code OneFeedContent} from the fields set on this builder.
-         * @return a piece of {@code OneFeedContent} using the fields set on this builder
+         * Builds the {@code OneFeedContent} object using the data provided to {@code this} builder.
+         * @return the built {@code OneFeedContent} object
          */
         public OneFeedContent build() {
             return new OneFeedContent(this);

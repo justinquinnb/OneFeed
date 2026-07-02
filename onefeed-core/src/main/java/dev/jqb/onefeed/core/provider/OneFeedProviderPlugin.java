@@ -3,7 +3,6 @@ package dev.jqb.onefeed.core.provider;
 import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.plugin.OneFeedPlugin;
-import java.util.List;
 
 /**
  * A OneFeed {@link Provider} plugin

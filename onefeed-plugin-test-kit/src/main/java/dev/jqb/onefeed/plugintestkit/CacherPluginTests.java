@@ -61,7 +61,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Test
     @Order(2)
     public void cacheSampleAuthor() {
-        cacher.cacheAuthors(List.of(sampleAuthor));
+        cacher.cacheAuthor(sampleAuthor);
     }
 
     /**
@@ -98,7 +98,7 @@ public non-sealed abstract class CacherPluginTests<T extends OneFeedCacherPlugin
     @Test
     @Order(6)
     public void updateSampleAuthor() {
-        cacher.cacheAuthors(List.of(updatedSampleAuthor));
+        cacher.cacheAuthor(updatedSampleAuthor);
         Actor updatedSampleAuthor = cacher.fetchAuthor(sampleAuthor.getKey());
         assert authorsMatch(sampleAuthor, updatedSampleAuthor);
     }

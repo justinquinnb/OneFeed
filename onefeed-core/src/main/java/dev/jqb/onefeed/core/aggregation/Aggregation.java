@@ -1,13 +1,10 @@
 package dev.jqb.onefeed.core.aggregation;
 
-import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;
-import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedCursor;
 import dev.jqb.onefeed.core.feed.FeedId;
-import dev.jqb.onefeed.core.provider.Provider;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,11 +36,11 @@ public class Aggregation<C extends Content> extends Feed<C> {
     private final AggregationOptions options;
 
     /**
-     * Creates a new aggregation of content from the given {@code feeds} with the given {@code options}
-     * applied.
+     * Creates a new aggregation of content from the given {@code feeds} with the given
+     * {@code options} applied.
      *
      * @param id the ID of the created aggregation
-     * @param feedIds the IDs of the feeds to aggregate content from
+     * @param feeds the feeds to aggregate content from
      * @param normalizers the normalizers to apply to the content before returning it
      * @param options the options to adjust the contents of the returned aggregation
      */
@@ -120,18 +117,18 @@ public class Aggregation<C extends Content> extends Feed<C> {
      * @param content a list of the content to generate the cursor from
      * @return the aggregate nextPageCursor, encoded in base 64
      */
-    public FeedCursor generateAggregateCursor(List<C> content) {
-        List<C> sortedContent = new ArrayList<>(content);
+    public static FeedCursor generateAggregateCursor(List<? extends Content> content) {
+        List<? extends Content> sortedContent = new ArrayList<>(content);
         sortedContent.sort(Content::compareTo);
 
         HashMap<FeedId, FeedCursor> oldestFeedCursors = new HashMap<>();
 
         // Because the content is in descending timestamp order, the last piece of content with a
         // cursor for a feed is easy to get with this
-        for (C c : sortedContent) {
+        for (Content c : sortedContent) {
             // First piece of content in list for feed
             if (!oldestFeedCursors.containsKey(c.getFeedId())) {
-                FeedCursor initialCursor = new FeedCursor(c.getNextPageCursor(), 0);
+                FeedCursor initialCursor = new FeedCursor(c.getNextPageCursor().orElse(null), 0);
                 oldestFeedCursors.put(c.getFeedId(), initialCursor);
                 continue;
             }
@@ -139,12 +136,12 @@ public class Aggregation<C extends Content> extends Feed<C> {
             // Nth piece of content in feed
             // Piece of content has no next page cursor
             FeedCursor currentCursor = oldestFeedCursors.get(c.getFeedId());
-            if (c.getNextPageCursor() == null) {
+            if (c.getNextPageCursor().isEmpty()) {
                 int currentOffset = currentCursor.getOffsetFromCursor();
                 currentCursor.setOffsetFromCursor(currentOffset + 1);
             } else { // Piece of content HAS a next page cursor
                 currentCursor.setOffsetFromCursor(0);
-                currentCursor.setCursorOnPlatform(c.getNextPageCursor());
+                currentCursor.setCursorOnPlatform(c.getNextPageCursor().get());
             }
         }
 

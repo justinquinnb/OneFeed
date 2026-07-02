@@ -4,6 +4,7 @@ import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.actor.ActorKey;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentKey;
+import dev.jqb.onefeed.core.feed.FeedCursor;
 import dev.jqb.onefeed.core.feed.FeedId;
 import java.util.List;
 
@@ -30,12 +31,13 @@ public interface Cacher<C extends Content, A extends Actor> {
      * Gets the {@code amount} most recent content from the cache after a specific piece of feed's
      * content.
      *
-     * @param after the reference point to start retrieving content after, exclusive
+     * @param feed the feed whose content to retrieve
      * @param amount the amount of content to try retrieving
+     * @param cursor the reference point to retrieve content after, inclusive
      *
      * @return at most {@code amount} pieces of cached content from the desired feed
      */
-    List<C> fetchRecentContent(ContentKey after, int amount);
+    List<C> fetchRecentContent(FeedId feed, int amount, FeedCursor cursor);
 
     /**
      * Gets a specific piece of content from the cache.
@@ -77,7 +79,7 @@ public interface Cacher<C extends Content, A extends Actor> {
      * @implNote if the cache already contains an author, update any changed fields
      * and its last updated timestamp
      */
-    void cacheAuthors(List<A> authors);
+    void cacheAuthor(A authors);
 
     /**
      * Removes the author with the given id for the given feed from the cache.

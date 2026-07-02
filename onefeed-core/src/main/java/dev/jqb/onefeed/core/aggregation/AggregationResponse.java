@@ -4,7 +4,6 @@ import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.actor.ActorKey;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.feed.FeedCursor;
-import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.platform.Platform;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +54,7 @@ public class AggregationResponse {
      * @param aggregateCursor the cursor to the next batch/page of aggregated content
      */
     public AggregationResponse(
-        Map<ActorKey, Actor> authors,
+        @Nullable Map<ActorKey, Actor> authors,
         @Nullable Map<String, Platform> platforms,
         List<? extends Content> content,
         @Nullable FeedCursor aggregateCursor
