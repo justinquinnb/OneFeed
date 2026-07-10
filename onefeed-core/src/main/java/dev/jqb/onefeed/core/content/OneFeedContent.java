@@ -40,7 +40,7 @@ public class OneFeedContent extends Content {
      * presentation or priority (high/first to low/last)
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<OneFeedAttachment> attachments;
+    private List<? extends OneFeedAttachment> attachments;
 
     /**
      * The quantity of whatever reaction type is primary on the source platform, the semantics of
