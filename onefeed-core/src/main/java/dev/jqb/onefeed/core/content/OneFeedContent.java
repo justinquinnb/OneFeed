@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
@@ -68,11 +69,12 @@ public class OneFeedContent extends Content {
      * @param feedId the unique ID of the feed the content is from
      * @param externalRef a means of accessing the resource on the source platform
      * @param published the time the {@code Content} was published on its {@code source}
+     * @param authorIds the IDs of the authors of {@code this} content on the source platform
      */
     public static OneFeedContentBuilder builder(FeedId feedId, ExternalRef externalRef,
-        Instant published
+        Instant published, List<String> authorIds
     ) {
-        return new OneFeedContentBuilder(feedId, externalRef, published);
+        return new OneFeedContentBuilder(feedId, externalRef, published, authorIds);
     }
 
     /**
@@ -97,11 +99,15 @@ public class OneFeedContent extends Content {
          * @param feedId the unique ID of the feed the content is from
          * @param externalRef a means of accessing the resource on the source platform
          * @param published the time the {@code Content} was published on its {@code source}
+         * @param authorIds the IDs of the authors of {@code this} content on the source platform
          */
-        private OneFeedContentBuilder(FeedId feedId, ExternalRef externalRef, Instant published) {
+        private OneFeedContentBuilder(FeedId feedId, ExternalRef externalRef, Instant published,
+            List<String> authorIds
+        ) {
             this.feedId = feedId;
             this.externalRef = externalRef;
             this.published = published;
+            this.authorIds = authorIds;
         }
 
         /**
@@ -124,16 +130,6 @@ public class OneFeedContent extends Content {
          */
         public OneFeedContentBuilder primaryReactionCount(int primaryReactionCount) {
             this.primaryReactionCount = primaryReactionCount;
-            return this;
-        }
-
-        /**
-         * Sets the author IDs for the content.
-         * @param authorIds the IDs of the authors of {@code this} content on the source platform
-         * @return the updated builder
-         */
-        public OneFeedContentBuilder authorIds(List<String> authorIds) {
-            this.authorIds = authorIds;
             return this;
         }
 
@@ -178,10 +174,5 @@ public class OneFeedContent extends Content {
         public OneFeedContent build() {
             return new OneFeedContent(this);
         }
-    }
-
-    @Override
-    public List<String> getAuthorIds() {
-        return List.of();
     }
 }

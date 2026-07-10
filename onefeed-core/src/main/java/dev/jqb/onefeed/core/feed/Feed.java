@@ -22,7 +22,7 @@ public abstract class Feed<C extends Content> implements ProviderIdentifiable {
     /**
      * The unique ID of the feed
      */
-    private final FeedId id;
+    protected final FeedId id;
 
     /**
      * Creates a new {@code Feed} with ID {@code id}.

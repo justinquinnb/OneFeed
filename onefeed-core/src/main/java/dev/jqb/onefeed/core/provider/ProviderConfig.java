@@ -10,7 +10,6 @@ import lombok.Setter;
 /**
  * A provider plugin's specific configuration, including those specific to any of its feeds
  */
-@Getter
 @Setter
 @NoArgsConstructor
 public class ProviderConfig {
@@ -20,30 +19,33 @@ public class ProviderConfig {
      * authors and content that are required to complete {@link OneFeedContent} and
      * {@link OneFeedActor} objects during normalization.
      */
-    private boolean useLiteFetchMode = true;
+    @Getter
+    protected boolean useLiteFetchMode = true;
 
     /**
-     * Plugin-specific configuration of arbitrary shape
+     * Provider-specific configuration of arbitrary shape
      */
-    private HashMap<String, Object> pluginVars;
+    @Getter
+    private HashMap<String, Object> topLevelConfig;
 
     /**
      * A mapping of arbitrary feed names to arbitrarily shaped, feed-specific configuration data
      */
-    private HashMap<String, HashMap<String, Object>> feeds;
+    @Getter
+    private HashMap<String, HashMap<String, Object>> feedConfigs;
 
     /**
      * Creates a new {@code ProviderEnv} object with the given {@code pluginVars} and {@code feedVars}
      *
-     * @param pluginVars plugin-specific configuration of arbitrary shape
-     * @param feeds a mapping of arbitrary feed names to arbitrarily shaped, feed-specific
+     * @param pluginConfig plugin-specific configuration of arbitrary shape
+     * @param feedConfigs a mapping of arbitrary feed names to arbitrarily shaped, feed-specific
      *              configuration data
      */
-    public ProviderConfig(HashMap<String, Object> pluginVars,
-        HashMap<String, HashMap<String, Object>> feeds
+    public ProviderConfig(HashMap<String, Object> pluginConfig,
+        HashMap<String, HashMap<String, Object>> feedConfigs
     ) {
-        this.pluginVars = pluginVars;
-        this.feeds = feeds;
+        this.topLevelConfig = pluginConfig;
+        this.feedConfigs = feedConfigs;
     }
 
     public boolean isUsingLiteFetchMode() {

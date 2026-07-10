@@ -1,5 +1,6 @@
 package dev.jqb.onefeed.core.content;
 
+import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.feed.FeedIdentifiable;
 import dev.jqb.onefeed.core.platform.ExternalRef;

@@ -4,28 +4,32 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.actor.ActorTransformer;
+import dev.jqb.onefeed.core.actor.OneFeedActor;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.content.OneFeedAttachment;
-import dev.jqb.onefeed.core.actor.OneFeedActor;
 import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.content.OneFeedMedia;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.platform.ExternalRef;
-import dev.jqb.onefeed.core.provider.OneFeedProviderPlugin;
 import dev.jqb.onefeed.core.platform.Platform;
+import dev.jqb.onefeed.core.provider.OneFeedProviderPlugin;
 import dev.jqb.onefeed.core.provider.Provider;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import reactor.core.publisher.Flux;
 
 /**
@@ -36,12 +40,13 @@ import reactor.core.publisher.Flux;
  */
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPlugin>
     extends OneFeedPluginTests<T> {
 
     public Provider<Content, Actor> provider;
     public int contentPerPageLimit;
-    public List<String> authorIds;
+    public Set<String> authorIds = new HashSet<>();
     public Content contentNormalizerInput;
     public OneFeedContent expectedContentNormalizerOutput;
     public Actor authorNormalizerInput;
@@ -179,20 +184,21 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      */
     private void retrieveSingleContent(Feed<Content> feed) {
         Flux<Content> flux = feed.fetchRecentContent(1);
-        List<Content> content = flux.collectList().block();
-        assertNotNull(content);
+        List<Content> contentList = flux.collectList().block();
+        assertNotNull(contentList);
 
         // Not necessarily a fail because the feed may just have no content
-        if (content.isEmpty()) {
+        if (contentList.isEmpty()) {
             log.warn("No content retrieved for feed: {}", feed.getId().feedName());
         }
 
-        assert (content.size() <= 1);
+        assert (contentList.size() <= 1);
 
-        Content Content = content.getFirst();
-        log.debug("Retrieved platform content: {}", Content);
+        Content content = contentList.getFirst();
+        log.debug("Retrieved platform content: {}", content);
+        authorIds.addAll(content.getAuthorIds());
 
-        validateContent(Content);
+        validateContent(content);
     }
 
     /**
@@ -216,26 +222,27 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
      */
     private void retrieveTwoContentPages(Feed<Content> feed) {
         Flux<Content> flux = feed.fetchRecentContent(contentPerPageLimit + 1);
-        List<Content> content = flux.collectList().block();
+        List<Content> contentList = flux.collectList().block();
 
-        assertNotNull(content);
+        assertNotNull(contentList);
 
         // Not necessarily a fail because the feed may just have no content
-        if (content.isEmpty()) {
+        if (contentList.isEmpty()) {
             log.warn("No content retrieved for feed: {}", feed.getId().feedName());
         }
 
-        assert (content.size() <= contentPerPageLimit + 1);
+        assert (contentList.size() <= contentPerPageLimit + 1);
 
-        if (content.size() < contentPerPageLimit + 1) {
+        if (contentList.size() < contentPerPageLimit + 1) {
             log.warn("Less than expected content retrieved for: {} ({} expected)",
-                content.size(), contentPerPageLimit + 1);
+                contentList.size(), contentPerPageLimit + 1);
         }
 
-        Content Content = content.getLast();
-        log.debug("Testing validity of last content piece: {}", Content);
+        Content content = contentList.getLast();
+        log.debug("Testing validity of last content piece: {}", content);
+        authorIds.addAll(content.getAuthorIds());
 
-        validateContent(Content);
+        validateContent(content);
     }
 
     /**

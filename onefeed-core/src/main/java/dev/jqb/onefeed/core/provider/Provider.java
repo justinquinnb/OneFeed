@@ -27,7 +27,7 @@ public abstract class Provider<C extends Content, A extends Actor> {
     /**
      * The unique identifier of this provider
      */
-    private final String id;
+    protected final String id;
 
     /**
      * Constructs a new {@code Provider} with the given ID
@@ -41,7 +41,7 @@ public abstract class Provider<C extends Content, A extends Actor> {
      * Gets the feeds exposed by {@code this} provider.
      * @return a list of feeds exposed by {@code this} provider
      */
-    public abstract List<Feed<C>> getFeeds();
+    public abstract List<? extends Feed<C>> getFeeds();
 
     /**
      * Gets the {@link ContentTransformer} capable of transforming this provider's

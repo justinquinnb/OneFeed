@@ -32,6 +32,7 @@ public class OneFeedActor extends Actor {
      * @param providerId the unique identifier of the {@link dev.jqb.onefeed.core.provider.Provider}
      *                   the actor is from
      * @param externalRef a means of accessing the resource on the source platform
+     * @param handle the username of the actor on the source's platform, devoid of any
      * @param name the non-unique, human name or nickname of the author
      * @param profilePicSrc a URL for their profile picture on the platform
      */
