@@ -36,11 +36,11 @@ public class OneFeedContent extends Content {
     private String body;
 
     /**
-     * Any attached media, such as links, videos, images, or files, in their desired order of
+     * Any attached data, such as links, videos, images, or files, in their desired order of
      * presentation or priority (high/first to low/last)
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<OneFeedMedia> media;
+    private List<OneFeedAttachment> attachments;
 
     /**
      * The quantity of whatever reaction type is primary on the source platform, the semantics of
@@ -58,7 +58,7 @@ public class OneFeedContent extends Content {
             builder.getPublished(), builder.getAuthorIds());
         this.title = builder.getTitle();
         this.body = builder.getBody();
-        this.media = builder.getMedia();
+        this.attachments = builder.getAttachments();
         this.primaryReactionCount = builder.getPrimaryReactionCount();
     }
 
@@ -89,7 +89,7 @@ public class OneFeedContent extends Content {
 
         private String title;
         private String body;
-        private List<OneFeedMedia> media;
+        private List<OneFeedAttachment> attachments;
 
         /**
          * Prepares a new {@code OneFeedContentBuilder} with the given fields.
@@ -160,14 +160,14 @@ public class OneFeedContent extends Content {
         }
 
         /**
-         * Sets any attached media, such as links, videos, images, or files, in their desired order
+         * Sets any attached attachments, such as links, videos, images, or files, in their desired order
          * of presentation or priority (high/first to low/last)
-         * @param media any attached media, such as links, videos, images, or files, in their
+         * @param attachments any attached attachments, such as links, videos, images, or files, in their
          *              desired order of presentation or priority (high/first to low/last)
          * @return the updated builder
          */
-        public OneFeedContentBuilder media(List<OneFeedMedia> media) {
-            this.media = media;
+        public OneFeedContentBuilder attachments(List<OneFeedAttachment> attachments) {
+            this.attachments = attachments;
             return this;
         }
 

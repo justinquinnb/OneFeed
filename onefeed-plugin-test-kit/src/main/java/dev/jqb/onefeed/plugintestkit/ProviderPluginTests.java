@@ -6,9 +6,10 @@ import dev.jqb.onefeed.core.actor.Actor;
 import dev.jqb.onefeed.core.actor.ActorTransformer;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;
-import dev.jqb.onefeed.core.content.OneFeedMedia;
+import dev.jqb.onefeed.core.content.OneFeedAttachment;
 import dev.jqb.onefeed.core.actor.OneFeedActor;
 import dev.jqb.onefeed.core.content.OneFeedContent;
+import dev.jqb.onefeed.core.content.OneFeedMedia;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.platform.ExternalRef;
@@ -297,20 +298,20 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         softly.assertThat(actual.getBody()).as("Bodies match")
             .isEqualTo(expected.getBody());
 
-        // Media
-        boolean actualHasMedia = actual.getMedia() != null;
-        boolean expectedHasMedia = expected.getMedia() != null;
-        softly.assertThat(actualHasMedia).as("OneFeedMedia existence matches")
-            .isEqualTo(expectedHasMedia);
+        // Attachments
+        boolean actualHasAttachments = actual.getAttachments() != null;
+        boolean expectedHasAttachments = expected.getAttachments() != null;
+        softly.assertThat(actualHasAttachments).as("OneFeedAttachment existence matches")
+            .isEqualTo(expectedHasAttachments);
 
-        if (actualHasMedia && expectedHasMedia) {
-            softly.assertThat(actual.getMedia().size()).as("OneFeedMedia count matches")
-                .isEqualTo(expected.getMedia().size());
+        if (actualHasAttachments && expectedHasAttachments) {
+            softly.assertThat(actual.getAttachments().size()).as("OneFeedAttachment count matches")
+                .isEqualTo(expected.getAttachments().size());
 
-            log.debug("Validating each piece's media data...");
-            for (int i = 0; i < actual.getMedia().size(); i++) {
+            log.debug("Validating each piece's attachment data...");
+            for (int i = 0; i < actual.getAttachments().size(); i++) {
                 softly.assertAlso(
-                    validateMediaEquality(actual.getMedia().get(i), expected.getMedia().get(i), i)
+                    validateAttachmentEquality(actual.getAttachments().get(i), expected.getAttachments().get(i), i)
                 );
             }
         }
@@ -345,38 +346,55 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
     }
 
     /**
-     * Validates the equality of the given {@link OneFeedMedia} pieces.
+     * Validates the equality of the given {@link OneFeedAttachment} pieces.
      *
      * @param actual   the piece of media to validate
      * @param expected the piece of media to compare against
      * @return a {@link SoftAssertions} object containing the results of the validation
      */
-    private static SoftAssertions validateMediaEquality(OneFeedMedia actual, OneFeedMedia expected, int mediaNum) {
+    private static SoftAssertions validateAttachmentEquality(
+        OneFeedAttachment actual, OneFeedAttachment expected, int mediaNum) {
         log.debug("Validating the equality of actual media:\n{}\nagainst expected media:\n{}",
             actual, expected);
 
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(actual.getType()).as("OneFeedMedia %s's types match", mediaNum)
-            .isEqualTo(expected.getType());
 
-        softly.assertThat(actual.getHref()).as("OneFeedMedia %s's hrefs match", mediaNum)
+        softly.assertThat(actual.getHref())
+            .as("OneFeedAttachment %s's hrefs match", mediaNum)
             .isEqualTo(expected.getHref());
 
-        softly.assertThat(actual.getTitle()).as("OneFeedMedia %s's titles match", mediaNum)
-            .isEqualTo(expected.getTitle());
-
-        softly.assertThat(actual.getSrc()).as("OneFeedMedia %s's srcs match", mediaNum)
-            .isEqualTo(expected.getSrc());
-
         softly.assertThat(actual.getThumbnailSrc())
-            .as("OneFeedMedia %s's thumbnail srcs match", mediaNum)
+            .as("OneFeedAttachment %s's thumbnail srcs match", mediaNum)
             .isEqualTo(expected.getThumbnailSrc());
 
-        softly.assertThat(actual.getCaption()).as("OneFeedMedia %s's captions match", mediaNum)
+        softly.assertThat(actual.getTitle())
+            .as("OneFeedAttachment %s's titles match", mediaNum)
+            .isEqualTo(expected.getTitle());
+
+        softly.assertThat(actual.getCaption())
+            .as("OneFeedAttachment %s's captions match", mediaNum)
             .isEqualTo(expected.getCaption());
 
-        softly.assertThat(actual.getAltText()).as("OneFeedMedia %s's alt texts match", mediaNum)
-            .isEqualTo(expected.getAltText());
+        if ((actual instanceof OneFeedMedia) && (expected instanceof OneFeedMedia)) {
+            OneFeedMedia actualMedia = (OneFeedMedia) actual;
+            OneFeedMedia expectedMedia = (OneFeedMedia) expected;
+
+            softly.assertThat(actualMedia.getMimeType())
+                .as("OneFeedAttachment %s's MIME types match", mediaNum)
+                .isEqualTo(expectedMedia.getMimeType());
+
+            softly.assertThat(actualMedia.getSrc())
+                .as("OneFeedAttachment %s's srcs match", mediaNum)
+                .isEqualTo(expectedMedia.getSrc());
+
+            softly.assertThat(actualMedia.getAltText())
+                .as("OneFeedAttachment %s's alt texts match", mediaNum)
+                .isEqualTo(expectedMedia.getAltText());
+        }
+
+        softly.assertThat(actual.getClass())
+            .as("OneFeedAttachment %s's classes match", mediaNum)
+                .isEqualTo(expected.getClass());
 
         return softly;
     }
@@ -391,7 +409,8 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         assertNotNull(author);
 
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(author.getProviderId()).as("Provider ID is not blank").isNotBlank();
+        softly.assertThat(author.getProviderId())
+            .as("Provider ID is not blank").isNotBlank();
         softly.assertAlso(validateExternalRef(author.getExternalRef()));
         softly.assertThat(author.getHandle()).as("Handle is not blank")
             .isNotBlank();
@@ -408,8 +427,10 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         assertNotNull(feedId);
 
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(feedId.getProviderId()).as("Provider ID is not blank").isNotBlank();
-        softly.assertThat(feedId.feedName()).as("Feed name is not blank").isNotBlank();
+        softly.assertThat(feedId.getProviderId())
+            .as("Provider ID is not blank").isNotBlank();
+        softly.assertThat(feedId.feedName())
+            .as("Feed name is not blank").isNotBlank();
         return softly;
     }
 
@@ -443,8 +464,10 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         assertNotNull(externalRef);
 
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(externalRef.id()).as("ID on platform is not blank").isNotBlank();
-        softly.assertThat(externalRef.url()).as("URL on platform is not blank").isNotBlank();
+        softly.assertThat(externalRef.id())
+            .as("ID on platform is not blank").isNotBlank();
+        softly.assertThat(externalRef.url())
+            .as("URL on platform is not blank").isNotBlank();
         return softly;
     }
 }

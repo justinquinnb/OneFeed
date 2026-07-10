@@ -1,7 +1,5 @@
 package dev.jqb.onefeed.core.compat.rss;
 
-import jakarta.activation.MimeType;
-
 /**
  * A media object that is attached to an RSS item
  *
@@ -22,6 +20,5 @@ public interface RssEnclosure {
     /**
      * Gets the MIME type of the enclosure
      */
-    MimeType getRssEnclosureType();
-
+    String getRssEnclosureType();
 }

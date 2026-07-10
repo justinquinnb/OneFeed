@@ -1,114 +1,115 @@
 package dev.jqb.onefeed.core.content;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.activation.MimeType;
-import java.util.Optional;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.jspecify.annotations.Nullable;
 
 /**
- * A piece of media included in a piece of content
+ * A piece of media attached to a piece of content
  */
+@Getter
 @Setter
-@NoArgsConstructor
-@ToString
-public class OneFeedMedia {
+@ToString(callSuper = true)
+public class OneFeedMedia extends OneFeedAttachment {
+    /**
+     * The type of media being represented, adhering to <a href="https://datatracker.ietf.org/doc/html/rfc6838">RFC 6838</a>
+     * as an official entry in the <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types registry</a>.
+     */
+    private String mimeType;
 
     /**
-     * The type of media being represented
+     * A URL to the media resource itself, for direct embedding
      */
-    @Getter
-    private MimeType type;
-
-    /**
-     * The link to view the media on its host site
-     */
-    @Getter
-    private String href;
-
-    /**
-     * The title or name of the media (such as the title of a link)
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Nullable
-    private String title;
-
-    /**
-     * The media resource itself, for direct embedding
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String src;
-
-    /**
-     * The source of the resource to display, whether that be a link preview, video, image, etc.
-     * Semantically dependent on the {@link #type} of media being represented.
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Nullable
-    private String thumbnailSrc;
-
-    /**
-     * A caption for the piece of media
-     */
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String caption;
 
     /**
      * Alt text for the piece of media
      */
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String altText;
 
+    private OneFeedMedia(
+        String href,
+        String thumbnailSrc,
+        String title,
+        String caption,
+        String mimeType,
+        String src,
+        String altText
+    ) {
+        super(href, thumbnailSrc, title, caption);
+        this.mimeType = mimeType;
+        this.src = src;
+        this.altText = altText;
+    }
+
     /**
-     * Constructs a piece of {@link OneFeedMedia}.
+     * Prepares a {@link OneFeedMediaBuilder} for constructing a {@link OneFeedMedia} object.
      *
-     * @param type the type of media the constructed object represents, guiding its fields' semantic
-     *             interpretation or presentation by the client
-     * @param href the click-through link to view the media on its host platform
+     * @param href the link to the attachment on its host platform
+     * @param mimeType the type of media being represented, adhering to
+     *                 <a href="https://datatracker.ietf.org/doc/html/rfc6838">RFC 6838</a> as an
+     *                 official entry in the <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types registry</a>.
+     * @param src a URL to the media resource itself, for direct embedding
+     * @param altText alt text for the piece of media
+     *
+     * @return a {@link OneFeedMediaBuilder} to construct a {@link OneFeedMedia} object with
      */
-    public OneFeedMedia(MimeType type, String href) {
-        this.type = type;
-        this.href = href;
+    public static OneFeedMediaBuilder builder(
+        String href, String mimeType, String src, String altText
+    ) {
+        return new OneFeedMediaBuilder(href, mimeType, src, altText);
     }
 
     /**
-     * Gets the media resource itself, for direct embedding
+     * A builder for {@code OneFeedMedia} objects
      */
-    public Optional<String> getSrc() {
-        return Optional.ofNullable(this.src);
-    }
+    public static class OneFeedMediaBuilder {
+        private String href;
+        private String thumbnailSrc;
+        private String title;
+        private String caption;
+        private String mimeType;
+        private String src;
+        private String altText;
 
-    /**
-     * Gets the source of the resource to display, whether that be a link preview, video, image, etc.
-     * Semantically dependent on the {@link #type} of media being represented.
-     */
-    public Optional<String> getThumbnailSrc() {
-        return Optional.ofNullable(this.thumbnailSrc);
-    }
+        private OneFeedMediaBuilder(String href, String mimeType, String src, String altText) {
+            this.href = href;
+            this.mimeType = mimeType;
+            this.src = src;
+            this.altText = altText;
+        }
 
-    /**
-     * Gets the caption for the piece of media.
-     */
-    public Optional<String> getCaption() {
-        return Optional.ofNullable(this.caption);
-    }
+        /**
+         * Sets the source of the attachment's thumbnail.
+         */
+        public OneFeedMediaBuilder thumbnailSrc(String thumbnailSrc) {
+            this.thumbnailSrc = thumbnailSrc;
+            return this;
+        }
 
-    /**
-     * Gets the alt text for the piece of media.
-     */
-    public Optional<String> getAltText() {
-        return Optional.ofNullable(this.altText);
-    }
+        /**
+         * The title or name of the attachment (such as the title of a link).
+         */
+        public OneFeedMediaBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
 
-    /**
-     * Gets the title for the piece of media.
-     */
-    public Optional<String> getTitle() {
-        return Optional.ofNullable(this.title);
+        /**
+         * A caption for the attachment.
+         */
+        public OneFeedMediaBuilder caption(String caption) {
+            this.caption = caption;
+            return this;
+        }
+
+        /**
+         * Builds the {@link OneFeedMedia} object using the data provided to {@code this} builder.
+         * @return a {@code OneFeedMedia} object with the data provided to {@code this} builder,
+         */
+        public OneFeedMedia build() {
+            return new OneFeedMedia(
+                href, thumbnailSrc, title, caption, mimeType, src, altText);
+        }
     }
 }
