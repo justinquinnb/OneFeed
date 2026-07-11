@@ -11,6 +11,7 @@ import dev.jqb.onefeed.core.content.OneFeedAttachment;
 import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.content.OneFeedMedia;
 import dev.jqb.onefeed.core.feed.Feed;
+import dev.jqb.onefeed.core.feed.FeedAttribution;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import dev.jqb.onefeed.core.platform.Platform;
@@ -281,9 +282,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
         // Base Content info
         // ID and external ref
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(actual.getProviderId()).as("Provider IDs match")
-            .isEqualTo(expected.getProviderId());
-        softly.assertThat(actual.getFeedId()).as("Feed IDs match").isEqualTo(expected.getFeedId());
+        softly.assertAlso(validateFeedAttributionEquality(actual.getSource(), expected.getSource()));
         softly.assertAlso(validateExternalRefEquality(actual.getExternalRef(),
             expected.getExternalRef()));
 
@@ -455,6 +454,38 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
             .as("Provider ID is not blank").isNotBlank();
         softly.assertThat(feedId.feedName())
             .as("Feed name is not blank").isNotBlank();
+        return softly;
+    }
+
+    /**
+     * Validates the existence of the basic {@link FeedAttribution} fields
+     * @param feedAttribution the feed attribution object to validate
+     * @return a {@link SoftAssertions} object containing the results of the validation
+     */
+    private static SoftAssertions validateFeedAttribution(FeedAttribution feedAttribution) {
+        assertNotNull(feedAttribution);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertAlso(validateFeedId(feedAttribution.feedId()));
+        softly.assertThat(feedAttribution.feedUrl()).as("Feed URL is not blank").isNotBlank();
+        return softly;
+    }
+
+    /**
+     * Validates the equality of the given {@link FeedAttribution} objects.
+     * @param actual the feed attribution to validate
+     * @param expected the feed attribution to compare against
+     * @return a {@link SoftAssertions} object containing the results of the validation
+     */
+    private static SoftAssertions validateFeedAttributionEquality(FeedAttribution actual,
+        FeedAttribution expected
+    ) {
+        log.debug("Validating the equality of actual feed attribution:\n{}\nagainst expected feed attribution:\n{}",
+            actual, expected);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(actual.feedId()).as("Feed IDs on platform match").isEqualTo(expected.feedId());
+        softly.assertThat(actual.feedUrl()).as("Feed URLs on platform match").isEqualTo(expected.feedUrl());
         return softly;
     }
 

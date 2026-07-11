@@ -1,6 +1,12 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.jqb.onefeed.core.compat.rss.MinimumRssItemElements;
+import dev.jqb.onefeed.core.compat.rss.RssEnclosure;
+import dev.jqb.onefeed.core.compat.rss.RssGuid;
+import dev.jqb.onefeed.core.compat.rss.RssItem;
+import dev.jqb.onefeed.core.compat.rss.RssSource;
+import dev.jqb.onefeed.core.feed.FeedAttribution;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
@@ -20,7 +26,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OneFeedContent extends Content {
+public class OneFeedContent extends Content implements RssItem {
 
     /**
      * The title of the content, using CommonMark-Flavored Markdown for any formatting.
@@ -57,7 +63,7 @@ public class OneFeedContent extends Content {
      * @param builder the builder to construct the content with
      */
     protected OneFeedContent(OneFeedContentBuilder builder) {
-        super(builder.getFeedId(), builder.getExternalRef(), builder.getNextPageCursor(),
+        super(builder.getSource(), builder.getExternalRef(), builder.getNextPageCursor(),
             builder.getPublished(), builder.getAuthorIds());
         this.title = builder.getTitle();
         this.body = builder.getBody();
@@ -68,15 +74,45 @@ public class OneFeedContent extends Content {
     /**
      * Prepares a new {@code OneFeedContentBuilder} with the given fields.
      *
-     * @param feedId the unique ID of the feed the content is from
+     * @param source the feed the content is from
      * @param externalRef a means of accessing the resource on the source platform
      * @param published the time the {@code Content} was published on its {@code source}
      * @param authorIds the IDs of the authors of {@code this} content on the source platform
      */
-    public static OneFeedContentBuilder builder(FeedId feedId, ExternalRef externalRef,
+    public static OneFeedContentBuilder builder(FeedAttribution source, ExternalRef externalRef,
         Instant published, List<String> authorIds
     ) {
-        return new OneFeedContentBuilder(feedId, externalRef, published, authorIds);
+        return new OneFeedContentBuilder(source, externalRef, published, authorIds);
+    }
+
+    @Override
+    public MinimumRssItemElements getRssItemMinimumRssItemElements() {
+        return new MinimumRssItemElements(title, body);
+    }
+
+    @Override
+    public String getRssItemLink() {
+        return externalRef.url();
+    }
+
+    @Override
+    public RssEnclosure getRssItemEnclosure() {
+        return (attachments != null && !attachments.isEmpty()) ? attachments.getFirst() : null;
+    }
+
+    @Override
+    public RssGuid getRssItemGuid() {
+        return externalRef;
+    }
+
+    @Override
+    public Instant getRssItemPubDate() {
+        return published;
+    }
+
+    @Override
+    public RssSource getRssItemChannelSource() {
+        return null;
     }
 
     /**
@@ -84,7 +120,7 @@ public class OneFeedContent extends Content {
      */
     @Getter
     public static class OneFeedContentBuilder {
-        private FeedId feedId;
+        private FeedAttribution source;
         private ExternalRef externalRef;
         private String nextPageCursor;
         private Instant published;
@@ -98,15 +134,15 @@ public class OneFeedContent extends Content {
         /**
          * Prepares a new {@code OneFeedContentBuilder} with the given fields.
          *
-         * @param feedId the unique ID of the feed the content is from
+         * @param source the feed the content is from
          * @param externalRef a means of accessing the resource on the source platform
          * @param published the time the {@code Content} was published on its {@code source}
          * @param authorIds the IDs of the authors of {@code this} content on the source platform
          */
-        private OneFeedContentBuilder(FeedId feedId, ExternalRef externalRef, Instant published,
+        private OneFeedContentBuilder(FeedAttribution source, ExternalRef externalRef, Instant published,
             List<String> authorIds
         ) {
-            this.feedId = feedId;
+            this.source = source;
             this.externalRef = externalRef;
             this.published = published;
             this.authorIds = authorIds;

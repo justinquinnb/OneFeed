@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.jqb.onefeed.core.compat.rss.RssImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OneFeedMedia extends OneFeedAttachment {
+public class OneFeedMedia extends OneFeedAttachment implements RssImage {
     /**
      * The type of media being represented, adhering to <a href="https://datatracker.ietf.org/doc/html/rfc6838">RFC 6838</a>
      * as an official entry in the <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types registry</a>.
@@ -50,6 +51,16 @@ public class OneFeedMedia extends OneFeedAttachment {
         this.altText = altText;
     }
 
+    @Override
+    public String getRssEnclosureUrl() {
+        return this.src;
+    }
+
+    @Override
+    public String getRssEnclosureType() {
+        return mimeType;
+    }
+
     /**
      * Prepares a {@link OneFeedMediaBuilder} for constructing a {@link OneFeedMedia} object.
      *
@@ -66,6 +77,26 @@ public class OneFeedMedia extends OneFeedAttachment {
         String href, String mimeType, String src, @Nullable String altText
     ) {
         return new OneFeedMediaBuilder(href, mimeType, src, altText);
+    }
+
+    @Override
+    public String getRssImageUrl() {
+        return src;
+    }
+
+    @Override
+    public String getRssImageTitle() {
+        return altText;
+    }
+
+    @Override
+    public String getRssImageLink() {
+        return href;
+    }
+
+    @Override
+    public String getRssImageDescription() {
+        return title;
     }
 
     /**

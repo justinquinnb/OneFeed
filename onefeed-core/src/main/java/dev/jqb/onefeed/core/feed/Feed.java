@@ -1,6 +1,8 @@
 package dev.jqb.onefeed.core.feed;
 
+import dev.jqb.onefeed.core.compat.rss.RssChannel;
 import dev.jqb.onefeed.core.content.Content;
+import dev.jqb.onefeed.core.platform.ExternalRef;
 import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ import reactor.core.publisher.Flux;
 @Getter
 @Setter
 @ToString
-public abstract class Feed<C extends Content> implements ProviderIdentifiable {
+public abstract class Feed<C extends Content> implements ProviderIdentifiable, RssChannel {
 
     /**
      * The unique ID of the feed
@@ -25,12 +27,19 @@ public abstract class Feed<C extends Content> implements ProviderIdentifiable {
     protected final FeedId id;
 
     /**
+     * A means of accessing the resource on the source platform
+     */
+    @Getter
+    protected String url;
+
+    /**
      * Creates a new {@code Feed} with ID {@code id}.
      *
      * @param id the unique ID of the feed
      */
-    public Feed(FeedId id) {
+    public Feed(FeedId id, String url) {
         this.id = id;
+        this.url = url;
     }
 
     /**
@@ -56,6 +65,10 @@ public abstract class Feed<C extends Content> implements ProviderIdentifiable {
     @Override
     public String getProviderId() {
         return id.getProviderId();
+    }
+
+    public FeedAttribution getAttribution() {
+        return new FeedAttribution(id, url);
     }
 
     /**

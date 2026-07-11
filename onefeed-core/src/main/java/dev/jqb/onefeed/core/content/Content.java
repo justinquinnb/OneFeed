@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.jqb.onefeed.core.feed.FeedAttribution;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.feed.FeedIdentifiable;
 import dev.jqb.onefeed.core.platform.ExternalRef;
@@ -17,6 +18,7 @@ import org.jspecify.annotations.Nullable;
 /**
  * The minimum required data for of a piece of content.
  */
+@Getter
 @Setter
 @ToString
 @NoArgsConstructor
@@ -27,18 +29,16 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
     /**
      * The unique ID of the feed the content is from
      */
-    protected FeedId feedId;
+    protected FeedAttribution source;
 
     /**
      * A means of accessing the resource on the source platform
      */
-    @Getter
     protected ExternalRef externalRef;
 
     /**
      * Gets time at which the content was published
      */
-    @Getter
     protected Instant published;
 
     /**
@@ -51,24 +51,23 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
     /**
      * The IDs of the authors of {@code this} content on the source platform
      */
-    @Getter
     protected List<String> authorIds;
 
     /**
      * Constructs a piece of {@code Content} attributed to a {@code source} and created/published
      * at the given time.
      *
-     * @param feedId the unique ID of the feed the content is from
+     * @param source the source feed the content is from
      * @param externalRef a means of accessing the resource on the source platform
      * @param nextPageCursor the cursor pointing to the next page of content after {@code this} (or
      *                       some equivalent means), if known, on the originating platform's API
      * @param published the time the {@code Content} was published on its {@code source}
      * @param authorIds the IDs of the authors of {@code this} content on the source platform
      */
-    public Content(FeedId feedId, ExternalRef externalRef, @Nullable String nextPageCursor,
+    public Content(FeedAttribution source, ExternalRef externalRef, @Nullable String nextPageCursor,
         Instant published, List<String> authorIds
     ) {
-        this.feedId = feedId;
+        this.source = source;
         this.externalRef = externalRef;
         this.nextPageCursor = nextPageCursor;
         this.published = published;
@@ -80,7 +79,7 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
      * @return a unique key for this content on OneFeed
      */
     public ContentKey getKey() {
-        return new ContentKey(feedId, externalRef.id());
+        return new ContentKey(source.feedId(), externalRef.id());
     }
 
     /**
@@ -99,12 +98,12 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
 
     @Override
     public FeedId getFeedId() {
-        return feedId;
+        return source.feedId();
     }
 
     @Override
     public String getProviderId() {
-        return feedId.getProviderId();
+        return source.feedId().getProviderId();
     }
 
     /**

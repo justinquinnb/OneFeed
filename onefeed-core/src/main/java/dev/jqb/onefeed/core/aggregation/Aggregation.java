@@ -1,10 +1,12 @@
 package dev.jqb.onefeed.core.aggregation;
 
+import dev.jqb.onefeed.core.compat.rss.RssChannel;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedCursor;
 import dev.jqb.onefeed.core.feed.FeedId;
+import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,17 +42,19 @@ public class Aggregation<C extends Content> extends Feed<C> {
      * {@code options} applied.
      *
      * @param id the ID of the created aggregation
+     * @param url a URL to the aggregation's source
      * @param feeds the feeds to aggregate content from
      * @param normalizers the normalizers to apply to the content before returning it
      * @param options the options to adjust the contents of the returned aggregation
      */
     public Aggregation(
         FeedId id,
+        String url,
         List<Feed<? extends Content>> feeds,
         Map<String, ContentTransformer<? extends Content, C>> normalizers,
         AggregationOptions options
     ) {
-        super(id);
+        super(id, url);
         this.options = options;
 
         this.feeds = feeds;
@@ -187,5 +191,39 @@ public class Aggregation<C extends Content> extends Feed<C> {
         }
 
         return decodedCursors;
+    }
+
+    @Override
+    public String getRssChannelTitle() {
+        return id.feedName();
+    }
+
+    @Override
+    public String getRssChannelLink() {
+        return url;
+    }
+
+    @Override
+    public String getRssChannelDescription() {
+        String sourceDescription = "An incomplete aggregation of content. No feeds provided.";
+
+        if (feeds.size() == 1) {
+            sourceDescription = feeds.getFirst().getRssChannelTitle();
+        } else if (feeds.size() == 2) {
+            sourceDescription = feeds.get(0).getRssChannelTitle() + " and " + feeds.get(1).getRssChannelTitle() + ".";
+        } else if (feeds.size() >= 3) {
+            ArrayList<String> feedTitles = new ArrayList<>();
+            feeds.forEach(feed -> feedTitles.add(feed.getRssChannelTitle()));
+            String lastFeed = " and " + feedTitles.getLast();
+            feedTitles.removeLast();
+            feedTitles.add(lastFeed);
+            sourceDescription = String.join(", ", feedTitles) + ".";
+        }
+
+        if (feeds.size() > 1) {
+            sourceDescription = "An aggregation of content from " + sourceDescription;
+        }
+
+        return sourceDescription;
     }
 }

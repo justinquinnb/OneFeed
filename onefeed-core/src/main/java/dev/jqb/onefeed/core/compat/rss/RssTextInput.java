@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class RssTextInput {
+public class RssTextInput { // todo extend attachment?
 
     /**
      * The label of the submit button in the text input area
