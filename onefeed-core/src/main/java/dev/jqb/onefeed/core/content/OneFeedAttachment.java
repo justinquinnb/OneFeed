@@ -14,6 +14,7 @@ import org.jspecify.annotations.Nullable;
 @Setter
 @NoArgsConstructor
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OneFeedAttachment {
 
     /**
@@ -25,14 +26,12 @@ public class OneFeedAttachment {
     /**
      * The source of the attachment's thumbnail
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Nullable
     private String thumbnailSrc;
 
     /**
      * The title or name of the attachment (such as the title of a link)
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Nullable
     private String title;
 
@@ -40,7 +39,6 @@ public class OneFeedAttachment {
      * A caption for the attachment
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String caption;
 
     /**

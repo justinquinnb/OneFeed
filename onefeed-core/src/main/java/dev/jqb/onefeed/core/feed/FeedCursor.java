@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A platform-specific cursor and offset to identify the next piece of content desired from the API
@@ -14,6 +16,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class FeedCursor {
+
+    private static final Logger logger = LoggerFactory.getLogger(FeedCursor.class);
 
     /**
      * The cursor, as provided by the platform's API
@@ -54,9 +58,12 @@ public class FeedCursor {
      */
     @JsonCreator
     public static FeedCursor fromString(String cursorString) {
+        logger.debug("Parsing cursor string: {}", cursorString);
         int splitAt = cursorString.lastIndexOf('+');
         String cursor = cursorString.substring(0, splitAt);
         int offset = Integer.parseInt(cursorString.substring(splitAt + 1));
-        return new FeedCursor(cursor, offset);
+        FeedCursor fc = new FeedCursor(cursor, offset);
+        logger.debug("Parsed into: {}", fc);
+        return fc;
     }
 }

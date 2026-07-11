@@ -1,8 +1,12 @@
 package dev.jqb.onefeed.core.content;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A piece of media attached to a piece of content
@@ -10,6 +14,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OneFeedMedia extends OneFeedAttachment {
     /**
      * The type of media being represented, adhering to <a href="https://datatracker.ietf.org/doc/html/rfc6838">RFC 6838</a>
@@ -25,16 +32,17 @@ public class OneFeedMedia extends OneFeedAttachment {
     /**
      * Alt text for the piece of media
      */
+    @Nullable
     private String altText;
 
     private OneFeedMedia(
         String href,
-        String thumbnailSrc,
-        String title,
-        String caption,
+        @Nullable String thumbnailSrc,
+        @Nullable String title,
+        @Nullable String caption,
         String mimeType,
         String src,
-        String altText
+        @Nullable String altText
     ) {
         super(href, thumbnailSrc, title, caption);
         this.mimeType = mimeType;
@@ -55,7 +63,7 @@ public class OneFeedMedia extends OneFeedAttachment {
      * @return a {@link OneFeedMediaBuilder} to construct a {@link OneFeedMedia} object with
      */
     public static OneFeedMediaBuilder builder(
-        String href, String mimeType, String src, String altText
+        String href, String mimeType, String src, @Nullable String altText
     ) {
         return new OneFeedMediaBuilder(href, mimeType, src, altText);
     }
@@ -72,7 +80,7 @@ public class OneFeedMedia extends OneFeedAttachment {
         private String src;
         private String altText;
 
-        private OneFeedMediaBuilder(String href, String mimeType, String src, String altText) {
+        private OneFeedMediaBuilder(String href, String mimeType, String src, @Nullable String altText) {
             this.href = href;
             this.mimeType = mimeType;
             this.src = src;

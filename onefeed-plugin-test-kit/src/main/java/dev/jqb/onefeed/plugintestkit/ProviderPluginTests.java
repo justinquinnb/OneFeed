@@ -161,6 +161,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
     public void retrieveContentAuthor(String authorId) {
         Actor author = provider.fetchAuthor(authorId).block();
         log.debug("Retrieved platform author: {}", author);
+        assertNotNull(author);
     }
 
     /**
@@ -278,7 +279,7 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
             actual, expected);
 
         // Base Content info
-        // Source
+        // ID and external ref
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(actual.getProviderId()).as("Provider IDs match")
             .isEqualTo(expected.getProviderId());
@@ -292,6 +293,22 @@ public non-sealed abstract class ProviderPluginTests<T extends OneFeedProviderPl
 
         softly.assertThat(actual.getNextPageCursor()).as("Next page cursors match")
             .isEqualTo(expected.getNextPageCursor());
+
+        // Authors
+        boolean actualHasAuthors = actual.getAuthorIds() != null;
+        boolean expectedHasAuthors = expected.getAuthorIds() != null;
+        softly.assertThat(actualHasAuthors).as("Author existence matches").isEqualTo(expectedHasAuthors);
+        if (actualHasAuthors && expectedHasAuthors) {
+            softly.assertThat(actual.getAuthorIds().size()).as("Author count matches")
+                .isEqualTo(expected.getAuthorIds().size());
+
+            log.debug("Validating the equality of each author...");
+            for (int i = 0; i < actual.getAuthorIds().size(); i++) {
+                softly.assertThat(actual.getAuthorIds().get(i))
+                    .as("Author ID " + i + " matches")
+                    .isEqualTo(expected.getAuthorIds().get(i));
+            }
+        }
 
         // Primary reaction count
         softly.assertThat(actual.getPrimaryReactionCount())

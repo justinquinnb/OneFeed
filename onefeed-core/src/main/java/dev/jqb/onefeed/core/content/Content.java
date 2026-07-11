@@ -1,12 +1,13 @@
 package dev.jqb.onefeed.core.content;
 
-import dev.jqb.onefeed.core.actor.Actor;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.feed.FeedIdentifiable;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,8 @@ import org.jspecify.annotations.Nullable;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Content implements FeedIdentifiable, Comparable<Content> {
 
     /**

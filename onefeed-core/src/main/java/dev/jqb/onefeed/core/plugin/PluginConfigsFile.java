@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.core.plugin;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.jqb.onefeed.core.caching.CacherConfig;
 import dev.jqb.onefeed.core.provider.ProviderConfig;
 import java.util.HashMap;
@@ -21,13 +20,11 @@ public class PluginConfigsFile {
     /**
      * A mapping of provider plugin IDs to their specific "environment" variables
      */
-    @JsonProperty("provider-configs")
     private HashMap<String, ProviderConfig> providerConfigs;
 
     /**
      * A mapping of cacher plugin IDs to their specific "environment" variables
      */
-    @JsonProperty("cacher-configs")
     private HashMap<String, CacherConfig> cacherConfigs;
 
     /**
