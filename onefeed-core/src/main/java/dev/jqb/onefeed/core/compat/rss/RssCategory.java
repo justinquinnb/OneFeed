@@ -57,7 +57,8 @@ public class RssCategory {
      * Gets the domain of the category, if any.
      * @return the domain of the category, if any
      */
-    public Optional<String> getDomain() {
-        return Optional.ofNullable(domain);
+    @Nullable
+    public String getDomain() {
+        return domain;
     }
 }

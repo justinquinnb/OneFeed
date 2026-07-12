@@ -134,7 +134,7 @@ public class Aggregation<C extends Content> extends Feed<C> {
         for (Content c : sortedContent) {
             // First piece of content in list for feed
             if (!oldestFeedCursors.containsKey(c.getFeedId())) {
-                FeedCursor initialCursor = new FeedCursor(c.getNextPageCursor().orElse(null), 0);
+                FeedCursor initialCursor = new FeedCursor(c.getNextPageCursor(), 0);
                 oldestFeedCursors.put(c.getFeedId(), initialCursor);
                 continue;
             }
@@ -142,12 +142,12 @@ public class Aggregation<C extends Content> extends Feed<C> {
             // Nth piece of content in feed
             // Piece of content has no next page cursor
             FeedCursor currentCursor = oldestFeedCursors.get(c.getFeedId());
-            if (c.getNextPageCursor().isEmpty()) {
+            if (c.getNextPageCursor() == null || c.getNextPageCursor().isEmpty()) {
                 int currentOffset = currentCursor.getOffsetFromCursor();
                 currentCursor.setOffsetFromCursor(currentOffset + 1);
             } else { // Piece of content HAS a next page cursor
                 currentCursor.setOffsetFromCursor(0);
-                currentCursor.setCursorOnPlatform(c.getNextPageCursor().get());
+                currentCursor.setCursorOnPlatform(c.getNextPageCursor());
             }
         }
 
