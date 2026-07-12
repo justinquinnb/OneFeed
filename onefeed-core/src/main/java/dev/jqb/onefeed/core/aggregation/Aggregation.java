@@ -1,12 +1,10 @@
 package dev.jqb.onefeed.core.aggregation;
 
-import dev.jqb.onefeed.core.compat.rss.RssChannel;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedCursor;
 import dev.jqb.onefeed.core.feed.FeedId;
-import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -191,39 +189,5 @@ public class Aggregation<C extends Content> extends Feed<C> {
         }
 
         return decodedCursors;
-    }
-
-    @Override
-    public String getRssChannelTitle() {
-        return id.feedName();
-    }
-
-    @Override
-    public String getRssChannelLink() {
-        return url;
-    }
-
-    @Override
-    public String getRssChannelDescription() {
-        String sourceDescription = "An incomplete aggregation of content. No feeds provided.";
-
-        if (feeds.size() == 1) {
-            sourceDescription = feeds.getFirst().getRssChannelTitle();
-        } else if (feeds.size() == 2) {
-            sourceDescription = feeds.get(0).getRssChannelTitle() + " and " + feeds.get(1).getRssChannelTitle() + ".";
-        } else if (feeds.size() >= 3) {
-            ArrayList<String> feedTitles = new ArrayList<>();
-            feeds.forEach(feed -> feedTitles.add(feed.getRssChannelTitle()));
-            String lastFeed = " and " + feedTitles.getLast();
-            feedTitles.removeLast();
-            feedTitles.add(lastFeed);
-            sourceDescription = String.join(", ", feedTitles) + ".";
-        }
-
-        if (feeds.size() > 1) {
-            sourceDescription = "An aggregation of content from " + sourceDescription;
-        }
-
-        return sourceDescription;
     }
 }
