@@ -3,6 +3,7 @@ package dev.jqb.onefeed.core.compat.rss;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +17,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @see <a href="https://www.rssboard.org/rss-specification#hrelementsOfLtitemgt">RSS 2.0 Specification</a>
  */
 @JsonRootName("item")
+@JsonSerializeAs(RssItem.class)
 public interface RssItem {
 
     /**

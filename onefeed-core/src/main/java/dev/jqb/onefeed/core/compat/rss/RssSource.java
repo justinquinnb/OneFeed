@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.core.compat.rss;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
@@ -10,6 +11,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
  * @see <a href="https://www.rssboard.org/rss-specification#ltsourcegtSubelementOfLtitemgt">RSS 2.0 Specification</a>
  */
 @JsonRootName("source")
+@JsonSerializeAs(RssSource.class)
 public interface RssSource {
 
     /**

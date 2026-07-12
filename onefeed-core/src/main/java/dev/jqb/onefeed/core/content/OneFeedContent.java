@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import dev.jqb.onefeed.core.compat.rss.MinimumRssItemElements;
 import dev.jqb.onefeed.core.compat.rss.RssEnclosure;
 import dev.jqb.onefeed.core.compat.rss.RssGuid;
@@ -26,6 +27,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonSerializeAs(OneFeedContent.class)
 public class OneFeedContent extends Content implements RssItem {
 
     /**

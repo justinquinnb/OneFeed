@@ -3,8 +3,10 @@ package dev.jqb.onefeed.core.compat.rss;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 @JsonRootName("channel")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonSerializeAs(RssChannel.class)
 public interface RssChannel {
     /**
      * Gets the name of the channel. It's how people refer to the channel/service. If you have an

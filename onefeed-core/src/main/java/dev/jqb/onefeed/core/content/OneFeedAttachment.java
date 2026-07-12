@@ -1,6 +1,7 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import dev.jqb.onefeed.core.compat.rss.RssEnclosure;
 import java.util.Optional;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import org.jspecify.annotations.Nullable;
 @NoArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonSerializeAs(OneFeedAttachment.class)
 public class OneFeedAttachment implements RssEnclosure {
 
     /**
