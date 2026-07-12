@@ -1,10 +1,14 @@
 package dev.jqb.onefeed.core.compat.rss;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 /**
  * A category that an RSS item or channel may belong to
@@ -13,18 +17,22 @@ import org.jspecify.annotations.Nullable;
  */
 @Setter
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonRootName("category")
 public class RssCategory {
 
     /**
      * The category's name
      */
     @Getter
+    @JacksonXmlText
     private String value;
 
     /**
      * The domain of the category, if any.
      */
     @Nullable
+    @JacksonXmlProperty(isAttribute = true)
     private String domain;
 
     /**

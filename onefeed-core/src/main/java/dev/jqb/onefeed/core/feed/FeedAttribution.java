@@ -1,5 +1,7 @@
 package dev.jqb.onefeed.core.feed;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import dev.jqb.onefeed.core.compat.rss.RssSource;
 
 /**
@@ -7,7 +9,7 @@ import dev.jqb.onefeed.core.compat.rss.RssSource;
  * @param feedId the ID of the source feed
  * @param feedUrl the URL of the source feed
  */
-public record FeedAttribution(FeedId feedId, String feedUrl) implements RssSource {
+public record FeedAttribution(@JsonValue FeedId feedId, @JsonIgnore String feedUrl) implements RssSource {
 
     @Override
     public String getRssSourceValue() {
