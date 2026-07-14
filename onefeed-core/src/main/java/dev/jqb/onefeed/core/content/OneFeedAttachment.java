@@ -64,25 +64,22 @@ public class OneFeedAttachment implements RssEnclosure {
     /**
      * Gets the source of the attachment's thumbnail.
      */
-    @Nullable
-    public String getThumbnailSrc() {
-        return this.thumbnailSrc;
+    public Optional<String> getThumbnailSrc() {
+        return Optional.ofNullable(this.thumbnailSrc);
     }
 
     /**
      * Gets the caption of the attachment.
      */
-    @Nullable
-    public String getCaption() {
-        return this.caption;
+    public Optional<String> getCaption() {
+        return Optional.ofNullable(this.caption);
     }
 
     /**
      * Gets the title or name of the attachment (such as the title of a link).
      */
-    @Nullable
-    public String getTitle() {
-        return this.title;
+    public Optional<String> getTitle() {
+        return Optional.ofNullable(this.title);
     }
 
     @Override

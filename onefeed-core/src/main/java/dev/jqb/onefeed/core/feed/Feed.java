@@ -80,17 +80,17 @@ public abstract class Feed<C extends Content> implements ProviderIdentifiable {
         sortedContent.sort(Content::compareTo);
         Content initialContent = sortedContent.getFirst();
         FeedCursor feedCursor = new FeedCursor(
-            initialContent.getNextPageCursor(), 0);
+            initialContent.getNextPageCursor().orElse(null), 0);
 
         for (Content c : sortedContent.subList(1, sortedContent.size())) {
             // Nth piece of content in feed
             // Piece of content has no next page cursor
-            if (c.getNextPageCursor() == null || c.getNextPageCursor().isEmpty()) {
+            if (c.getNextPageCursor().isEmpty()) {
                 int currentOffset = feedCursor.getOffsetFromCursor();
                 feedCursor.setOffsetFromCursor(currentOffset + 1);
             } else { // Piece of content HAS a next page cursor
                 feedCursor.setOffsetFromCursor(0);
-                feedCursor.setCursorOnPlatform(c.getNextPageCursor());
+                feedCursor.setCursorOnPlatform(c.getNextPageCursor().get());
             }
         }
 

@@ -113,8 +113,7 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
      * equivalent) on the originating platform's API, if known, or {@link Optional#empty()}
      * otherwise
      */
-    @Nullable
-    public String getNextPageCursor() {
-        return nextPageCursor;
+    public Optional<String> getNextPageCursor() {
+        return Optional.ofNullable(nextPageCursor);
     }
 }
