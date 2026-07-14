@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import java.time.DayOfWeek;
@@ -22,6 +23,9 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 @JsonRootName("channel")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonPropertyOrder({"title", "link", "description", "language", "copyright", "managingEditor",
+    "webMaster", "pubDate", "lastBuildDate", "category", "generator", "docs", "ttl", "image",
+    "textInput", "skipHours", "skipDays", "atom:link", "item"}) // To ensure items are always last, as suggested by W3, which Jackson isn't doing by default
 public interface RssChannel {
     /**
      * Gets the name of the channel. It's how people refer to the channel/service. If you have an
@@ -201,6 +205,9 @@ public interface RssChannel {
         }
         return days;
     }
+
+    @JsonProperty("atom:link")
+    RssAtomLink getRssChannelAtomLink();
 
     /**
      * Gets the items in the channel.

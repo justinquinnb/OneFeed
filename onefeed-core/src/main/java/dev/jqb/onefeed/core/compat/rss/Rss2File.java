@@ -20,6 +20,9 @@ public class Rss2File {
     @JacksonXmlProperty(isAttribute = true, localName = "version")
     private String version = "2.0";
 
+    @JacksonXmlProperty(isAttribute = true, localName = "xmlns:atom")
+    private String atomNamespace = "http://www.w3.org/2005/Atom";
+
     /**
      * The RSS channel the file contains
      */

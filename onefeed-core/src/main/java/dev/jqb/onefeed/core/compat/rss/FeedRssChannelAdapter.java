@@ -38,6 +38,11 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
     private String description;
 
     /**
+     * A link to where {@code this} RSS feed can be found
+     */
+    private String href;
+
+    /**
      * The maximum number of items to include in the feed
      */
     private int maxItemCount;
@@ -49,6 +54,7 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
      *                     into an {@link RssItem}-compatible type
      * @param title the title of the feed
      * @param description a description of the feed
+     * @param href a link to where {@code this} RSS feed can be found
      * @param maxItemCount the maximum number of items to include in the feed
      */
     public FeedRssChannelAdapter(
@@ -56,12 +62,14 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
         ContentTransformer<C, ? extends RssItem> standardizer,
         String title,
         String description,
+        String href,
         int maxItemCount
     ) {
         this.feed = feed;
         this.standardizer = standardizer;
         this.title = title;
         this.description = description;
+        this.href = href;
         this.maxItemCount = maxItemCount;
     }
 
@@ -78,6 +86,11 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
     @Override
     public String getRssChannelDescription() {
         return description;
+    }
+
+    @Override
+    public RssAtomLink getRssChannelAtomLink() {
+        return (this.href != null && !this.href.isEmpty()) ? new RssAtomLink(this.href) : null;
     }
 
     @Override
