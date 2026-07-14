@@ -27,7 +27,6 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonSerializeAs(OneFeedContent.class)
 public class OneFeedContent extends Content implements RssItem {
 
     /**

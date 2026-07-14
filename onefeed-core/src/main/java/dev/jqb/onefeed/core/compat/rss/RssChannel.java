@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -20,8 +21,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @see <a href="https://www.rssboard.org/rss-specification#requiredChannelElements>RSS 2.0 Specification</a
  */
 @JsonRootName("channel")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonSerializeAs(RssChannel.class)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface RssChannel {
     /**
      * Gets the name of the channel. It's how people refer to the channel/service. If you have an
@@ -78,7 +78,7 @@ public interface RssChannel {
         shape = JsonFormat.Shape.STRING,
         pattern = "EEE, dd MMM yyyy HH:mm:ss z",
         locale = "en",
-        timezone = "UTC"
+        timezone = "GMT"
     )
     default Instant getRssChannelPubDate() {
         return null;
@@ -92,7 +92,7 @@ public interface RssChannel {
         shape = JsonFormat.Shape.STRING,
         pattern = "EEE, dd MMM yyyy HH:mm:ss z",
         locale = "en",
-        timezone = "UTC"
+        timezone = "GMT"
     )
     default Instant getRssChannelLastBuildDate() {
         return Instant.now();
@@ -146,6 +146,7 @@ public interface RssChannel {
      * Gets the image that can be displayed with the channel.
      */
     @JsonProperty("image")
+    @JsonSerializeAs(RssImage.class)
     default RssImage getRssChannelImage() {
         return null;
     }
@@ -205,5 +206,7 @@ public interface RssChannel {
      * Gets the items in the channel.
      */
     @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "item")
+    @JsonSerialize(contentAs = RssItem.class)
     List<RssItem> getRssChannelItems();
 }

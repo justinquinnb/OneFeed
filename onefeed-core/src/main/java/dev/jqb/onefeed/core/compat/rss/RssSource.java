@@ -11,7 +11,6 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
  * @see <a href="https://www.rssboard.org/rss-specification#ltsourcegtSubelementOfLtitemgt">RSS 2.0 Specification</a>
  */
 @JsonRootName("source")
-@JsonSerializeAs(RssSource.class)
 public interface RssSource {
 
     /**

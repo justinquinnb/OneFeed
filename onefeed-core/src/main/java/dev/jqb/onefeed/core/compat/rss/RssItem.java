@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -17,7 +18,6 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @see <a href="https://www.rssboard.org/rss-specification#hrelementsOfLtitemgt">RSS 2.0 Specification</a>
  */
 @JsonRootName("item")
-@JsonSerializeAs(RssItem.class)
 public interface RssItem {
 
     /**
@@ -69,6 +69,7 @@ public interface RssItem {
      * Gets the media object that is attached to the item.
      */
     @JsonProperty("enclosure")
+    @JsonSerialize(as = RssEnclosure.class)
     default RssEnclosure getRssItemEnclosure() {
         return null;
     }
@@ -79,6 +80,7 @@ public interface RssItem {
      * @see <a href="https://www.rssboard.org/rss-specification#ltguidgtSubelementOfLtitemgt">RSS 2.0 Specification</a>
      */
     @JsonProperty("guid")
+    @JsonSerialize(as = RssGuid.class)
     RssGuid getRssItemGuid();
 
     /**
@@ -91,7 +93,7 @@ public interface RssItem {
         shape = JsonFormat.Shape.STRING,
         pattern = "EEE, dd MMM yyyy HH:mm:ss z",
         locale = "en",
-        timezone = "UTC"
+        timezone = "GMT"
     )
     Instant getRssItemPubDate();
 
@@ -99,5 +101,6 @@ public interface RssItem {
      * Gets the RSS channel that the item came from.
      */
     @JsonProperty("source")
+    @JsonSerialize(as = RssSource.class)
     RssSource getRssItemChannelSource();
 }

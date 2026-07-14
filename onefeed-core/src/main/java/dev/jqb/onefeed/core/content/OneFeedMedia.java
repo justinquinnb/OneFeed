@@ -20,7 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonSerializeAs(OneFeedMedia.class)
 public class OneFeedMedia extends OneFeedAttachment implements RssImage {
     /**
      * The type of media being represented, adhering to <a href="https://datatracker.ietf.org/doc/html/rfc6838">RFC 6838</a>

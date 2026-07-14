@@ -10,7 +10,6 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @see <a href="https://www.rssboard.org/rss-specification#ltenclosuregtSubelementOfLtitemgt">RSS 2.0 Specification</a>
  */
 @JsonRootName("enclosure")
-@JsonSerializeAs(RssEnclosure.class)
 public interface RssEnclosure {
 
     /**

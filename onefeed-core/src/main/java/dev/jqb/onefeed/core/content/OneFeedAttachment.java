@@ -17,7 +17,6 @@ import org.jspecify.annotations.Nullable;
 @NoArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonSerializeAs(OneFeedAttachment.class)
 public class OneFeedAttachment implements RssEnclosure {
 
     /**

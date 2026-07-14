@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSerializeAs;
  */
 @JsonRootName("image")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonSerializeAs(RssImage.class)
 public interface RssImage {
 
     /**

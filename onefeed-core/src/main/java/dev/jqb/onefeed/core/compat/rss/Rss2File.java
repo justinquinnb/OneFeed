@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
@@ -22,6 +23,7 @@ public class Rss2File {
     /**
      * The RSS channel the file contains
      */
+    @JsonSerialize(as = RssChannel.class)
     private RssChannel channel;
 
     /**
