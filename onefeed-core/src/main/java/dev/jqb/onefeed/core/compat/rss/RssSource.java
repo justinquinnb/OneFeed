@@ -1,7 +1,6 @@
 package dev.jqb.onefeed.core.compat.rss;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 

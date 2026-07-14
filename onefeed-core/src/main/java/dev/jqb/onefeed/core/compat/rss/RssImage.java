@@ -3,7 +3,6 @@ package dev.jqb.onefeed.core.compat.rss;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonSerializeAs;
 
 /**
  * A channel image in RSS.

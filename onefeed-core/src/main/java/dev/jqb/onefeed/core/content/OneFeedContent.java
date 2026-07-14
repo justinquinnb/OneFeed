@@ -1,14 +1,12 @@
 package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import dev.jqb.onefeed.core.compat.rss.MinimumRssItemElements;
 import dev.jqb.onefeed.core.compat.rss.RssEnclosure;
 import dev.jqb.onefeed.core.compat.rss.RssGuid;
 import dev.jqb.onefeed.core.compat.rss.RssItem;
 import dev.jqb.onefeed.core.compat.rss.RssSource;
 import dev.jqb.onefeed.core.feed.FeedAttribution;
-import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
 import java.util.List;

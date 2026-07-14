@@ -1,7 +1,6 @@
 package dev.jqb.onefeed.core.compat.rss;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 

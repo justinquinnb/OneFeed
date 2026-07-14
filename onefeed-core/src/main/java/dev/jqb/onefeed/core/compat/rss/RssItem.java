@@ -3,14 +3,11 @@ package dev.jqb.onefeed.core.compat.rss;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
  * Content that can be represented as an RSS 2.0 item

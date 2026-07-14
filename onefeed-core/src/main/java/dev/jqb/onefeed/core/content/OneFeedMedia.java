@@ -2,7 +2,6 @@ package dev.jqb.onefeed.core.content;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSerializeAs;
 import dev.jqb.onefeed.core.compat.rss.RssImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
