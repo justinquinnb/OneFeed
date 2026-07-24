@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.core.actor;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
 import lombok.Getter;
@@ -16,7 +15,6 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Actor implements ProviderIdentifiable {
 
     /**

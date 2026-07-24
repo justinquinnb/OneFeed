@@ -1,7 +1,6 @@
 package dev.jqb.onefeed.core.compat.rss;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -184,7 +183,6 @@ public interface RssChannel {
      *
      * @see <a href="https://www.rssboard.org/rss-specification#requiredChannelElements>RSS 2.0 Specification</a
      */
-    @JsonIgnore
     default List<DayOfWeek> getRssChannelSkipDays() {
         return List.of();
     }

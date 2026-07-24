@@ -9,7 +9,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
  *
  * @see <a href="https://www.rssboard.org/rss-specification#ltguidgtSubelementOfLtitemgt">RSS 2.0 Specification</a>
  */
-@JsonRootName( "guid")
+@JsonRootName("guid")
 public interface RssGuid {
 
     /**

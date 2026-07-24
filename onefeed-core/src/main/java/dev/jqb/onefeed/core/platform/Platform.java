@@ -31,6 +31,7 @@ public class Platform implements ProviderIdentifiable {
     /**
      * Constructs a piece of {@code Platform} info.
      *
+     * @param providerId the unique identifier of the provider exposing this platform
      * @param name the name of the platform, like Instagram
      * @param homepageUrl a URL to the platform's homepage
      */

@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.core.content;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.core.feed.FeedAttribution;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.feed.FeedIdentifiable;
@@ -23,7 +22,6 @@ import org.jspecify.annotations.Nullable;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Content implements FeedIdentifiable, Comparable<Content> {
 
     /**
@@ -104,16 +102,5 @@ public abstract class Content implements FeedIdentifiable, Comparable<Content> {
     @Override
     public String getProviderId() {
         return source.feedId().getProviderId();
-    }
-
-    /**
-     * Gets the cursor pointing to the next page of content after {@code this} (or some equivalent
-     * means), if known, on the originating platform's API.
-     * @return the cursor pointing to the next page of content after {@code this} (or some
-     * equivalent) on the originating platform's API, if known, or {@link Optional#empty()}
-     * otherwise
-     */
-    public Optional<String> getNextPageCursor() {
-        return Optional.ofNullable(nextPageCursor);
     }
 }

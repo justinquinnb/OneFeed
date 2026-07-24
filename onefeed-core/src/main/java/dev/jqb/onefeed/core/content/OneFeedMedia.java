@@ -1,7 +1,5 @@
 package dev.jqb.onefeed.core.content;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.core.compat.rss.RssImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +16,6 @@ import org.jspecify.annotations.Nullable;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OneFeedMedia extends OneFeedAttachment implements RssImage {
     /**
      * The type of media being represented, adhering to <a href="https://datatracker.ietf.org/doc/html/rfc6838">RFC 6838</a>
@@ -53,7 +50,6 @@ public class OneFeedMedia extends OneFeedAttachment implements RssImage {
     }
 
     @Override
-    @JsonIgnore
     public String getRssEnclosureUrl() {
         return this.src;
     }

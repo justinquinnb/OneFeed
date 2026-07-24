@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.core.content;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.core.compat.rss.MinimumRssItemElements;
 import dev.jqb.onefeed.core.compat.rss.RssEnclosure;
 import dev.jqb.onefeed.core.compat.rss.RssGuid;
@@ -24,7 +23,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OneFeedContent extends Content implements RssItem {
 
     /**
@@ -32,7 +30,6 @@ public class OneFeedContent extends Content implements RssItem {
      *
      * @see <a href="https://spec.commonmark.org/0.31.2/">CommonMark Spec</a>
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
 
     /**
@@ -40,21 +37,18 @@ public class OneFeedContent extends Content implements RssItem {
      *
      * @see <a href="https://spec.commonmark.org/0.31.2/">CommonMark Spec</a>
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String body;
 
     /**
      * Any attached data, such as links, videos, images, or files, in their desired order of
      * presentation or priority (high/first to low/last)
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<? extends OneFeedAttachment> attachments;
 
     /**
      * The quantity of whatever reaction type is primary on the source platform, the semantics of
      * which are discernable via interpretation of the content's source platform by the client
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private int primaryReactionCount;
 
     /**
@@ -123,12 +117,12 @@ public class OneFeedContent extends Content implements RssItem {
         private ExternalRef externalRef;
         private String nextPageCursor;
         private Instant published;
-        private int primaryReactionCount;
         private List<String> authorIds;
 
         private String title;
         private String body;
         private List<OneFeedAttachment> attachments;
+        private int primaryReactionCount;
 
         /**
          * Prepares a new {@code OneFeedContentBuilder} with the given fields.
@@ -193,9 +187,9 @@ public class OneFeedContent extends Content implements RssItem {
         }
 
         /**
-         * Sets any attached attachments, such as links, videos, images, or files, in their desired order
-         * of presentation or priority (high/first to low/last)
-         * @param attachments any attached attachments, such as links, videos, images, or files, in their
+         * Sets any attached attachments, such as links, videos, images, or files, in their desired
+         * order of presentation or priority (high/first to low/last)
+         * @param attachments any attached media, such as links, videos, images, or files, in their
          *              desired order of presentation or priority (high/first to low/last)
          * @return the updated builder
          */

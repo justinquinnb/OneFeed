@@ -34,7 +34,6 @@ public class Rss2File {
      * @param channel the channel of the RSS file
      */
     public Rss2File(RssChannel channel) {
-        this.version = version;
         this.channel = channel;
     }
 }

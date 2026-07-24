@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.core.actor;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +15,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OneFeedActor extends Actor {
 
     /**

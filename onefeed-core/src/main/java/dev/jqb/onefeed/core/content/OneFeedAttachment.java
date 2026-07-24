@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.core.content;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.jqb.onefeed.core.compat.rss.RssEnclosure;
 import java.util.Optional;
 import lombok.Getter;
@@ -12,16 +11,15 @@ import org.jspecify.annotations.Nullable;
 /**
  * An attachment included in a piece of content
  */
+@Getter
 @Setter
 @NoArgsConstructor
 @ToString
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OneFeedAttachment implements RssEnclosure {
 
     /**
      * The link to the attachment on its host platform
      */
-    @Getter
     protected String href;
 
     /**
@@ -57,27 +55,6 @@ public class OneFeedAttachment implements RssEnclosure {
         this.thumbnailSrc = thumbnailSrc;
         this.title = title;
         this.caption = caption;
-    }
-
-    /**
-     * Gets the source of the attachment's thumbnail.
-     */
-    public Optional<String> getThumbnailSrc() {
-        return Optional.ofNullable(this.thumbnailSrc);
-    }
-
-    /**
-     * Gets the caption of the attachment.
-     */
-    public Optional<String> getCaption() {
-        return Optional.ofNullable(this.caption);
-    }
-
-    /**
-     * Gets the title or name of the attachment (such as the title of a link).
-     */
-    public Optional<String> getTitle() {
-        return Optional.ofNullable(this.title);
     }
 
     @Override

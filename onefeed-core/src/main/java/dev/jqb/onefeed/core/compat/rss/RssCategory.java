@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import java.util.Optional;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.jspecify.annotations.Nullable;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -15,7 +14,6 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
  *
  * @see <a href="https://www.rssboard.org/rss-specification#ltcategorygtSubelementOfLtitemgt">RSS 2.0 Specification</a>
  */
-@Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonRootName("category")
@@ -57,7 +55,8 @@ public class RssCategory {
      * Gets the domain of the category, if any.
      * @return the domain of the category, if any
      */
-    public Optional<String> getDomain() {
-        return Optional.ofNullable(domain);
+    @Nullable
+    public String getDomain() {
+        return domain;
     }
 }
