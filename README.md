@@ -18,17 +18,17 @@ clean, modern schemas that make distribution, processing, and ingestion a breeze
  - **DTO Preservation:** Opt out of normalization to access API responses in their source DTOs
 
 ## Supported Platforms
-| Platform    | Status         | Get It                                                                               | Developer                             |
-|-------------|----------------|--------------------------------------------------------------------------------------|---------------------------------------|
-| RSS         | In Development | Optional core module                                                                 | [Me](https://github.com/justinquinnb) |
-| Atom        | Todo           | Optional core module                                                                 | [Me](https://github.com/justinquinnb) |
-| Instagram   | In Development | [OneFeed Instagram Plugin](https://github.com/justinquinnb/OneFeed-Instagram-Plugin) | [Me](https://github.com/justinquinnb) |
-| Facebook    | Todo           | N/A                                                                                  | [Me](https://github.com/justinquinnb) |
-| Threads     | Todo           | N/A                                                                                  | [Me](https://github.com/justinquinnb) |
-| LinkedIn    | Todo           | N/A                                                                                  | [Me](https://github.com/justinquinnb) |
-| X (Twitter) | Todo           | N/A                                                                                  | [Me](https://github.com/justinquinnb) |
-| Fediverse   | Todo           | N/A                                                                                  | [Me](https://github.com/justinquinnb) |
-| GitHub      | Todo           | N/A                                                                                  | [Me](https://github.com/justinquinnb) |
+| Platform    | Status         | Get It                                                                                 | Developer                             |
+|-------------|----------------|----------------------------------------------------------------------------------------|---------------------------------------|
+| RSS         | In Development | Optional core module                                                                   | [Me](https://github.com/justinquinnb) |
+| Atom        | Todo           | Optional core module                                                                   | [Me](https://github.com/justinquinnb) |
+| Instagram   | In Development | [OneFeed Instagram Provider](https://github.com/justinquinnb/OneFeed-Instagram-Plugin) | [Me](https://github.com/justinquinnb) |
+| Facebook    | Todo           | N/A                                                                                    | [Me](https://github.com/justinquinnb) |
+| Threads     | Todo           | N/A                                                                                    | [Me](https://github.com/justinquinnb) |
+| LinkedIn    | Todo           | N/A                                                                                    | [Me](https://github.com/justinquinnb) |
+| X (Twitter) | Todo           | N/A                                                                                    | [Me](https://github.com/justinquinnb) |
+| Fediverse   | Todo           | N/A                                                                                    | [Me](https://github.com/justinquinnb) |
+| GitHub      | Todo           | N/A                                                                                    | [Me](https://github.com/justinquinnb) |
 
 # Development
 ## Current Status
