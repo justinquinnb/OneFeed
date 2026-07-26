@@ -22,7 +22,6 @@
     <dependency>
       <groupId>dev.jqb</groupId>
       <artifactId>onefeed-core</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
