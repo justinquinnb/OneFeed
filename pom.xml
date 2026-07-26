@@ -8,23 +8,16 @@
   <artifactId>onefeed</artifactId>
   <version>${revision}</version>
   <name>OneFeed</name>
-  <description>A simple, extensible social media feed aggregation service</description>
+  <description>A reactive content feed abstraction library for Java</description>
   <url>https://github.com/justinquinnb/OneFeed</url>
   <packaging>pom</packaging>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>4.1.0</version>
-  </parent>
-
   <properties>
-    <revision>0.3.2-SNAPSHOT</revision>
+    <revision>0.4.0-SNAPSHOT</revision>
     <java.version>25</java.version>
   </properties>
 
   <modules>
-    <module>onefeed-server</module>
     <module>onefeed-core</module>
     <module>onefeed-plugin-test-kit</module>
     <module>onefeed-bom</module>

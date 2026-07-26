@@ -32,11 +32,6 @@
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>dev.jqb</groupId>
-        <artifactId>onefeed-server</artifactId>
-        <version>${revision}</version>
-      </dependency>
-      <dependency>
         <groupId>org.pf4j</groupId>
         <artifactId>pf4j</artifactId>
         <version>3.15.0</version>
