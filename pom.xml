@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>dev.jqb</groupId>
+  <groupId>dev.jqb.onefeed</groupId>
   <artifactId>onefeed</artifactId>
   <version>${revision}</version>
   <name>OneFeed</name>
@@ -18,9 +18,10 @@
   </properties>
 
   <modules>
-    <module>onefeed-core</module>
-    <module>onefeed-plugin-test-kit</module>
-    <module>onefeed-bom</module>
+    <module>core</module>
+    <module>bom</module>
+    <module>server-sdk</module>
+    <module>builtin/bindings/rss</module>
   </modules>
 
   <build>
