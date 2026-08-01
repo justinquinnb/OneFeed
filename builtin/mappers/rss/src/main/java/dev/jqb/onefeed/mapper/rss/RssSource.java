@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.mapper.rss.model;
+package dev.jqb.onefeed.mapper.rss;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;

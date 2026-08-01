@@ -1,6 +1,5 @@
 package dev.jqb.onefeed.core.content;
 
-import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

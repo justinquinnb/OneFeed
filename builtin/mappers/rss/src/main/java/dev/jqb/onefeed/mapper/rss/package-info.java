@@ -3,4 +3,4 @@
  *
  * @see <a href="https://www.rssboard.org/rss-specification">RSS 2.0 Specification</a>
  */
-package dev.jqb.onefeed.mapper.rss.model;
+package dev.jqb.onefeed.mapper.rss;

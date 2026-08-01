@@ -1,1 +1,1 @@
-mvn clean install -pl :onefeed-core,:onefeed-bom,:onefeed-server-sdk -am
+mvn install -pl :onefeed-core,:onefeed-bom,:onefeed-json-mapper,:onefeed-rss-mapper -am

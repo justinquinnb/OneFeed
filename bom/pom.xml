@@ -22,7 +22,12 @@
       </dependency>
       <dependency>
         <groupId>dev.jqb.onefeed</groupId>
-        <artifactId>onefeed-server-sdk</artifactId>
+        <artifactId>onefeed-json-mapper</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>dev.jqb.onefeed</groupId>
+        <artifactId>onefeed-rss-mapper</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>

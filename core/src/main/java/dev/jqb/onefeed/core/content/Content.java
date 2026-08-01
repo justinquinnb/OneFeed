@@ -6,7 +6,6 @@ import dev.jqb.onefeed.core.feed.FeedIdentifiable;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

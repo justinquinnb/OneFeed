@@ -1,4 +1,4 @@
-package dev.jqb.onefeed.mapper.rss.model;
+package dev.jqb.onefeed.mapper.rss;
 
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;

@@ -6,7 +6,7 @@
   <parent>
     <groupId>dev.jqb.onefeed</groupId>
     <artifactId>onefeed</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../../../pom.xml</relativePath>
   </parent>
 
