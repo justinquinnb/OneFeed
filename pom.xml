@@ -20,8 +20,8 @@
   <modules>
     <module>core</module>
     <module>bom</module>
-    <module>server-sdk</module>
-    <module>builtin/bindings/rss</module>
+    <module>builtin/mappers/rss</module>
+    <module>builtin/mappers/json</module>
   </modules>
 
   <build>
