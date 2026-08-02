@@ -41,7 +41,7 @@ public abstract class Provider<C extends Content, A extends Actor> {
      * Gets the feeds exposed by {@code this} provider.
      * @return a list of feeds exposed by {@code this} provider
      */
-    public abstract List<? extends Feed<C>> getFeeds();
+    public abstract List<? extends Feed> getFeeds();
 
     /**
      * Gets the {@link ContentTransformer} capable of transforming this provider's

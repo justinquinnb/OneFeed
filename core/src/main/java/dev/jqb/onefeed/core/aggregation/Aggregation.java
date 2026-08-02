@@ -2,14 +2,15 @@ package dev.jqb.onefeed.core.aggregation;
 
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.content.ContentTransformer;
+import dev.jqb.onefeed.core.feed.BaseFeed;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedCursor;
 import dev.jqb.onefeed.core.feed.FeedId;
+import dev.jqb.onefeed.core.feed.FeedPermissions;
+import dev.jqb.onefeed.core.feed.ReadableFeed;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -17,13 +18,13 @@ import reactor.core.publisher.Flux;
 /**
  * An aggregator of content across multiple {@link Feed}s
  */
-public class Aggregation<C extends Content> extends Feed<C> {
+public class Aggregation<C extends Content> extends BaseFeed implements ReadableFeed<C> {
     private static final Logger logger = LoggerFactory.getLogger(Aggregation.class);
 
     /**
      * The sources of content to pull from
      */
-    private final List<Feed<? extends Content>> feeds;
+    private final List<ReadableFeed<? extends Content>> feeds;
 
     /**
      * The providers exposing the feeds and other platform data
@@ -48,11 +49,12 @@ public class Aggregation<C extends Content> extends Feed<C> {
     public Aggregation(
         FeedId id,
         String url,
-        List<Feed<? extends Content>> feeds,
+        List<ReadableFeed<? extends Content>> feeds,
         Map<String, ContentTransformer<? extends Content, C>> normalizers,
-        AggregationOptions options
+        AggregationOptions options,
+        FeedPermissions permissions
     ) {
-        super(id, url);
+        super(id, url, permissions);
         this.options = options;
 
         this.feeds = feeds;
@@ -64,7 +66,7 @@ public class Aggregation<C extends Content> extends Feed<C> {
         Map<FeedId, Integer> targetAmounts = options.getTargetAmounts(amount);
         List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
 
-        for (Feed<? extends Content> feed : feeds) {
+        for (ReadableFeed<? extends Content> feed : feeds) {
             ContentTransformer<Content, C> contentNormalizer =
                 (ContentTransformer<Content, C>) normalizers.get(feed.getProviderId());
 
@@ -93,12 +95,11 @@ public class Aggregation<C extends Content> extends Feed<C> {
         Map<FeedId, FeedCursor> decodedCursors = decodeAggregateCursor(aggregateCursor);
         List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
 
-        for (Feed<? extends Content> feed : feeds) {
+        for (ReadableFeed<? extends Content> feed : feeds) {
             ContentTransformer<Content, C> contentNormalizer =
                 (ContentTransformer<Content, C>) normalizers.get(feed.getProviderId());
 
             Flux<? extends Content> feedStream = feed.fetchRecentContent(
-                targetAmounts.get(feed.getId()), decodedCursors.get(feed.getId()));
 
             normalizedContentStreams.add(
                 feedStream

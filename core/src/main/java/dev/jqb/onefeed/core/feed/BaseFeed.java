@@ -1,32 +1,67 @@
 package dev.jqb.onefeed.core.feed;
 
-import dev.jqb.onefeed.core.provider.ProviderIdentifiable;
+import dev.jqb.onefeed.core.content.Content;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A single feed of content from a single provider
  */
-public interface Feed extends ProviderIdentifiable {
+@Getter
+@Setter
+@ToString
+public abstract class BaseFeed implements Feed {
 
     /**
-     * Gets the unique ID of the feed
+     * The unique ID of the feed
      */
-    FeedId getId();
+    protected final FeedId id;
+
+    /**
+     * The URL of the feed on its source platform
+     */
+    protected String url;
+
+    /**
+     * The Feed's current read/write permissions
+     */
+    protected FeedPermissions permissions;
+
+    /**
+     * Creates a new {@code Feed} with ID {@code id}.
+     *
+     * @param id the unique ID of the feed
+     * @param url the URL of the feed on its source platform
+     * @param permissions the operations currently permitted by the feed
+     */
+    public BaseFeed(FeedId id, String url, FeedPermissions permissions) {
+        this.id = id;
+        this.url = url;
+        this.permissions = permissions;
+    }
+
+    @Override
+    public String getProviderId() {
+        return id.getProviderId();
+    }
 
     /**
      * Gets the attribution for this feed
      */
-    FeedAttribution getAttribution();
+    public FeedAttribution getAttribution() {
+        return new FeedAttribution(id, url);
+    }
 
-    /**
-     * Gets the Feed's current read/write permissions
-     */
     /**
      * Generates a {@link FeedCursor} from the given list of {@link Content}.
      * @param content the list of {@code Content} to generate the cursor from
      * @return a cursor indicating how to obtain the next piece of content in the list from the
      * platform
      */
-    public static FeedCursor generateCursor(List<? extends Content> content) {
+    public static FeedCursor fromContent(List<? extends Content> content) {
         List<? extends Content> sortedContent = new ArrayList<>(content);
         sortedContent.sort(Content::compareTo);
         Content initialContent = sortedContent.getFirst();
@@ -45,7 +80,6 @@ public interface Feed extends ProviderIdentifiable {
             }
         }
 
-        return  feedCursor;
+        return feedCursor;
     }
-    FeedPermissions getPermissions();
 }
