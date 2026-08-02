@@ -1,15 +1,16 @@
 package dev.jqb.onefeed.mapper.rss;
 
 import dev.jqb.onefeed.core.content.Content;
-import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.feed.Feed;
+import dev.jqb.onefeed.core.feed.ReadableFeed;
 import java.util.List;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.Setter;
 import reactor.core.publisher.Flux;
 
 /**
- * Adapter for {@link Feed}s to {@link RssChannel}s via a {@link ContentTransformer} that provides
+ * Adapter for {@link Feed}s to {@link RssChannel}s via a mapper {@link Function} that provides
  * the necessary {@link RssItem}-compatible content
  */
 @Getter
@@ -19,13 +20,13 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
     /**
      * The feed to adapt
      */
-    private Feed<C> feed;
+    private ReadableFeed<C> feed;
 
     /**
-     * A {@link ContentTransformer} capable of converting the {@link #feed}'s output into an
+     * A mapper {@link Function} capable of converting the {@link #feed}'s output into an
      * {@link RssItem}-compatible type
      */
-    private ContentTransformer<C, ? extends RssItem> standardizer;
+    private Function<C, ? extends RssItem> mapper;
 
     /**
      * The title of the feed
@@ -50,7 +51,7 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
     /**
      * Constructs a new {@code FeedRssChannelAdapter} for the given feed.
      * @param feed the feed to adapt
-     * @param standardizer a {@link ContentTransformer} capable of converting the {@code feed}'s output
+     * @param mapper a mapper {@link Function} capable of converting the {@code feed}'s output
      *                     into an {@link RssItem}-compatible type
      * @param title the title of the feed
      * @param description a description of the feed
@@ -58,15 +59,15 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
      * @param maxItemCount the maximum number of items to include in the feed
      */
     public FeedRssChannelAdapter(
-        Feed<C> feed,
-        ContentTransformer<C, ? extends RssItem> standardizer,
+        ReadableFeed<C> feed,
+        Function<C, ? extends RssItem> mapper,
         String title,
         String description,
         String href,
         int maxItemCount
     ) {
         this.feed = feed;
-        this.standardizer = standardizer;
+        this.mapper = mapper;
         this.title = title;
         this.description = description;
         this.href = href;
@@ -95,7 +96,7 @@ public class FeedRssChannelAdapter<C extends Content> implements RssChannel {
 
     @Override
     public List<RssItem> getRssChannelItems() {
-        Flux<RssItem> contentStream = feed.fetchRecentContent(maxItemCount).map(standardizer::transform);
+        Flux<RssItem> contentStream = feed.fetchRecentContent(maxItemCount).map(mapper);
         return contentStream.collectList().block();
     }
 }

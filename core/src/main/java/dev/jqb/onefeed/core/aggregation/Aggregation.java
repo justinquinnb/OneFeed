@@ -1,7 +1,6 @@
 package dev.jqb.onefeed.core.aggregation;
 
 import dev.jqb.onefeed.core.content.Content;
-import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.feed.BaseFeed;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.feed.FeedCursor;
@@ -11,6 +10,7 @@ import dev.jqb.onefeed.core.feed.ReadableFeed;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -27,9 +27,9 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
     private final List<ReadableFeed<? extends Content>> feeds;
 
     /**
-     * The providers exposing the feeds and other platform data
+     * The mappers used to normalize the various feeds' output content types into a uniform type
      */
-    private final Map<String, ContentTransformer<? extends Content, C>> normalizers;
+    private final Map<String, Function<? extends Content, C>> mappers;
 
     /**
      * The options to adjust the contents of the returned aggregation
@@ -43,14 +43,15 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
      * @param id the ID of the created aggregation
      * @param url a URL to the aggregation's source
      * @param feeds the feeds to aggregate content from
-     * @param normalizers the normalizers to apply to the content before returning it
+     * @param mappers the mapper functions to apply to the content before returning it, 
+     *                    normalizing their form
      * @param options the options to adjust the contents of the returned aggregation
      */
     public Aggregation(
         FeedId id,
         String url,
         List<ReadableFeed<? extends Content>> feeds,
-        Map<String, ContentTransformer<? extends Content, C>> normalizers,
+        Map<String, Function<? extends Content, C>> mappers,
         AggregationOptions options,
         FeedPermissions permissions
     ) {
@@ -58,7 +59,7 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
         this.options = options;
 
         this.feeds = feeds;
-        this.normalizers= normalizers;
+        this.mappers= mappers;
     }
 
     @Override
@@ -67,15 +68,15 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
         List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
 
         for (ReadableFeed<? extends Content> feed : feeds) {
-            ContentTransformer<Content, C> contentNormalizer =
-                (ContentTransformer<Content, C>) normalizers.get(feed.getProviderId());
+            Function<Content, C> contentMapper =
+                (Function<Content, C>) mappers.get(feed.getProviderId());
 
             Flux<? extends Content> feedStream = feed.fetchRecentContent(
                 targetAmounts.get(feed.getId()));
 
             normalizedContentStreams.add(
                 feedStream
-                    .map(contentNormalizer::transform)
+                    .map(contentMapper::apply)
                     .doOnError(err -> logger.warn(
                         "Error fetching content from feed '{}': {}", feed.getId().feedName(),
                         err.getStackTrace()))
@@ -100,15 +101,15 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
         List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
 
         for (ReadableFeed<? extends Content> feed : feeds) {
-            ContentTransformer<Content, C> contentNormalizer =
-                (ContentTransformer<Content, C>) normalizers.get(feed.getProviderId());
+            Function<Content, C> contentMapper =
+                (Function<Content, C>) mappers.get(feed.getProviderId());
 
             Flux<? extends Content> feedStream = feed.fetchRecentContent(
                 targetAmounts.get(feed.getId()), cursors.get(feed.getId()));
 
             normalizedContentStreams.add(
                 feedStream
-                    .map(contentNormalizer::transform)
+                    .map(contentMapper::apply)
                     .doOnError(err -> logger.warn(
                         "Error fetching content from feed '{}': {}", feed.getId().feedName(),
                         err.getStackTrace()))

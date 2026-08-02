@@ -21,4 +21,9 @@ public interface Feed extends ProviderIdentifiable {
      * Gets the Feed's current read/write permissions
      */
     FeedPermissions getPermissions();
+
+    /**
+     * Gets the URL of the feed on its source platform
+     */
+    String getUrl();
 }

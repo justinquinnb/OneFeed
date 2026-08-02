@@ -1,14 +1,13 @@
 package dev.jqb.onefeed.core.provider;
 
 import dev.jqb.onefeed.core.actor.Actor;
-import dev.jqb.onefeed.core.actor.ActorTransformer;
 import dev.jqb.onefeed.core.actor.OneFeedActor;
 import dev.jqb.onefeed.core.content.Content;
-import dev.jqb.onefeed.core.content.ContentTransformer;
 import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.feed.Feed;
 import dev.jqb.onefeed.core.platform.Platform;
 import java.util.List;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.ToString;
 import reactor.core.publisher.Flux;
@@ -44,22 +43,22 @@ public abstract class Provider<C extends Content, A extends Actor> {
     public abstract List<? extends Feed> getFeeds();
 
     /**
-     * Gets the {@link ContentTransformer} capable of transforming this provider's
+     * Gets the mapper {@link Function} capable of mapping this provider's
      * {@link Content} DTOs into normalized {@link OneFeedContent}
      *
-     * @return a {@link ContentTransformer} capable of transforming this provider's
+     * @return a mapper {@link Function} capable of mapping this provider's
      * {@link Content} DTO into normalized {@link OneFeedContent}
      */
-    public abstract ContentTransformer<C, OneFeedContent> getContentNormalizer();
+    public abstract Function<C, OneFeedContent> getContentMapper();
 
     /**
-     * Gets the {@link ActorTransformer} capable of transforming this provider's
+     * Gets the mapper {@link Function} capable of mapping this provider's
      * {@link Actor} DTOs into normalized {@link OneFeedActor}s
      *
-     * @return a {@link ActorTransformer} capable of transforming this provider's
+     * @return a mapper {@link Function} capable of mapping this provider's
      * {@link Actor} DTO into normalized {@link OneFeedActor}
      */
-    public abstract ActorTransformer<A, OneFeedActor> getActorNormalizer();
+    public abstract Function<A, OneFeedActor> getActorMapper();
 
     /**
      * Fetches the authors of {@code this} content.
