@@ -91,8 +91,12 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
      */
     @Override
     public Flux<C> fetchRecentContent(int amount, FeedCursor aggregateCursor) {
+        if (!(aggregateCursor instanceof AggregateCursor)) {
+            throw new IllegalArgumentException("The provided cursor must be an aggregate cursor");
+        }
+
         Map<FeedId, Integer> targetAmounts = options.getTargetAmounts(amount);
-        Map<FeedId, FeedCursor> decodedCursors = decodeAggregateCursor(aggregateCursor);
+        Map<FeedId, FeedCursor> cursors = ((AggregateCursor) aggregateCursor).separate();
         List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
 
         for (ReadableFeed<? extends Content> feed : feeds) {
@@ -100,6 +104,7 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
                 (ContentTransformer<Content, C>) normalizers.get(feed.getProviderId());
 
             Flux<? extends Content> feedStream = feed.fetchRecentContent(
+                targetAmounts.get(feed.getId()), cursors.get(feed.getId()));
 
             normalizedContentStreams.add(
                 feedStream
@@ -112,83 +117,5 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
         }
 
         return Flux.merge(normalizedContentStreams);
-    }
-
-    /**
-     * Generates an aggregate cursor {@code String} from a list of {@code content}.
-     *
-     * @param content a list of the content to generate the cursor from
-     * @return the aggregate nextPageCursor
-     */
-    public static FeedCursor generateAggregateCursor(List<? extends Content> content) {
-        List<? extends Content> sortedContent = new ArrayList<>(content);
-        sortedContent.sort(Content::compareTo);
-
-        HashMap<FeedId, FeedCursor> oldestFeedCursors = new HashMap<>();
-
-        /* Because the content is in descending timestamp order, the last piece of content with a
-           cursor for a feed is easy to get with this
-           NOTE: this differs from the Feed's version of this algo bc it's more efficient to just
-           pass through this whole list once as opposed to separating this into feed-specific
-           lists of content and going from there
-         */
-        for (Content c : sortedContent) {
-            // First piece of content in list for feed
-            if (!oldestFeedCursors.containsKey(c.getFeedId())) {
-                FeedCursor initialCursor = new FeedCursor(c.getNextPageCursor(), 0);
-                oldestFeedCursors.put(c.getFeedId(), initialCursor);
-                continue;
-            }
-
-            // Nth piece of content in feed
-            // Piece of content has no next page cursor
-            FeedCursor currentCursor = oldestFeedCursors.get(c.getFeedId());
-            if (c.getNextPageCursor() == null) {
-                int currentOffset = currentCursor.getOffsetFromCursor();
-                currentCursor.setOffsetFromCursor(currentOffset + 1);
-            } else { // Piece of content HAS a next page cursor
-                currentCursor.setOffsetFromCursor(0);
-                currentCursor.setCursorOnPlatform(c.getNextPageCursor());
-            }
-        }
-
-        // Comma-separated FeedId:FeedCursor pairs
-        // providerId:feedName=cursor+offset,...
-        StringBuilder encodedCursorBuilder = new StringBuilder();
-        int i = 0;
-        for (Entry<FeedId, FeedCursor> entry : oldestFeedCursors.entrySet()) {
-            encodedCursorBuilder.append(entry.getKey().toString());
-            encodedCursorBuilder.append("=");
-            encodedCursorBuilder.append(entry.getValue().toString());
-
-            if (i < oldestFeedCursors.size() - 1) {
-                encodedCursorBuilder.append(",");
-            }
-
-            i++;
-        }
-
-        return new FeedCursor(encodedCursorBuilder.toString(), 0);
-    }
-
-    /**
-     * Decodes an encoded, aggregate {@link FeedCursor} into a map of Feed IDs to their individual
-     * {@code FeedCursor}s.
-     *
-     * @param aggregateCursor the aggregate cursor to decode
-     *
-     * @return a mapping of {@link FeedId}s to {@link FeedCursor}s
-     */
-    public static Map<FeedId, FeedCursor> decodeAggregateCursor(FeedCursor aggregateCursor) {
-        String[] encodedCursors = aggregateCursor.getCursorOnPlatform().split(",");
-        HashMap<FeedId, FeedCursor> decodedCursors = new HashMap<>();
-
-        for (String encodedCursor : encodedCursors) {
-            FeedId feedId = FeedId.fromString(encodedCursor.split("=")[0]);
-            FeedCursor cursor = FeedCursor.fromString(encodedCursor.split("=")[1]);
-            decodedCursors.put(feedId, cursor);
-        }
-
-        return decodedCursors;
     }
 }
