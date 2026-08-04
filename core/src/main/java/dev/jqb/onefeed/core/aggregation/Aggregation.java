@@ -76,7 +76,7 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
 
             normalizedContentStreams.add(
                 feedStream
-                    .map(contentMapper::apply)
+                    .map(contentMapper)
                     .doOnError(err -> logger.warn(
                         "Error fetching content from feed '{}': {}", feed.getId().feedName(),
                         err.getStackTrace()))
@@ -109,7 +109,7 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
 
             normalizedContentStreams.add(
                 feedStream
-                    .map(contentMapper::apply)
+                    .map(contentMapper)
                     .doOnError(err -> logger.warn(
                         "Error fetching content from feed '{}': {}", feed.getId().feedName(),
                         err.getStackTrace()))
