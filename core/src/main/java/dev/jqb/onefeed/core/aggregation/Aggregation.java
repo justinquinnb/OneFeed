@@ -3,7 +3,7 @@ package dev.jqb.onefeed.core.aggregation;
 import dev.jqb.onefeed.core.content.Content;
 import dev.jqb.onefeed.core.feed.BaseFeed;
 import dev.jqb.onefeed.core.feed.Feed;
-import dev.jqb.onefeed.core.feed.FeedCursor;
+import dev.jqb.onefeed.core.feed.FeedPos;
 import dev.jqb.onefeed.core.feed.FeedId;
 import dev.jqb.onefeed.core.feed.FeedPermissions;
 import dev.jqb.onefeed.core.feed.ReadableFeed;
@@ -88,16 +88,16 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
     }
 
     /**
-     * @param aggregateCursor an aggregate cursor for the feed to retrieve content after, inclusive
+     * @param aggregateCursor an aggregate position for the feed to retrieve content after, inclusive
      */
     @Override
-    public Flux<C> fetchRecentContent(int amount, FeedCursor aggregateCursor) {
-        if (!(aggregateCursor instanceof AggregateCursor)) {
-            throw new IllegalArgumentException("The provided cursor must be an aggregate cursor");
+    public Flux<C> fetchRecentContent(int amount, FeedPos aggregateCursor) {
+        if (!(aggregateCursor instanceof AggregatePos)) {
+            throw new IllegalArgumentException("The provided position must be an aggregate position");
         }
 
         Map<FeedId, Integer> targetAmounts = options.getTargetAmounts(amount);
-        Map<FeedId, FeedCursor> cursors = ((AggregateCursor) aggregateCursor).separate();
+        Map<FeedId, FeedPos> positions = ((AggregatePos) aggregateCursor).separate();
         List<Flux<C>> normalizedContentStreams = new ArrayList<>(feeds.size());
 
         for (ReadableFeed<? extends Content> feed : feeds) {
@@ -105,7 +105,7 @@ public class Aggregation<C extends Content> extends BaseFeed implements Readable
                 (Function<Content, C>) mappers.get(feed.getProviderId());
 
             Flux<? extends Content> feedStream = feed.fetchRecentContent(
-                targetAmounts.get(feed.getId()), cursors.get(feed.getId()));
+                targetAmounts.get(feed.getId()), positions.get(feed.getId()));
 
             normalizedContentStreams.add(
                 feedStream

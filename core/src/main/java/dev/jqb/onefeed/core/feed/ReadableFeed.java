@@ -27,23 +27,23 @@ public interface ReadableFeed<C extends Content> extends Feed {
     }
 
     /**
-     * Reads the given {@code amount} of most recently published content after the {@code cursor}
+     * Reads the given {@code amount} of most recently published content after the {@code start}
      * from {@code this} feed.
      *
      * @param amount the target amount of content to retrieve
-     * @param cursor the reference point to start retrieving content from, inclusive
+     * @param start the reference point to start retrieving content from, inclusive
      *
      * @return a {@link Flux} that emits a stream of {@link C} containing at most the desired
      * {@code amount} of retrieved content
      * @throws UnpermittedOperationException if the feed does not currently permit reading
      */
-    default Flux<C> readRecentContent(int amount, FeedCursor cursor)
+    default Flux<C> readRecentContent(int amount, FeedPos start)
         throws UnpermittedOperationException
     {
         if (!getPermissions().canRead()) {
             throw new UnpermittedOperationException("The feed does not permit reading at this time");
         }
-        return fetchRecentContent(amount, cursor);
+        return fetchRecentContent(amount, start);
     }
 
     /**
@@ -56,13 +56,13 @@ public interface ReadableFeed<C extends Content> extends Feed {
     Flux<C> fetchRecentContent(int amount);
 
     /**
-     * Fetches the given {@code amount} of most recently published content after the {@code cursor}
+     * Fetches the given {@code amount} of most recently published content after the {@code start}
      * from {@code this} feed.
      *
      * @param amount the target amount of content to retrieve
-     * @param cursor the reference point to start retrieving content from, inclusive
+     * @param start the reference point to start retrieving content from, inclusive
      * @return a {@link Flux} that emits a stream of {@link C} containing at most the desired
      * {@code amount} of retrieved content
      */
-    Flux<C> fetchRecentContent(int amount, FeedCursor cursor);
+    Flux<C> fetchRecentContent(int amount, FeedPos start);
 }

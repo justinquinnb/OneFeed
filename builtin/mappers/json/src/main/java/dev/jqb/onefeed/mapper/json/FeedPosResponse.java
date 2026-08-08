@@ -1,7 +1,9 @@
 package dev.jqb.onefeed.mapper.json;
 
+import dev.jqb.onefeed.core.feed.FeedPos;
+
 /**
- * A {@link dev.jqb.onefeed.core.feed.FeedCursor} to send to a client of OneFeed
+ * A {@link FeedPos} to send to a client of OneFeed
  *
  * @param cursorOnPlatform the cursor, as provided by the platform's API
  * @param offsetFromCursor the distance from the cursor's item to the first item we desire from
@@ -9,7 +11,7 @@ package dev.jqb.onefeed.mapper.json;
  *                         offset of 3 indicates content piece 14 should be the first piece to
  *                         consider.
  */
-public record FeedCursorResponse(String cursorOnPlatform, int offsetFromCursor) implements
+public record FeedPosResponse(String cursorOnPlatform, int offsetFromCursor) implements
     Streamable {
 
     @Override

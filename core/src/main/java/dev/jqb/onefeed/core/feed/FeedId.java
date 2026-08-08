@@ -2,6 +2,8 @@ package dev.jqb.onefeed.core.feed;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import dev.jqb.onefeed.core.exception.MalformedEncodingException;
+import java.util.regex.Pattern;
 
 /**
  * A means of identifying a single feed of content
@@ -12,32 +14,55 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public record FeedId(String providerId, String feedName) implements FeedIdentifiable {
 
     /**
-     * Converts this {@code FeedNameentifier} to a string suitable for use as a unique key
-     * @return a string of format: {@link #providerId}{@code :}{@link #feedName}
+     * The character used to separate the provider ID from the feed name component of the encoded
+     * {@code FeedId}
      */
+    public static final String FEED_NAME_PREFIX = ":";
+
+    /**
+     * Encodeds {@code this} {@code FeedId} to a string suitable for use as a unique key
+     * @return a string of format: {@link #providerId}{@link #FEED_NAME_PREFIX}{@link #feedName}
+     */
+    public String encode() {
+        return providerId + FEED_NAME_PREFIX + feedName;
+    }
+
     @Override
-    @JsonValue
     public String toString() {
-        return providerId + ":" + feedName;
+        return encode();
     }
 
     /**
-     * Converts a string of format {@link #providerId}{@code :}{@link #feedName} into a
-     * {@code FeedId} object.
+     * Converts an encoded ID string of format {@link #providerId}{@link #FEED_NAME_PREFIX}{@link #feedName}
+     * into a {@code FeedId} object.
+     * @param encodedId the encoded ID string to convert
      *
-     * @param idString the string to convert
      * @return a {@code FeedId} object representing the given string
+     * @throws MalformedEncodingException if the given string is not in the expected format
      */
-    @JsonCreator
-    public static FeedId fromString(String idString) {
-        String[] parts = idString.split(":");
+    public static FeedId decode(String encodedId) throws MalformedEncodingException {
+        String[] parts = encodedId.split(Pattern.quote(FEED_NAME_PREFIX));
 
         if (parts.length != 2) {
-            String reason = String.format("Expected 2 ':'-separated parts. Found %d.", parts.length);
-            throw new MalformedFeedIdException(idString, reason);
+            String reason = String.format("Expected 2 '%s'-separated parts. Found %d.", FEED_NAME_PREFIX, parts.length);
+            throw new MalformedEncodingException(encodedId, FeedId.class, reason);
         }
 
         return new FeedId(parts[0], parts[1]);
+    }
+
+    /**
+     * Validates that the given, encoded ID string is of format {@link #providerId}{@link #FEED_NAME_PREFIX}{@link #feedName}.
+     * @param encodedId the encoded ID string to validate
+     * @throws MalformedEncodingException if the given string is not in the expected format
+     */
+    public static void validateEncoded(String encodedId) throws MalformedEncodingException {
+        String[] parts = encodedId.split(Pattern.quote(FEED_NAME_PREFIX));
+
+        if (parts.length != 2) {
+            String reason = String.format("Expected 2 '%s'-separated parts. Found %d.", FEED_NAME_PREFIX, parts.length);
+            throw new MalformedEncodingException(encodedId, FeedId.class, reason);
+        }
     }
 
     @Override

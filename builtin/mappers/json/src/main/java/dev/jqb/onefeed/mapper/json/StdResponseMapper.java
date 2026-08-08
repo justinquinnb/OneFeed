@@ -5,7 +5,7 @@ import dev.jqb.onefeed.core.content.OneFeedAttachment;
 import dev.jqb.onefeed.core.content.OneFeedContent;
 import dev.jqb.onefeed.core.content.OneFeedMedia;
 import dev.jqb.onefeed.core.feed.FeedAttribution;
-import dev.jqb.onefeed.core.feed.FeedCursor;
+import dev.jqb.onefeed.core.feed.FeedPos;
 import dev.jqb.onefeed.core.platform.ExternalRef;
 import dev.jqb.onefeed.core.platform.Platform;
 import org.mapstruct.Mapper;
@@ -16,7 +16,7 @@ import org.mapstruct.SubclassMapping;
  */
 @Mapper
 public interface StdResponseMapper {
-    FeedCursorResponse toCursorResponse(FeedCursor cursor);
+    FeedPosResponse toPosResponse(FeedPos pos);
     OneFeedActorResponse toOneFeedActorResponse(OneFeedActor actor);
     OneFeedContentResponse toOneFeedContentResponse(OneFeedContent content);
 

@@ -11,13 +11,13 @@ import org.jspecify.annotations.Nullable;
  * @param authors the authors of the content, indexed by their {@link ActorKey}
  * @param platforms the platform(s) that the content came from
  * @param content the content, in descending chronological order
- * @param cursor the cursor that can be used to retrieve the next batch of content
+ * @param position a cursor-offset combo that can be used to retrieve the next batch of content
  */
 public record FeedResponse(
     Map<ActorKey, OneFeedActorResponse> authors,
     @Nullable Map<String, PlatformResponse> platforms,
     List<OneFeedContentResponse> content,
-    @Nullable FeedCursorResponse cursor
+    @Nullable FeedPosResponse position
 ) {
 
 }
