@@ -1,8 +1,5 @@
 package dev.jqb.onefeed.core.feed;
 
-import dev.jqb.onefeed.core.content.Content;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

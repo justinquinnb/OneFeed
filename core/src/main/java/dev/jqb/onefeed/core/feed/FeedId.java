@@ -1,7 +1,5 @@
 package dev.jqb.onefeed.core.feed;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import dev.jqb.onefeed.core.exception.MalformedEncodingException;
 import java.util.regex.Pattern;
 

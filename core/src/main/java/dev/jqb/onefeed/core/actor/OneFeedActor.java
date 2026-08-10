@@ -28,6 +28,22 @@ public class OneFeedActor extends Actor {
     private String profilePicSrc;
 
     /**
+     * The unique identifier of the {@link dev.jqb.onefeed.core.provider.Provider} the actor is from
+     */
+    private String providerId;
+
+    /**
+     * A means of accessing the resource on the source platform
+     */
+    private ExternalRef externalRef;
+
+    /**
+     * The handle of the actor on the content's platform, devoid of any platform-specific prefixes
+     * like {@code @}
+     */
+    private String handle;
+
+    /**
      * Constructs a user {@code Profile} object, effectively a more personalized piece of
      * {@link Actor} info.
      *
@@ -41,7 +57,10 @@ public class OneFeedActor extends Actor {
     public OneFeedActor(String providerId, ExternalRef externalRef, String handle, String name,
         String profilePicSrc
     ) {
-        super(providerId, externalRef, handle);
+        super();
+        this.providerId = providerId;
+        this.externalRef = externalRef;
+        this.handle = handle;
         this.name = name;
         this.profilePicSrc = profilePicSrc;
     }

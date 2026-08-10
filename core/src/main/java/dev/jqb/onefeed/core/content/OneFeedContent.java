@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The default implementation of {@link Content}
@@ -19,6 +20,33 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @AllArgsConstructor
 public class OneFeedContent extends Content {
+
+    /**
+     * The unique ID of the feed the content is from
+     */
+    protected FeedAttribution source;
+
+    /**
+     * A means of accessing the resource on the source platform
+     */
+    protected ExternalRef externalRef;
+
+    /**
+     * Gets time at which the content was published
+     */
+    protected Instant published;
+
+    /**
+     * The cursor pointing to the next page of content after {@code this} (or some equivalent means),
+     * if known, on the originating platform's API
+     */
+    @Nullable
+    protected String nextPageCursor;
+
+    /**
+     * The IDs of the authors of {@code this} content on the source platform
+     */
+    protected List<String> authorIds;
 
     /**
      * The title of the content, using CommonMark-Flavored Markdown for any formatting.
@@ -51,8 +79,12 @@ public class OneFeedContent extends Content {
      * @param builder the builder to construct the content with
      */
     protected OneFeedContent(OneFeedContentBuilder builder) {
-        super(builder.getSource(), builder.getExternalRef(), builder.getNextPageCursor(),
-            builder.getPublished(), builder.getAuthorIds());
+        super();
+        this.source = builder.getSource();
+        this.externalRef = builder.getExternalRef();
+        this.nextPageCursor = builder.getNextPageCursor();
+        this.published = builder.getPublished();
+        this.authorIds = builder.getAuthorIds();
         this.title = builder.getTitle();
         this.body = builder.getBody();
         this.attachments = builder.getAttachments();
