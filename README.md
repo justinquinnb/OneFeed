@@ -1,5 +1,6 @@
 # OneFeed
-*A reactive content feed abstraction library for Java*
+*A reactive content feed abstraction library for Java*<br>
+See also: [OneFeed Server](https://github.com/justinquinnb/OneFeed-Server)
 
 ## About
 Say goodbye to dated standards, clunky APIs, and bloated DTOs. OneFeed standardizes reading and 
